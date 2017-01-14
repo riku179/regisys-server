@@ -1,0 +1,18 @@
+# docker-compose.yml for DEV
+version: "2"
+services:
+    app:
+        image: golang:1.7
+        volumes:
+            - 'lib:/go'
+            - '.:/go/src/github.com/riku179/regisys'
+        ports:
+            - '8080:8080'
+        working_dir: /go/src/github.com/riku179/regisys
+        command: 'sh -c "go run *.go"'
+        environment:
+            - HOST_ADDR=0.0.0.0:8080
+
+volumes:
+    lib:
+        driver: local

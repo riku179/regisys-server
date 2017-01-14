@@ -1,0 +1,5 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+tool/regisys-cli/regisys-cli
+swagger/dist/
+js/
