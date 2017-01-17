@@ -348,6 +348,7 @@ type AddUserContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
+	Payload *AddUserPayload
 }
 
 // NewAddUserContext parses the incoming request URL and body, performs validations and creates the

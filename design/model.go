@@ -1,8 +1,8 @@
 package design
 
 import (
-	. "github.com/goadesign/gorma/dsl"
 	"github.com/goadesign/gorma"
+	. "github.com/goadesign/gorma/dsl"
 )
 
 var sg = StorageGroup("RegisysStorageGroup", func() {
@@ -42,6 +42,7 @@ var sg = StorageGroup("RegisysStorageGroup", func() {
 		Model("User", func() {
 			RendersTo(ShowUserMedia)
 			BuildsFrom(func() {
+				Payload("user", "add")
 				Payload("user", "modify")
 			})
 			Field("id", gorma.Integer, func() {
@@ -51,7 +52,6 @@ var sg = StorageGroup("RegisysStorageGroup", func() {
 			Field("name", gorma.String, func() {
 				SQLTag("not null;default:false")
 			})
-			Field("password", gorma.String)
 			Field("group", gorma.String, func() {
 				SQLTag("not null;default:false")
 			})

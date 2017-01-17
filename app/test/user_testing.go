@@ -24,11 +24,11 @@ import (
 	"net/url"
 )
 
-// AddUserForbidden runs the method Add of the given controller with the given parameters.
+// AddUserForbidden runs the method Add of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func AddUserForbidden(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController) http.ResponseWriter {
+func AddUserForbidden(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, payload *app.AddUserPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -44,6 +44,17 @@ func AddUserForbidden(t goatest.TInterface, ctx context.Context, service *goa.Se
 		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
 		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
 		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		t.Errorf("unexpected payload validation error: %+v", e)
+		return nil
 	}
 
 	// Setup request context
@@ -64,6 +75,7 @@ func AddUserForbidden(t goatest.TInterface, ctx context.Context, service *goa.Se
 	if err != nil {
 		panic("invalid test data " + err.Error()) // bug
 	}
+	addCtx.Payload = payload
 
 	// Perform action
 	err = ctrl.Add(addCtx)
@@ -80,11 +92,11 @@ func AddUserForbidden(t goatest.TInterface, ctx context.Context, service *goa.Se
 	return rw
 }
 
-// AddUserNoContent runs the method Add of the given controller with the given parameters.
+// AddUserNoContent runs the method Add of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func AddUserNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController) http.ResponseWriter {
+func AddUserNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, payload *app.AddUserPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -100,6 +112,17 @@ func AddUserNoContent(t goatest.TInterface, ctx context.Context, service *goa.Se
 		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
 		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
 		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		t.Errorf("unexpected payload validation error: %+v", e)
+		return nil
 	}
 
 	// Setup request context
@@ -120,6 +143,7 @@ func AddUserNoContent(t goatest.TInterface, ctx context.Context, service *goa.Se
 	if err != nil {
 		panic("invalid test data " + err.Error()) // bug
 	}
+	addCtx.Payload = payload
 
 	// Perform action
 	err = ctrl.Add(addCtx)

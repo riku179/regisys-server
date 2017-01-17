@@ -71,6 +71,22 @@ definitions:
     - user_id
     title: AddOrderPayload
     type: object
+  AddUserPayload:
+    example:
+      name: Aut illo.
+      password: Dicta aperiam earum culpa eum vero dolores.
+    properties:
+      name:
+        example: Aut illo.
+        type: string
+      password:
+        example: Dicta aperiam earum culpa eum vero dolores.
+        type: string
+    required:
+    - name
+    - password
+    title: AddUserPayload
+    type: object
   GoaExampleOrders:
     description: An order (default view)
     example:
@@ -566,8 +582,18 @@ paths:
       - jwt
   /user:
     post:
-      description: Add user for NOT MMA member)
+      description: |-
+        Add user for NOT MMA member)
+
+        Required security scopes:
+          * `api:access`
       operationId: user#add
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/AddUserPayload'
       responses:
         "204":
           description: No Content
@@ -576,7 +602,8 @@ paths:
       schemes:
       - http
       security:
-      - SigninBasicAuth: []
+      - jwt:
+        - api:access
       summary: add user
       tags:
       - user

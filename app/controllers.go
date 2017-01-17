@@ -336,11 +336,17 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 		if err != nil {
 			return err
 		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*AddUserPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
 		return ctrl.Add(rctx)
 	}
-	h = handleSecurity("SigninBasicAuth", h)
-	service.Mux.Handle("POST", "/user", ctrl.MuxHandler("Add", h, nil))
-	service.LogInfo("mount", "ctrl", "User", "action", "Add", "route", "POST /user", "security", "SigninBasicAuth")
+	h = handleSecurity("jwt", h, "api:access")
+	service.Mux.Handle("POST", "/user", ctrl.MuxHandler("Add", h, unmarshalAddUserPayload))
+	service.LogInfo("mount", "ctrl", "User", "action", "Add", "route", "POST /user", "security", "jwt")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -395,6 +401,21 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 	h = handleSecurity("jwt", h, "api:access")
 	service.Mux.Handle("GET", "/user/list", ctrl.MuxHandler("ShowList", h, nil))
 	service.LogInfo("mount", "ctrl", "User", "action", "ShowList", "route", "GET /user/list", "security", "jwt")
+}
+
+// unmarshalAddUserPayload unmarshals the request body into the context request data Payload field.
+func unmarshalAddUserPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &addUserPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
 }
 
 // unmarshalModifyUserPayload unmarshals the request body into the context request data Payload field.

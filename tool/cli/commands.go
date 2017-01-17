@@ -91,6 +91,8 @@ type (
 
 	// AddUserCommand is the command line data structure for the add action of user
 	AddUserCommand struct {
+		Payload     string
+		ContentType string
 		PrettyPrint bool
 	}
 
@@ -170,7 +172,15 @@ Payload example:
 	sub = &cobra.Command{
 		Use:   `user ["/user"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
+		Long: `
+
+Payload example:
+
+{
+   "name": "Aut illo.",
+   "password": "Dicta aperiam earum culpa eum vero dolores."
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
 	tmp3.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp3.PrettyPrint, "pp", false, "Pretty print response body")
@@ -772,9 +782,16 @@ func (cmd *AddUserCommand) Run(c *client.Client, args []string) error {
 	} else {
 		path = "/user"
 	}
+	var payload client.AddUserPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.AddUser(ctx, path)
+	resp, err := c.AddUser(ctx, path, &payload, cmd.ContentType)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -786,6 +803,8 @@ func (cmd *AddUserCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *AddUserCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
 }
 
 // Run makes the HTTP request corresponding to the ModifyUserCommand command.

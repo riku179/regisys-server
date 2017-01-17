@@ -67,6 +67,8 @@ type UserStorage interface {
 	ListGoaExampleUser(ctx context.Context) []*app.GoaExampleUser
 	OneGoaExampleUser(ctx context.Context, id int) (*app.GoaExampleUser, error)
 
+	UpdateFromAddUserPayload(ctx context.Context, payload *app.AddUserPayload, id int) error
+
 	UpdateFromModifyUserPayload(ctx context.Context, payload *app.ModifyUserPayload, id int) error
 }
 
@@ -147,6 +149,33 @@ func (m *UserDB) Delete(ctx context.Context, id int) error {
 	}
 
 	return nil
+}
+
+// UserFromAddUserPayload Converts source AddUserPayload to target User model
+// only copying the non-nil fields from the source.
+func UserFromAddUserPayload(payload *app.AddUserPayload) *User {
+	user := &User{}
+	user.Name = payload.Name
+	user.Password = payload.Password
+
+	return user
+}
+
+// UpdateFromAddUserPayload applies non-nil changes from AddUserPayload to the model and saves it
+func (m *UserDB) UpdateFromAddUserPayload(ctx context.Context, payload *app.AddUserPayload, id int) error {
+	defer goa.MeasureSince([]string{"goa", "db", "user", "updatefromaddUserPayload"}, time.Now())
+
+	var obj User
+	err := m.Db.Table(m.TableName()).Where("id = ?", id).Find(&obj).Error
+	if err != nil {
+		goa.LogError(ctx, "error retrieving User", "error", err.Error())
+		return err
+	}
+	obj.Name = payload.Name
+	obj.Password = payload.Password
+
+	err = m.Db.Save(&obj).Error
+	return err
 }
 
 // UserFromModifyUserPayload Converts source ModifyUserPayload to target User model

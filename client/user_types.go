@@ -145,6 +145,52 @@ func (ut *AddOrderPayload) Validate() (err error) {
 	return
 }
 
+// addUserPayload user type.
+type addUserPayload struct {
+	Name     *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
+
+// Validate validates the addUserPayload type instance.
+func (ut *addUserPayload) Validate() (err error) {
+	if ut.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if ut.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "password"))
+	}
+	return
+}
+
+// Publicize creates AddUserPayload from addUserPayload
+func (ut *addUserPayload) Publicize() *AddUserPayload {
+	var pub AddUserPayload
+	if ut.Name != nil {
+		pub.Name = *ut.Name
+	}
+	if ut.Password != nil {
+		pub.Password = *ut.Password
+	}
+	return &pub
+}
+
+// AddUserPayload user type.
+type AddUserPayload struct {
+	Name     string `form:"name" json:"name" xml:"name"`
+	Password string `form:"password" json:"password" xml:"password"`
+}
+
+// Validate validates the AddUserPayload type instance.
+func (ut *AddUserPayload) Validate() (err error) {
+	if ut.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if ut.Password == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "password"))
+	}
+	return
+}
+
 // modifyGoodsPayload user type.
 type modifyGoodsPayload struct {
 	// Unique item ID

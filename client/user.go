@@ -26,8 +26,8 @@ func AddUserPath() string {
 }
 
 // Add user for NOT MMA member)
-func (c *Client) AddUser(ctx context.Context, path string) (*http.Response, error) {
-	req, err := c.NewAddUserRequest(ctx, path)
+func (c *Client) AddUser(ctx context.Context, path string, payload *AddUserPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewAddUserRequest(ctx, path, payload, contentType)
 	if err != nil {
 		return nil, err
 	}
@@ -35,18 +35,30 @@ func (c *Client) AddUser(ctx context.Context, path string) (*http.Response, erro
 }
 
 // NewAddUserRequest create the request corresponding to the add action endpoint of the user resource.
-func (c *Client) NewAddUserRequest(ctx context.Context, path string) (*http.Request, error) {
+func (c *Client) NewAddUserRequest(ctx context.Context, path string, payload *AddUserPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
-	req, err := http.NewRequest("POST", u.String(), nil)
+	req, err := http.NewRequest("POST", u.String(), &body)
 	if err != nil {
 		return nil, err
 	}
-	if c.SigninBasicAuthSigner != nil {
-		c.SigninBasicAuthSigner.Sign(req)
+	header := req.Header
+	if contentType != "*/*" {
+		header.Set("Content-Type", contentType)
+	}
+	if c.JWTSigner != nil {
+		c.JWTSigner.Sign(req)
 	}
 	return req, nil
 }
