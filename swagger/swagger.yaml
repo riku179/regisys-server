@@ -4,14 +4,14 @@ consumes:
 - application/gob
 - application/x-gob
 definitions:
-  AddItemPayload:
+  AddGoodsPayload:
     example:
-      item: Nobis tempore eum.
+      item_name: Nobis tempore eum.
       member_price: 2.494102e+16
       price: 1.29947e+18
       quantity: 5.5559257e+17
     properties:
-      item:
+      item_name:
         description: item name
         example: Nobis tempore eum.
         type: string
@@ -31,198 +31,193 @@ definitions:
         format: int64
         type: integer
     required:
-    - item
+    - item_name
     - price
     - member_price
     - quantity
-    title: AddItemPayload
+    title: AddGoodsPayload
     type: object
   AddOrderPayload:
     example:
-      date: 2016-01-18T00:05:35+09:00
-      item_id: 5.152369e+18
-      price: 8.146832e+18
-      quantity: 6.6346896e+17
-      register: Aut illo.
+      item_id: 7.849536e+18
+      price: 5.152369e+18
+      quantity: 8.146832e+18
+      user_id: 6.6346896e+17
     properties:
-      date:
-        description: Order date
-        example: 2016-01-18T00:05:35+09:00
-        format: date-time
-        type: string
       item_id:
         description: Unique item ID
-        example: 5.152369e+18
+        example: 7.849536e+18
         format: int64
         type: integer
       price:
-        description: Item price
-        example: 8.146832e+18
+        description: item price
+        example: 5.152369e+18
         format: int64
         type: integer
       quantity:
-        description: Item quantity
+        description: item quantity
+        example: 8.146832e+18
+        format: int64
+        type: integer
+      user_id:
+        description: Register's user ID
         example: 6.6346896e+17
         format: int64
         type: integer
-      register:
-        description: Register's name
-        example: Aut illo.
-        type: string
     required:
     - item_id
     - quantity
     - price
-    - register
-    - date
+    - user_id
     title: AddOrderPayload
     type: object
   GoaExampleOrders:
     description: An order (default view)
     example:
-      available: true
-      date: 1991-10-11T00:10:20+09:00
-      id: 4.4999475e+17
-      item: Ducimus quasi.
-      item_id: 2.1326141e+18
-      price: 7.137601e+18
-      quantity: 3.1358608e+18
-      register: Quia natus voluptates maiores nemo quia.
+      date: 1973-09-15T18:25:32+09:00
+      id: 8.49052e+18
+      item_id: 4.4999475e+17
+      item_name: Ducimus quasi.
+      price: 2.1326141e+18
+      quantity: 7.137601e+18
+      user_id: 3.1358608e+18
     properties:
-      available:
-        description: Is available order
-        example: true
-        type: boolean
       date:
         description: Order date
-        example: 1991-10-11T00:10:20+09:00
+        example: 1973-09-15T18:25:32+09:00
         format: date-time
         type: string
       id:
         description: Unique order ID
+        example: 8.49052e+18
+        format: int64
+        type: integer
+      item_id:
+        description: Unique item ID
         example: 4.4999475e+17
         format: int64
         type: integer
-      item:
-        description: Item name
+      item_name:
+        description: item name
         example: Ducimus quasi.
         type: string
-      item_id:
-        description: Unique item ID
+      price:
+        description: item price
         example: 2.1326141e+18
         format: int64
         type: integer
-      price:
-        description: Item price
+      quantity:
+        description: item quantity
         example: 7.137601e+18
         format: int64
         type: integer
-      quantity:
-        description: Item quantity
+      user_id:
+        description: Register's user ID
         example: 3.1358608e+18
         format: int64
         type: integer
-      register:
-        description: Register's name
-        example: Quia natus voluptates maiores nemo quia.
-        type: string
     required:
     - id
     - item_id
-    - item
+    - item_name
     - quantity
     - price
-    - register
+    - user_id
     - date
-    - available
     title: 'Mediatype identifier: application/vnd.goa.example.orders+json; view=default'
     type: object
   GoaExampleOrdersCollection:
     description: GoaExampleOrdersCollection is the media type for an array of GoaExampleOrders
       (default view)
     example:
-    - available: true
-      date: 1991-10-11T00:10:20+09:00
-      id: 4.4999475e+17
-      item: Ducimus quasi.
-      item_id: 2.1326141e+18
-      price: 7.137601e+18
-      quantity: 3.1358608e+18
-      register: Quia natus voluptates maiores nemo quia.
+    - date: 1973-09-15T18:25:32+09:00
+      id: 8.49052e+18
+      item_id: 4.4999475e+17
+      item_name: Ducimus quasi.
+      price: 2.1326141e+18
+      quantity: 7.137601e+18
+      user_id: 3.1358608e+18
+    - date: 1973-09-15T18:25:32+09:00
+      id: 8.49052e+18
+      item_id: 4.4999475e+17
+      item_name: Ducimus quasi.
+      price: 2.1326141e+18
+      quantity: 7.137601e+18
+      user_id: 3.1358608e+18
     items:
       $ref: '#/definitions/GoaExampleOrders'
     title: 'Mediatype identifier: application/vnd.goa.example.orders+json; type=collection;
       view=default'
     type: array
-  GoaExampleRegisysGoods:
-    description: An Item (default view)
+  GoaExampleRegisysItems:
+    description: An item (default view)
     example:
-      id: 2.9891975e+18
-      item: Quia consequuntur.
-      member_price: 5.148723e+18
-      price: 8.0569887e+18
-      quantity: 8.9942954e+18
-      user_id: 5.9552595e+18
-      user_name: Dolorem consequatur optio delectus.
+      id: 1.1690981e+18
+      item_name: Voluptates maiores nemo quia molestias reprehenderit.
+      member_price: 1.4690026e+18
+      price: 1.6009976e+18
+      quantity: 4.1943023e+18
+      user_id: 5.148723e+18
+      user_name: Ab officiis omnis dolorem consequatur optio delectus.
     properties:
       id:
         description: Unique item ID
-        example: 2.9891975e+18
+        example: 1.1690981e+18
         format: int64
         type: integer
-      item:
+      item_name:
         description: item name
-        example: Quia consequuntur.
+        example: Voluptates maiores nemo quia molestias reprehenderit.
         type: string
       member_price:
         description: Membership discount
-        example: 5.148723e+18
+        example: 1.4690026e+18
         format: int64
         type: integer
       price:
         description: item price
-        example: 8.0569887e+18
+        example: 1.6009976e+18
         format: int64
         type: integer
       quantity:
         description: item quantity
-        example: 8.9942954e+18
+        example: 4.1943023e+18
         format: int64
         type: integer
       user_id:
         description: Unique User ID
-        example: 5.9552595e+18
+        example: 5.148723e+18
         format: int64
         type: integer
       user_name:
         description: Username
-        example: Dolorem consequatur optio delectus.
+        example: Ab officiis omnis dolorem consequatur optio delectus.
         type: string
     required:
     - id
-    - item
+    - item_name
     - price
     - member_price
     - user_id
     - user_name
     - quantity
-    title: 'Mediatype identifier: application/vnd.goa.example.regisys.goods+json;
+    title: 'Mediatype identifier: application/vnd.goa.example.regisys.items+json;
       view=default'
     type: object
-  GoaExampleRegisysGoodsCollection:
-    description: GoaExampleRegisysGoodsCollection is the media type for an array of
-      GoaExampleRegisysGoods (default view)
+  GoaExampleRegisysItemsCollection:
+    description: GoaExampleRegisysItemsCollection is the media type for an array of
+      GoaExampleRegisysItems (default view)
     example:
-    - id: 2.9891975e+18
-      item: Quia consequuntur.
-      member_price: 5.148723e+18
-      price: 8.0569887e+18
-      quantity: 8.9942954e+18
-      user_id: 5.9552595e+18
-      user_name: Dolorem consequatur optio delectus.
+    - id: 1.1690981e+18
+      item_name: Voluptates maiores nemo quia molestias reprehenderit.
+      member_price: 1.4690026e+18
+      price: 1.6009976e+18
+      quantity: 4.1943023e+18
+      user_id: 5.148723e+18
+      user_name: Ab officiis omnis dolorem consequatur optio delectus.
     items:
-      $ref: '#/definitions/GoaExampleRegisysGoods'
-    title: 'Mediatype identifier: application/vnd.goa.example.regisys.goods+json;
+      $ref: '#/definitions/GoaExampleRegisysItems'
+    title: 'Mediatype identifier: application/vnd.goa.example.regisys.items+json;
       type=collection; view=default'
     type: array
   GoaExampleToken:
@@ -283,10 +278,10 @@ definitions:
     title: 'Mediatype identifier: application/vnd.goa.example.user+json; type=collection;
       view=default'
     type: array
-  ModifyItemPayload:
+  ModifyGoodsPayload:
     example:
       id: 8.2702076e+18
-      item: Optio molestiae magni quae ut tenetur.
+      item_name: Optio molestiae magni quae ut tenetur.
       member_price: 5.203682e+18
       price: 5.2072132e+17
       quantity: 6.3114837e+18
@@ -296,7 +291,7 @@ definitions:
         example: 8.2702076e+18
         format: int64
         type: integer
-      item:
+      item_name:
         description: item name
         example: Optio molestiae magni quae ut tenetur.
         type: string
@@ -317,21 +312,36 @@ definitions:
         type: integer
     required:
     - id
-    title: ModifyItemPayload
+    title: ModifyGoodsPayload
+    type: object
+  ModifyUserPayload:
+    example:
+      group: register
+    properties:
+      group:
+        enum:
+        - admin
+        - register
+        - nomal
+        example: register
+        type: string
+    required:
+    - group
+    title: ModifyUserPayload
     type: object
 host: localhost:8080
 info:
   title: Register System for Junk-Ichi in MMA
   version: ""
 paths:
-  /goods:
+  /item:
     get:
       description: |-
         Get items
 
         Required security scopes:
           * `api:access`
-      operationId: goods#show
+      operationId: items#show
       parameters:
       - description: User ID
         in: query
@@ -342,7 +352,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/GoaExampleRegisysGoodsCollection'
+            $ref: '#/definitions/GoaExampleRegisysItemsCollection'
         "404":
           description: Not Found
       schemes:
@@ -350,22 +360,22 @@ paths:
       security:
       - jwt:
         - api:access
-      summary: show goods
+      summary: show items
       tags:
-      - goods
+      - items
     post:
       description: |-
-        Add items
+        Add item
 
         Required security scopes:
           * `api:access`
-      operationId: goods#add
+      operationId: items#add
       parameters:
       - in: body
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/AddItemPayload'
+          $ref: '#/definitions/AddGoodsPayload'
       responses:
         "204":
           description: No Content
@@ -374,17 +384,17 @@ paths:
       security:
       - jwt:
         - api:access
-      summary: add goods
+      summary: add items
       tags:
-      - goods
-  /goods/{id}:
+      - items
+  /item/{id}:
     delete:
       description: |-
         Delete item
 
         Required security scopes:
           * `api:access`
-      operationId: goods#delete
+      operationId: items#delete
       parameters:
       - description: Unique item ID
         in: path
@@ -403,16 +413,16 @@ paths:
       security:
       - jwt:
         - api:access
-      summary: delete goods
+      summary: delete items
       tags:
-      - goods
+      - items
     put:
       description: |-
         Modify item
 
         Required security scopes:
           * `api:access`
-      operationId: goods#modify
+      operationId: items#modify
       parameters:
       - description: Unique item ID
         in: path
@@ -423,7 +433,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/ModifyItemPayload'
+          $ref: '#/definitions/ModifyGoodsPayload'
       responses:
         "204":
           description: No Content
@@ -434,9 +444,9 @@ paths:
       security:
       - jwt:
         - api:access
-      summary: modify goods
+      summary: modify items
       tags:
-      - goods
+      - items
   /orders:
     get:
       description: |-
@@ -607,19 +617,15 @@ paths:
           * `api:access`
       operationId: user#modify
       parameters:
-      - description: Group of user
-        enum:
-        - admin
-        - register
-        - none
-        in: query
-        name: group
-        required: false
-        type: string
       - in: path
         name: id
         required: true
         type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ModifyUserPayload'
       responses:
         "204":
           description: No Content

@@ -7,7 +7,10 @@ import (
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
 	"github.com/riku179/regisys/app"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"os"
+	"github.com/riku179/regisys/models"
 )
 
 var (
@@ -18,6 +21,23 @@ var (
 func main() {
 	// Create service
 	service := goa.New("regisys")
+
+	// Connect DB
+	db, err := gorm.Open("mysql", "admin:foobar@tcp(db:3306)/regisys?charset=utf8")
+	if err != nil {
+		exitOnFailure(err)
+	}
+	defer db.Close()
+	ItemDB := models.NewItemsDB(db)
+	UserDB := models.NewUserDB(db)
+	OrderDB := models.NewOrdersDB(db)
+
+	//// ################ Only for Develop Environment ##################
+	db.DropTableIfExists(ItemDB.TableName(), UserDB.TableName(), OrderDB.TableName())
+	//// ################################################################
+
+	//db.AutoMigrate(&models.Goods{}, &models.User{}, &models.Orders{})
+	db.CreateTable(&models.Items{}, &models.User{}, &models.Orders{})
 
 	// Mount middleware
 	service.Use(middleware.RequestID())
@@ -33,8 +53,8 @@ func main() {
 	app.UseSigninBasicAuthMiddleware(service, NewBasicAuthMiddleware())
 
 	// Mount "goods" controller
-	c := NewGoodsController(service)
-	app.MountGoodsController(service, c)
+	c := NewItemsController(service)
+	app.MountItemsController(service, c)
 	// Mount "jwt" controller
 	c2, err := NewJWTController(service)
 	exitOnFailure(err)

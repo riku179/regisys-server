@@ -24,11 +24,7 @@ var _ = Resource("user", func() {
 	Action("modify", func() {
 		Description("Modify group of user")
 		Routing(PUT("/:id"))
-		Params(func() {
-			Param("group", String, "Group of user", func() {
-				Enum("admin", "register", "none")
-			})
-		})
+		Payload(ModifyUserPayload)
 
 		Response(NoContent)
 		Response(NotFound)
@@ -71,4 +67,11 @@ var ShowUserMedia = MediaType("application/vnd.goa.example.user+json", func() {
 		Attribute("name")
 		Attribute("group")
 	})
+})
+
+var ModifyUserPayload = Type("ModifyUserPayload", func() {
+	Member("group", String, func() {
+		Enum("admin", "register", "nomal")
+	})
+	Required("group")
 })
