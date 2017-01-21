@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/goadesign/goa"
 	"github.com/riku179/regisys/app"
+	"log"
 )
 
 // UserController implements the user resource.
@@ -40,6 +41,7 @@ func (c *UserController) Show(ctx *app.ShowUserContext) error {
 	// UserController_Show: start_implement
 
 	// Put your logic here
+	log.Println("user_id:", ctx.Value(ID))
 
 	// UserController_Show: end_implement
 	res := &app.GoaExampleUser{}

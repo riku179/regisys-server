@@ -6,16 +6,17 @@ import (
 	"fmt"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
-	"github.com/riku179/regisys/app"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"os"
+	"github.com/riku179/regisys/app"
 	"github.com/riku179/regisys/models"
+	"os"
 )
 
 var (
 	// ErrUnauthorized is the error returned for unauthorized requests.
-	ErrUnauthorized = goa.NewErrorClass("unauthorized", 401)
+	ErrUnauthorized     = goa.NewErrorClass("unauthorized", 401)
+	errValidationFailed = goa.NewErrorClass("validation_failed", 401)
 )
 
 func main() {
@@ -56,7 +57,7 @@ func main() {
 	c := NewItemsController(service)
 	app.MountItemsController(service, c)
 	// Mount "jwt" controller
-	c2, err := NewJWTController(service)
+	c2, err := NewJWTController(service, UserDB)
 	exitOnFailure(err)
 	app.MountJWTController(service, c2)
 	// Mount "orders" controller
