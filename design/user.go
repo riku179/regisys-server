@@ -14,8 +14,8 @@ var _ = Resource("user", func() {
 
 	Action("add", func() {
 		Description("Add user for NOT MMA member)")
-		Security(SigninBasicAuth) // username,pwを受け付けるため。JWTと共存できないならダメ
 		Routing(POST(""))
+		Payload(AddUserPayload)
 
 		Response(NoContent)
 		Response(Forbidden)
@@ -25,11 +25,9 @@ var _ = Resource("user", func() {
 		Description("Modify group of user")
 		Routing(PUT("/:id"))
 		Params(func() {
-			Param("group", String, "Group of user", func() {
-				Enum("admin", "register", "none")
-			})
+			Param("id", Integer, "Unique user ID")
 		})
-
+		Payload(ModifyUserPayload)
 		Response(NoContent)
 		Response(NotFound)
 		Response(Forbidden)
@@ -64,11 +62,26 @@ var ShowUserMedia = MediaType("application/vnd.goa.example.user+json", func() {
 		Attribute("id", Integer, "Unique user ID")
 		Attribute("name", String, "Username")
 		Attribute("group", String, "Group of user")
-		Required("id", "name", "group")
+		Attribute("is_member", Boolean, "Is member of MMA")
+		Required("id", "name", "group", "is_member")
 	})
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")
 		Attribute("group")
+		Attribute("is_member")
 	})
+})
+
+var AddUserPayload = Type("AddUserPayload", func() {
+	Member("name", String)
+	Member("password", String)
+	Required("name", "password")
+})
+
+var ModifyUserPayload = Type("ModifyUserPayload", func() {
+	Member("group", String, func() {
+		Enum("admin", "register", "normal")
+	})
+	Required("group")
 })

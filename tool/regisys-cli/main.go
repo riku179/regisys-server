@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	goaclient "github.com/goadesign/goa/client"
+	"github.com/riku179/regisys/client"
+	"github.com/riku179/regisys/tool/cli"
 	"github.com/spf13/cobra"
 	"net/http"
 	"os"
-	"regisys/client"
-	"regisys/tool/cli"
 	"time"
 )
 

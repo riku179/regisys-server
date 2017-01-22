@@ -5,9 +5,9 @@ import (
 	. "github.com/goadesign/goa/design/apidsl"
 )
 
-var _ = Resource("goods", func() {
+var _ = Resource("items", func() {
 	Description("Provide items")
-	BasePath("/goods")
+	BasePath("/item")
 
 	Security(JWT, func() {
 		Scope("api:access")
@@ -27,7 +27,7 @@ var _ = Resource("goods", func() {
 	})
 
 	Action("add", func() {
-		Description("Add items")
+		Description("Add item")
 		Routing(POST(""))
 
 		Payload(AddItemPayload)
@@ -60,23 +60,23 @@ var _ = Resource("goods", func() {
 	})
 })
 
-var ItemMedia = MediaType("application/vnd.goa.example.regisys.goods+json", func() {
-	Description("An Item")
+var ItemMedia = MediaType("application/vnd.goa.example.regisys.items+json", func() {
+	Description("An item")
 
 	Attributes(func() {
 		Attribute("id", Integer, "Unique item ID")
-		Attribute("item", String, "item name")
+		Attribute("item_name", String, "item name")
 		Attribute("price", Integer, "item price")
 		Attribute("member_price", Integer, "Membership discount")
 		Attribute("user_id", Integer, "Unique User ID")
 		Attribute("user_name", String, "Username")
 		Attribute("quantity", Integer, "item quantity")
-		Required("id", "item", "price", "member_price", "user_id", "user_name", "quantity")
+		Required("id", "item_name", "price", "member_price", "user_id", "user_name", "quantity")
 	})
 
 	View("default", func() {
 		Attribute("id")
-		Attribute("item")
+		Attribute("item_name")
 		Attribute("price")
 		Attribute("member_price")
 		Attribute("user_id")
@@ -85,17 +85,17 @@ var ItemMedia = MediaType("application/vnd.goa.example.regisys.goods+json", func
 	})
 })
 
-var AddItemPayload = Type("AddItemPayload", func() {
-	Member("item", String, "item name")
+var AddItemPayload = Type("AddGoodsPayload", func() {
+	Member("item_name", String, "item name")
 	Member("price", Integer, "item price")
 	Member("member_price", Integer, "Membership discount")
 	Member("quantity", Integer, "item quantity")
-	Required("item", "price", "member_price", "quantity")
+	Required("item_name", "price", "member_price", "quantity")
 })
 
-var ModifyItemPayload = Type("ModifyItemPayload", func() {
+var ModifyItemPayload = Type("ModifyGoodsPayload", func() {
 	Member("id", Integer, "Unique item ID")
-	Member("item", String, "item name")
+	Member("item_name", String, "item name")
 	Member("price", Integer, "item price")
 	Member("member_price", Integer, "Membership discount")
 	Member("quantity", Integer, "item quantity")
