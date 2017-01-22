@@ -10,17 +10,13 @@ import (
 	"github.com/riku179/regisys/app"
 	"github.com/riku179/regisys/ldap_auth"
 	"github.com/riku179/regisys/models"
+	"github.com/riku179/regisys/user"
+	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/net/context"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"time"
-)
-
-const (
-	USERNAME = "username"
-	PASSWORD = "password"
-	ID       = "id"
 )
 
 // NewJWTMiddleware creates a middleware that checks for the presence of a JWT Authorization header
@@ -37,7 +33,7 @@ func NewJWTMiddleware() (goa.Middleware, error) {
 type JWTController struct {
 	*goa.Controller
 	privateKey *rsa.PrivateKey
-	UserDB     *models.UserDB
+	DB         *models.UserDB
 }
 
 // NewJWTController creates a jwt controller.
@@ -54,25 +50,13 @@ func NewJWTController(service *goa.Service, UserDB *models.UserDB) (*JWTControll
 	return &JWTController{
 		Controller: service.NewController("JWTController"),
 		privateKey: privKey,
-		UserDB:     UserDB,
+		DB:         UserDB,
 	}, nil
 }
 
 func NewBasicAuthMiddleware() goa.Middleware {
 	return func(h goa.Handler) goa.Handler {
 		return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
-			// Retrieve and log basic auth info
-			user, pass, ok := req.BasicAuth()
-			if !ok {
-				goa.LogInfo(ctx, "failed basic auth")
-				return ErrUnauthorized("missing auth")
-			}
-
-			ctx = context.WithValue(ctx, USERNAME, user)
-			ctx = context.WithValue(ctx, PASSWORD, pass)
-
-			// Proceed
-			goa.LogInfo(ctx, "basic", "user", user, "pass", pass)
 			return h(ctx, rw, req)
 		}
 	}
@@ -81,7 +65,13 @@ func NewBasicAuthMiddleware() goa.Middleware {
 // Signin runs the signin action.
 func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	// JWTController_Signin: start_implement
-	username := ctx.Value(USERNAME).(string)
+	username, password, ok := ctx.BasicAuth()
+	if !ok {
+		goa.LogInfo(ctx, "failed basic auth")
+		return ErrUnauthorized("missing auth")
+	}
+
+	// User data(id,name,group) is bound to this User instance
 	var user models.User
 
 	if ctx.IsMember {
@@ -89,15 +79,20 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 		if ldap_auth.LdapAuth() != nil {
 			return ErrUnauthorized("Unknown user")
 		}
-		err := c.UserDB.Db.Where("name = ?", username).First(&user).Error
+		err := c.DB.Db.Where("name = ?", username).First(&user).Error
 		if err == gorm.ErrRecordNotFound {
-			user = models.User{Group: "none", IsMember: true, Name: username}
-			c.UserDB.Add(ctx, &user)
+			user = models.User{IsMember: true, Name: username}
+			c.DB.Add(ctx, &user)
 		}
 	} else {
-		err := c.UserDB.Db.Where("name = ?", username).First(&user).Error
+		// Authenticate with username and password
+		err := c.DB.Db.Where("name = ?", username).First(&user).Error
 		if err == gorm.ErrRecordNotFound {
 			return ErrUnauthorized("Unknown user")
+		}
+		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		if err != nil {
+			return ErrUnauthorized("Wrong password")
 		}
 	}
 
@@ -105,12 +100,16 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	token := jwtgo.New(jwtgo.SigningMethodRS512)
 	in60m := time.Now().Add(time.Duration(60) * time.Minute).Unix()
 	token.Claims = jwtgo.MapClaims{
-		"exp":    in60m,             // time when the token will expire (60 minutes from now)
-		"iat":    time.Now().Unix(), // when the token was issued/created (now)
-		"nbf":    2,                 // time before which the token is not yet valid (2 minutes ago)
-		"sub":    user.ID,           // the subject/principal is whom the token is about
-		"scopes": "api:access",      // token scope - not a standard claim
+		"exp":       in60m,             // time when the token will expire (60 minutes from now)
+		"iat":       time.Now().Unix(), // when the token was issued/created (now)
+		"nbf":       2,                 // time before which the token is not yet valid (2 minutes ago)
+		"sub":       user.ID,           // the subject/principal is whom the token is about
+		"scopes":    "api:access",      // token scope - not a standard claim
+		"group":     user.Group,        // group of user - not a standard claim
+		"user_name": user.Name,         // username - not a standard claim
+		"is_member": user.IsMember,     // is member of MMA - not a standard claim
 	}
+	// Sign token by private key
 	signedToken, err := token.SignedString(c.privateKey)
 	if err != nil {
 		return fmt.Errorf("failed to sign token: %s", err) // internal error
@@ -123,6 +122,8 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	res := &app.GoaExampleToken{
 		ID:       user.ID,
 		Username: user.Name,
+		Group:    user.Group,
+		IsMember: user.IsMember,
 	}
 	return ctx.OK(res)
 }
@@ -164,7 +165,12 @@ func checkUser() goa.Middleware {
 			if subject == nil {
 				return errValidationFailed("Failed to Validate")
 			}
-			ctx = context.WithValue(ctx, ID, subject)
+			ctx = user.NewContext(ctx, &models.User{
+				ID:       int(subject.(float64)),
+				Name:     claims["user_name"].(string),
+				Group:    claims["group"].(string),
+				IsMember: claims["is_member"].(bool),
+			})
 			return h(ctx, rw, req)
 		}
 	}

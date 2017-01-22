@@ -19,12 +19,18 @@ var (
 	errValidationFailed = goa.NewErrorClass("validation_failed", 401)
 )
 
+const (
+	Admin    = "admin"
+	Register = "register"
+	Normal   = "normal"
+)
+
 func main() {
 	// Create service
 	service := goa.New("regisys")
 
 	// Connect DB
-	db, err := gorm.Open("mysql", "admin:foobar@tcp(db:3306)/regisys?charset=utf8")
+	db, err := gorm.Open("mysql", "admin:foobar@tcp(db:3306)/regisys?parseTime=true&charset=utf8")
 	if err != nil {
 		exitOnFailure(err)
 	}
@@ -54,20 +60,20 @@ func main() {
 	app.UseSigninBasicAuthMiddleware(service, NewBasicAuthMiddleware())
 
 	// Mount "goods" controller
-	c := NewItemsController(service)
+	c := NewItemsController(service, ItemDB)
 	app.MountItemsController(service, c)
 	// Mount "jwt" controller
 	c2, err := NewJWTController(service, UserDB)
 	exitOnFailure(err)
 	app.MountJWTController(service, c2)
 	// Mount "orders" controller
-	c3 := NewOrdersController(service)
+	c3 := NewOrdersController(service, OrderDB)
 	app.MountOrdersController(service, c3)
 	// Mount "swagger" controller
 	c4 := NewSwaggerController(service)
 	app.MountSwaggerController(service, c4)
 	// Mount "user" controller
-	c5 := NewUserController(service)
+	c5 := NewUserController(service, UserDB)
 	app.MountUserController(service, c5)
 
 	// Start service

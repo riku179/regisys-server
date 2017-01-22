@@ -146,16 +146,24 @@ func (c *Client) DecodeGoaExampleRegisysItemsCollection(resp *http.Response) (Go
 //
 // Identifier: application/vnd.goa.example.token+json; view=default
 type GoaExampleToken struct {
+	// Group of user
+	Group string `form:"group" json:"group" xml:"group"`
 	// Unique user ID
 	ID int `form:"id" json:"id" xml:"id"`
+	// Is member of MMA
+	IsMember bool `form:"is_member" json:"is_member" xml:"is_member"`
 	// Username
 	Username string `form:"username" json:"username" xml:"username"`
 }
 
 // Validate validates the GoaExampleToken media type instance.
 func (mt *GoaExampleToken) Validate() (err error) {
+
 	if mt.Username == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "username"))
+	}
+	if mt.Group == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "group"))
 	}
 
 	return
@@ -176,6 +184,8 @@ type GoaExampleUser struct {
 	Group string `form:"group" json:"group" xml:"group"`
 	// Unique user ID
 	ID int `form:"id" json:"id" xml:"id"`
+	// Is member of MMA
+	IsMember bool `form:"is_member" json:"is_member" xml:"is_member"`
 	// Username
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -189,6 +199,7 @@ func (mt *GoaExampleUser) Validate() (err error) {
 	if mt.Group == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "group"))
 	}
+
 	return
 }
 

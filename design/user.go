@@ -24,6 +24,9 @@ var _ = Resource("user", func() {
 	Action("modify", func() {
 		Description("Modify group of user")
 		Routing(PUT("/:id"))
+		Params(func() {
+			Param("id", Integer, "Unique user ID")
+		})
 		Payload(ModifyUserPayload)
 		Response(NoContent)
 		Response(NotFound)
@@ -59,12 +62,14 @@ var ShowUserMedia = MediaType("application/vnd.goa.example.user+json", func() {
 		Attribute("id", Integer, "Unique user ID")
 		Attribute("name", String, "Username")
 		Attribute("group", String, "Group of user")
-		Required("id", "name", "group")
+		Attribute("is_member", Boolean, "Is member of MMA")
+		Required("id", "name", "group", "is_member")
 	})
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")
 		Attribute("group")
+		Attribute("is_member")
 	})
 })
 
@@ -76,7 +81,7 @@ var AddUserPayload = Type("AddUserPayload", func() {
 
 var ModifyUserPayload = Type("ModifyUserPayload", func() {
 	Member("group", String, func() {
-		Enum("admin", "register", "nomal")
+		Enum("admin", "register", "normal")
 	})
 	Required("group")
 })

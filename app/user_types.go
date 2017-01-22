@@ -259,8 +259,8 @@ func (ut *modifyUserPayload) Validate() (err error) {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "group"))
 	}
 	if ut.Group != nil {
-		if !(*ut.Group == "admin" || *ut.Group == "register" || *ut.Group == "nomal") {
-			err = goa.MergeErrors(err, goa.InvalidEnumValueError(`response.group`, *ut.Group, []interface{}{"admin", "register", "nomal"}))
+		if !(*ut.Group == "admin" || *ut.Group == "register" || *ut.Group == "normal") {
+			err = goa.MergeErrors(err, goa.InvalidEnumValueError(`response.group`, *ut.Group, []interface{}{"admin", "register", "normal"}))
 		}
 	}
 	return
@@ -285,8 +285,8 @@ func (ut *ModifyUserPayload) Validate() (err error) {
 	if ut.Group == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "group"))
 	}
-	if !(ut.Group == "admin" || ut.Group == "register" || ut.Group == "nomal") {
-		err = goa.MergeErrors(err, goa.InvalidEnumValueError(`response.group`, ut.Group, []interface{}{"admin", "register", "nomal"}))
+	if !(ut.Group == "admin" || ut.Group == "register" || ut.Group == "normal") {
+		err = goa.MergeErrors(err, goa.InvalidEnumValueError(`response.group`, ut.Group, []interface{}{"admin", "register", "normal"}))
 	}
 	return
 }

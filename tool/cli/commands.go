@@ -20,7 +20,6 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 	"log"
-	"net/url"
 	"os"
 	"path"
 	"strconv"
@@ -100,7 +99,8 @@ type (
 	ModifyUserCommand struct {
 		Payload     string
 		ContentType string
-		ID          string
+		// Unique user ID
+		ID          int
 		PrettyPrint bool
 	}
 
@@ -139,10 +139,10 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "item_name": "Nobis tempore eum.",
-   "member_price": 24941019248932122,
-   "price": 1299470091090727982,
-   "quantity": 555592556527412862
+   "item_name": "Molestiae magni quae ut tenetur nihil eos.",
+   "member_price": 6311483591368200811,
+   "price": 7849536275300465135,
+   "quantity": 5152369185030202978
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
 	}
@@ -158,10 +158,10 @@ Payload example:
 Payload example:
 
 {
-   "item_id": 7849536275300465135,
-   "price": 5152369185030202978,
-   "quantity": 8146831818233394072,
-   "user_id": 663468924056338539
+   "item_id": 413254433334546445,
+   "price": 692620301302807586,
+   "quantity": 5899157054105302438,
+   "user_id": 1105437504714296401
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -177,8 +177,8 @@ Payload example:
 Payload example:
 
 {
-   "name": "Aut illo.",
-   "password": "Dicta aperiam earum culpa eum vero dolores."
+   "name": "Illo vero voluptatum quidem.",
+   "password": "Neque id omnis eveniet ut sed aliquam."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -222,11 +222,11 @@ Payload example:
 Payload example:
 
 {
-   "id": 8270207379164010786,
-   "item_name": "Optio molestiae magni quae ut tenetur.",
-   "member_price": 5203681815946760459,
-   "price": 520721309930849131,
-   "quantity": 6311483591368200811
+   "id": 8146831818233394072,
+   "item_name": "Voluptas aut illo animi dicta aperiam.",
+   "member_price": 655884208255480511,
+   "price": 5693119682379006692,
+   "quantity": 1762076070320727430
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
@@ -242,7 +242,7 @@ Payload example:
 Payload example:
 
 {
-   "group": "register"
+   "group": "normal"
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
@@ -662,6 +662,10 @@ func (cmd *SigninJWTCommand) Run(c *client.Client, args []string) error {
 			return err
 		}
 	}
+	if tmp13 == nil {
+		goa.LogError(ctx, "required flag is missing", "flag", "--is_member")
+		return fmt.Errorf("required flag is_member is missing")
+	}
 	resp, err := c.SigninJWT(ctx, path, *tmp13)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
@@ -813,7 +817,7 @@ func (cmd *ModifyUserCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/user/%v", url.QueryEscape(cmd.ID))
+		path = fmt.Sprintf("/user/%v", cmd.ID)
 	}
 	var payload client.ModifyUserPayload
 	if cmd.Payload != "" {
@@ -838,8 +842,8 @@ func (cmd *ModifyUserCommand) Run(c *client.Client, args []string) error {
 func (cmd *ModifyUserCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
 	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
-	var id string
-	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `Unique user ID`)
 }
 
 // Run makes the HTTP request corresponding to the ShowUserCommand command.

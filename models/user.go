@@ -21,7 +21,7 @@ import (
 // User Relational Model
 type User struct {
 	ID               int     `gorm:"primary_key"` // Unique user ID
-	Group            string  `sql:"not null;default:false"`
+	Group            string  `sql:"not null;default:'normal'"`
 	IsMember         bool    `sql:"not null;default:false"`
 	Items            []Items // has many Items
 	Name             string  `sql:"not null;default:false"`

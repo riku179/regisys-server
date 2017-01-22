@@ -34,12 +34,16 @@ var _ = Resource("jwt", func() {
 var SignInMedia = MediaType("application/vnd.goa.example.token+json", func() {
 	Description("Username and ID")
 	Attributes(func() {
-		Attribute("username", String, "Username")
 		Attribute("id", Integer, "Unique user ID")
-		Required("username", "id")
+		Attribute("username", String, "Username")
+		Attribute("group", String, "Group of user")
+		Attribute("is_member", Boolean, "Is member of MMA")
+		Required("id", "username", "group", "is_member")
 	})
 	View("default", func() {
-		Attribute("username")
 		Attribute("id")
+		Attribute("username")
+		Attribute("group")
+		Attribute("is_member")
 	})
 })

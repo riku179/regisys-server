@@ -64,8 +64,8 @@ func (c *Client) NewAddUserRequest(ctx context.Context, path string, payload *Ad
 }
 
 // ModifyUserPath computes a request path to the modify action of user.
-func ModifyUserPath(id string) string {
-	param0 := id
+func ModifyUserPath(id int) string {
+	param0 := strconv.Itoa(id)
 
 	return fmt.Sprintf("/user/%s", param0)
 }

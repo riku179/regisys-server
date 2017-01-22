@@ -379,7 +379,7 @@ type ModifyUserContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID      string
+	ID      int
 	Payload *ModifyUserPayload
 }
 
@@ -394,7 +394,11 @@ func NewModifyUserContext(ctx context.Context, service *goa.Service) (*ModifyUse
 	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
-		rctx.ID = rawID
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
 	}
 	return &rctx, err
 }

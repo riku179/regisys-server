@@ -82,7 +82,7 @@ func AddUserForbidden(t goatest.TInterface, ctx context.Context, service *goa.Se
 
 	// Validate response
 	if err != nil {
-		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
 	}
 	if rw.Code != 403 {
 		t.Errorf("invalid response status code: got %+v, expected 403", rw.Code)
@@ -150,7 +150,7 @@ func AddUserNoContent(t goatest.TInterface, ctx context.Context, service *goa.Se
 
 	// Validate response
 	if err != nil {
-		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
 	}
 	if rw.Code != 204 {
 		t.Errorf("invalid response status code: got %+v, expected 204", rw.Code)
@@ -164,7 +164,7 @@ func AddUserNoContent(t goatest.TInterface, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ModifyUserForbidden(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.ModifyUserPayload) http.ResponseWriter {
+func ModifyUserForbidden(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, id int, payload *app.ModifyUserPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -219,7 +219,7 @@ func ModifyUserForbidden(t goatest.TInterface, ctx context.Context, service *goa
 
 	// Validate response
 	if err != nil {
-		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
 	}
 	if rw.Code != 403 {
 		t.Errorf("invalid response status code: got %+v, expected 403", rw.Code)
@@ -233,7 +233,7 @@ func ModifyUserForbidden(t goatest.TInterface, ctx context.Context, service *goa
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ModifyUserNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.ModifyUserPayload) http.ResponseWriter {
+func ModifyUserNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, id int, payload *app.ModifyUserPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -288,7 +288,7 @@ func ModifyUserNoContent(t goatest.TInterface, ctx context.Context, service *goa
 
 	// Validate response
 	if err != nil {
-		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
 	}
 	if rw.Code != 204 {
 		t.Errorf("invalid response status code: got %+v, expected 204", rw.Code)
@@ -302,7 +302,7 @@ func ModifyUserNoContent(t goatest.TInterface, ctx context.Context, service *goa
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ModifyUserNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.ModifyUserPayload) http.ResponseWriter {
+func ModifyUserNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, id int, payload *app.ModifyUserPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -357,7 +357,7 @@ func ModifyUserNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 
 	// Validate response
 	if err != nil {
-		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
 	}
 	if rw.Code != 404 {
 		t.Errorf("invalid response status code: got %+v, expected 404", rw.Code)
@@ -414,7 +414,7 @@ func ShowUserNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 
 	// Validate response
 	if err != nil {
-		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
 	}
 	if rw.Code != 404 {
 		t.Errorf("invalid response status code: got %+v, expected 404", rw.Code)
@@ -471,7 +471,7 @@ func ShowUserOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 
 	// Validate response
 	if err != nil {
-		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
 	}
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
@@ -539,7 +539,7 @@ func ShowListUserOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 
 	// Validate response
 	if err != nil {
-		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
 	}
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)

@@ -45,6 +45,7 @@ func (m *User) UserToGoaExampleUser() *app.GoaExampleUser {
 	user := &app.GoaExampleUser{}
 	user.Group = m.Group
 	user.ID = m.ID
+	user.IsMember = m.IsMember
 	user.Name = m.Name
 
 	return user
