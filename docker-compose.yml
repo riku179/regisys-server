@@ -13,6 +13,10 @@ services:
         command: 'go run *.go'
         environment:
             - HOST_ADDR=0.0.0.0:8080
+            - MYSQL_DATABASE=regisys
+            - MYSQL_USER=admin
+            - MYSQL_PASSWORD=foobar
+            - DEBUG=TRUE
         links:
             - db
         depends_on:

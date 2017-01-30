@@ -20,6 +20,10 @@ var _ = Resource("jwt", func() {
 			Param("is_member", Boolean, "Is member of MMA")
 			Required("is_member")
 		})
+		Headers(func() {
+			Header("Authentication", String, "JWT Token")
+			Required("Authentication")
+		})
 
 		Response(OK, func() {
 			Headers(func() {

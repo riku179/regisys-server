@@ -33,11 +33,10 @@ func NewJWTMiddleware() (goa.Middleware, error) {
 type JWTController struct {
 	*goa.Controller
 	privateKey *rsa.PrivateKey
-	DB         *models.UserDB
 }
 
 // NewJWTController creates a jwt controller.
-func NewJWTController(service *goa.Service, UserDB *models.UserDB) (*JWTController, error) {
+func NewJWTController(service *goa.Service) (*JWTController, error) {
 	b, err := ioutil.ReadFile("./jwtkey/jwt.key")
 	if err != nil {
 		return nil, err
@@ -50,7 +49,6 @@ func NewJWTController(service *goa.Service, UserDB *models.UserDB) (*JWTControll
 	return &JWTController{
 		Controller: service.NewController("JWTController"),
 		privateKey: privKey,
-		DB:         UserDB,
 	}, nil
 }
 
@@ -79,14 +77,14 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 		if ldap_auth.LdapAuth() != nil {
 			return ErrUnauthorized("Unknown user")
 		}
-		err := c.DB.Db.Where("name = ?", username).First(&user).Error
+		err := UserDB.Db.Where("name = ?", username).First(&user).Error
 		if err == gorm.ErrRecordNotFound {
 			user = models.User{IsMember: true, Name: username}
-			c.DB.Add(ctx, &user)
+			UserDB.Add(ctx, &user)
 		}
 	} else {
 		// Authenticate with username and password
-		err := c.DB.Db.Where("name = ?", username).First(&user).Error
+		err := UserDB.Db.Where("name = ?", username).First(&user).Error
 		if err == gorm.ErrRecordNotFound {
 			return ErrUnauthorized("Unknown user")
 		}

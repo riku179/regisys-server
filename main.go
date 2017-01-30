@@ -17,6 +17,14 @@ var (
 	// ErrUnauthorized is the error returned for unauthorized requests.
 	ErrUnauthorized     = goa.NewErrorClass("unauthorized", 401)
 	errValidationFailed = goa.NewErrorClass("validation_failed", 401)
+	ItemsDB             *models.ItemsDB
+	UserDB              *models.UserDB
+	OrdersDB            *models.OrdersDB
+	MYSQL_USER          = os.Getenv("MYSQL_USER")
+	MYSQL_PASSWORD      = os.Getenv("MYSQL_PASSWORD")
+	MYSQL_DATABASE      = os.Getenv("MYSQL_DATABASE")
+	DEBUG               = os.Getenv("DEBUG")
+	service             = goa.New("regisys")
 )
 
 const (
@@ -27,20 +35,21 @@ const (
 
 func main() {
 	// Create service
-	service := goa.New("regisys")
 
 	// Connect DB
-	db, err := gorm.Open("mysql", "admin:foobar@tcp(db:3306)/regisys?parseTime=true&charset=utf8")
+	db, err := gorm.Open("mysql", fmt.Sprintf("%v:%v@tcp(db:3306)/%v?parseTime=true&charset=utf8", MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE))
 	if err != nil {
 		exitOnFailure(err)
 	}
 	defer db.Close()
-	ItemDB := models.NewItemsDB(db)
-	UserDB := models.NewUserDB(db)
-	OrderDB := models.NewOrdersDB(db)
+	ItemsDB = models.NewItemsDB(db)
+	UserDB = models.NewUserDB(db)
+	OrdersDB = models.NewOrdersDB(db)
 
-	//// ################ Only for Develop Environment ##################
-	db.DropTableIfExists(ItemDB.TableName(), UserDB.TableName(), OrderDB.TableName())
+	//// ################# DROP TABLE when debug mode ###################
+	if DEBUG == "TRUE" {
+		db.DropTableIfExists(ItemsDB.TableName(), UserDB.TableName(), OrdersDB.TableName())
+	}
 	//// ################################################################
 
 	//db.AutoMigrate(&models.Goods{}, &models.User{}, &models.Orders{})
@@ -60,20 +69,20 @@ func main() {
 	app.UseSigninBasicAuthMiddleware(service, NewBasicAuthMiddleware())
 
 	// Mount "goods" controller
-	c := NewItemsController(service, ItemDB)
+	c := NewItemsController(service)
 	app.MountItemsController(service, c)
 	// Mount "jwt" controller
-	c2, err := NewJWTController(service, UserDB)
+	c2, err := NewJWTController(service)
 	exitOnFailure(err)
 	app.MountJWTController(service, c2)
 	// Mount "orders" controller
-	c3 := NewOrdersController(service, OrderDB)
+	c3 := NewOrdersController(service)
 	app.MountOrdersController(service, c3)
 	// Mount "swagger" controller
 	c4 := NewSwaggerController(service)
 	app.MountSwaggerController(service, c4)
 	// Mount "user" controller
-	c5 := NewUserController(service, UserDB)
+	c5 := NewUserController(service)
 	app.MountUserController(service, c5)
 
 	// Start service
