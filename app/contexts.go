@@ -179,7 +179,8 @@ type SigninJWTContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	IsMember bool
+	Authorization string
+	IsMember      bool
 }
 
 // NewSigninJWTContext parses the incoming request URL and body, performs validations and creates the
@@ -190,6 +191,14 @@ func NewSigninJWTContext(ctx context.Context, service *goa.Service) (*SigninJWTC
 	resp.Service = service
 	req := goa.ContextRequest(ctx)
 	rctx := SigninJWTContext{Context: ctx, ResponseData: resp, RequestData: req}
+	headerAuthorization := req.Header["Authorization"]
+	if len(headerAuthorization) == 0 {
+		err = goa.MergeErrors(err, goa.MissingHeaderError("Authorization"))
+	} else {
+		rawAuthorization := headerAuthorization[0]
+		req.Params["Authorization"] = []string{rawAuthorization}
+		rctx.Authorization = rawAuthorization
+	}
 	paramIsMember := req.Params["is_member"]
 	if len(paramIsMember) == 0 {
 		err = goa.MergeErrors(err, goa.MissingParamError("is_member"))

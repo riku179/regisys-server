@@ -61,8 +61,10 @@ type (
 	// SigninJWTCommand is the command line data structure for the signin action of jwt
 	SigninJWTCommand struct {
 		// Is member of MMA
-		IsMember    string
-		PrettyPrint bool
+		IsMember string
+		// Basic Auth Header
+		Authorization string
+		PrettyPrint   bool
 	}
 
 	// AddOrdersCommand is the command line data structure for the add action of orders
@@ -666,7 +668,7 @@ func (cmd *SigninJWTCommand) Run(c *client.Client, args []string) error {
 		goa.LogError(ctx, "required flag is missing", "flag", "--is_member")
 		return fmt.Errorf("required flag is_member is missing")
 	}
-	resp, err := c.SigninJWT(ctx, path, *tmp13)
+	resp, err := c.SigninJWT(ctx, path, *tmp13, cmd.Authorization)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -680,6 +682,7 @@ func (cmd *SigninJWTCommand) Run(c *client.Client, args []string) error {
 func (cmd *SigninJWTCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var isMember string
 	cc.Flags().StringVar(&cmd.IsMember, "is_member", isMember, `Is member of MMA`)
+	cc.Flags().StringVar(&cmd.Authorization, "Authorization", "", `Basic Auth Header`)
 }
 
 // Run makes the HTTP request corresponding to the AddOrdersCommand command.

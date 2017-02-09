@@ -67,6 +67,9 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	if !ok {
 		goa.LogInfo(ctx, "failed basic auth")
 		return ErrUnauthorized("missing auth")
+	} else if username == "" {
+		goa.LogInfo(ctx, "missing username in basicauth header")
+		return ErrUnauthorized("missing username in header")
 	}
 
 	// User data(id,name,group) is bound to this User instance
