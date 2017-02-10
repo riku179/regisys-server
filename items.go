@@ -13,10 +13,9 @@ type ItemsController struct {
 }
 
 // NewItemsController creates a items controller.
-func NewItemsController(service *goa.Service, db *models.ItemsDB) *ItemsController {
+func NewItemsController(service *goa.Service) *ItemsController {
 	return &ItemsController{
 		Controller: service.NewController("ItemsController"),
-		DB:         db,
 	}
 }
 
@@ -57,6 +56,6 @@ func (c *ItemsController) Show(ctx *app.ShowItemsContext) error {
 	// Put your logic here
 
 	// ItemsController_Show: end_implement
-	res := app.GoaExampleRegisysItemsCollection{}
+	res := app.RegisysItemsCollection{}
 	return ctx.OK(res)
 }

@@ -28,7 +28,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.JWTController, isMember bool, authorization string) (http.ResponseWriter, *app.GoaExampleToken) {
+func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.JWTController, isMember bool, authorization string) (http.ResponseWriter, *app.RegisysToken) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -89,12 +89,12 @@ func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.GoaExampleToken
+	var mt *app.RegisysToken
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(*app.GoaExampleToken)
+		mt, ok = resp.(*app.RegisysToken)
 		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of app.GoaExampleToken", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.RegisysToken", resp)
 		}
 		err = mt.Validate()
 		if err != nil {

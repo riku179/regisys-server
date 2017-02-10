@@ -165,10 +165,10 @@ func NewShowItemsContext(ctx context.Context, r *http.Request, service *goa.Serv
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ShowItemsContext) OK(r GoaExampleRegisysItemsCollection) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.example.regisys.items+json; type=collection")
+func (ctx *ShowItemsContext) OK(r RegisysItemsCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.regisys.items+json; type=collection")
 	if r == nil {
-		r = GoaExampleRegisysItemsCollection{}
+		r = RegisysItemsCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -220,8 +220,8 @@ func NewSigninJWTContext(ctx context.Context, r *http.Request, service *goa.Serv
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *SigninJWTContext) OK(r *GoaExampleToken) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.example.token+json")
+func (ctx *SigninJWTContext) OK(r *RegisysToken) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.regisys.token+json")
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
@@ -347,10 +347,10 @@ func NewShowOrdersContext(ctx context.Context, r *http.Request, service *goa.Ser
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ShowOrdersContext) OK(r GoaExampleOrdersCollection) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.example.orders+json; type=collection")
+func (ctx *ShowOrdersContext) OK(r RegisysOrdersCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.regisys.orders+json; type=collection")
 	if r == nil {
-		r = GoaExampleOrdersCollection{}
+		r = RegisysOrdersCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -471,8 +471,8 @@ func NewShowUserContext(ctx context.Context, r *http.Request, service *goa.Servi
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ShowUserContext) OK(r *GoaExampleUser) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.example.user+json")
+func (ctx *ShowUserContext) OK(r *RegisysUser) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.regisys.user+json")
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
@@ -502,10 +502,10 @@ func NewShowListUserContext(ctx context.Context, r *http.Request, service *goa.S
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ShowListUserContext) OK(r GoaExampleUserCollection) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.example.user+json; type=collection")
+func (ctx *ShowListUserContext) OK(r RegisysUserCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.regisys.user+json; type=collection")
 	if r == nil {
-		r = GoaExampleUserCollection{}
+		r = RegisysUserCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }

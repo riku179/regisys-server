@@ -13,10 +13,9 @@ type OrdersController struct {
 }
 
 // NewOrdersController creates a orders controller.
-func NewOrdersController(service *goa.Service, db *models.OrdersDB) *OrdersController {
+func NewOrdersController(service *goa.Service) *OrdersController {
 	return &OrdersController{
 		Controller: service.NewController("OrdersController"),
-		DB:         db,
 	}
 }
 
@@ -47,6 +46,6 @@ func (c *OrdersController) Show(ctx *app.ShowOrdersContext) error {
 	// Put your logic here
 
 	// OrdersController_Show: end_implement
-	res := app.GoaExampleOrdersCollection{}
+	res := app.RegisysOrdersCollection{}
 	return ctx.OK(res)
 }

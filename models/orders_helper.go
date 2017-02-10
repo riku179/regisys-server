@@ -20,12 +20,12 @@ import (
 
 // MediaType Retrieval Functions
 
-// ListGoaExampleOrders returns an array of view: default.
-func (m *OrdersDB) ListGoaExampleOrders(ctx context.Context) []*app.GoaExampleOrders {
-	defer goa.MeasureSince([]string{"goa", "db", "goaExampleOrders", "listgoaExampleOrders"}, time.Now())
+// ListRegisysOrders returns an array of view: default.
+func (m *OrdersDB) ListRegisysOrders(ctx context.Context) []*app.RegisysOrders {
+	defer goa.MeasureSince([]string{"goa", "db", "regisysOrders", "listregisysOrders"}, time.Now())
 
 	var native []*Orders
-	var objs []*app.GoaExampleOrders
+	var objs []*app.RegisysOrders
 	err := m.Db.Scopes().Table(m.TableName()).Find(&native).Error
 
 	if err != nil {
@@ -34,15 +34,15 @@ func (m *OrdersDB) ListGoaExampleOrders(ctx context.Context) []*app.GoaExampleOr
 	}
 
 	for _, t := range native {
-		objs = append(objs, t.OrdersToGoaExampleOrders())
+		objs = append(objs, t.OrdersToRegisysOrders())
 	}
 
 	return objs
 }
 
-// OrdersToGoaExampleOrders loads a Orders and builds the default view of media type GoaExampleOrders.
-func (m *Orders) OrdersToGoaExampleOrders() *app.GoaExampleOrders {
-	orders := &app.GoaExampleOrders{}
+// OrdersToRegisysOrders loads a Orders and builds the default view of media type RegisysOrders.
+func (m *Orders) OrdersToRegisysOrders() *app.RegisysOrders {
+	orders := &app.RegisysOrders{}
 	orders.ID = m.ID
 	orders.ItemID = m.ItemID
 	orders.Price = m.Price
@@ -52,9 +52,9 @@ func (m *Orders) OrdersToGoaExampleOrders() *app.GoaExampleOrders {
 	return orders
 }
 
-// OneGoaExampleOrders loads a Orders and builds the default view of media type GoaExampleOrders.
-func (m *OrdersDB) OneGoaExampleOrders(ctx context.Context, id int) (*app.GoaExampleOrders, error) {
-	defer goa.MeasureSince([]string{"goa", "db", "goaExampleOrders", "onegoaExampleOrders"}, time.Now())
+// OneRegisysOrders loads a Orders and builds the default view of media type RegisysOrders.
+func (m *OrdersDB) OneRegisysOrders(ctx context.Context, id int) (*app.RegisysOrders, error) {
+	defer goa.MeasureSince([]string{"goa", "db", "regisysOrders", "oneregisysOrders"}, time.Now())
 
 	var native Orders
 	err := m.Db.Scopes().Table(m.TableName()).Where("id = ?", id).Find(&native).Error
@@ -64,6 +64,6 @@ func (m *OrdersDB) OneGoaExampleOrders(ctx context.Context, id int) (*app.GoaExa
 		return nil, err
 	}
 
-	view := *native.OrdersToGoaExampleOrders()
+	view := *native.OrdersToRegisysOrders()
 	return &view, err
 }

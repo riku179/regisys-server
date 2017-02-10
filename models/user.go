@@ -64,8 +64,8 @@ type UserStorage interface {
 	Update(ctx context.Context, user *User) error
 	Delete(ctx context.Context, id int) error
 
-	ListGoaExampleUser(ctx context.Context) []*app.GoaExampleUser
-	OneGoaExampleUser(ctx context.Context, id int) (*app.GoaExampleUser, error)
+	ListRegisysUser(ctx context.Context) []*app.RegisysUser
+	OneRegisysUser(ctx context.Context, id int) (*app.RegisysUser, error)
 
 	UpdateFromAddUserPayload(ctx context.Context, payload *app.AddUserPayload, id int) error
 

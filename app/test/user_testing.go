@@ -428,7 +428,7 @@ func ShowUserNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ShowUserOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, id int) (http.ResponseWriter, *app.GoaExampleUser) {
+func ShowUserOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController, id int) (http.ResponseWriter, *app.RegisysUser) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -476,12 +476,12 @@ func ShowUserOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.GoaExampleUser
+	var mt *app.RegisysUser
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(*app.GoaExampleUser)
+		mt, ok = resp.(*app.RegisysUser)
 		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of app.GoaExampleUser", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.RegisysUser", resp)
 		}
 		err = mt.Validate()
 		if err != nil {
@@ -497,7 +497,7 @@ func ShowUserOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ShowListUserOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController) (http.ResponseWriter, app.GoaExampleUserCollection) {
+func ShowListUserOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.UserController) (http.ResponseWriter, app.RegisysUserCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -544,12 +544,12 @@ func ShowListUserOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt app.GoaExampleUserCollection
+	var mt app.RegisysUserCollection
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(app.GoaExampleUserCollection)
+		mt, ok = resp.(app.RegisysUserCollection)
 		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of app.GoaExampleUserCollection", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.RegisysUserCollection", resp)
 		}
 		err = mt.Validate()
 		if err != nil {

@@ -64,8 +64,8 @@ type ItemsStorage interface {
 	Update(ctx context.Context, items *Items) error
 	Delete(ctx context.Context, id int) error
 
-	ListGoaExampleRegisysItems(ctx context.Context) []*app.GoaExampleRegisysItems
-	OneGoaExampleRegisysItems(ctx context.Context, id int) (*app.GoaExampleRegisysItems, error)
+	ListRegisysItems(ctx context.Context) []*app.RegisysItems
+	OneRegisysItems(ctx context.Context, id int) (*app.RegisysItems, error)
 
 	UpdateFromAddGoodsPayload(ctx context.Context, payload *app.AddGoodsPayload, id int) error
 

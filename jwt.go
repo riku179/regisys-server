@@ -120,7 +120,7 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	ctx.ResponseData.Header().Set("Authorization", "Bearer "+signedToken)
 
 	// JWTController_Signin: end_implement
-	res := &app.GoaExampleToken{
+	res := &app.RegisysToken{
 		ID:       user.ID,
 		Username: user.Name,
 		Group:    user.Group,

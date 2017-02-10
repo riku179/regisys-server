@@ -16,71 +16,10 @@ import (
 	"time"
 )
 
-// An order (default view)
-//
-// Identifier: application/vnd.goa.example.orders+json; view=default
-type GoaExampleOrders struct {
-	// Order date
-	Date time.Time `form:"date" json:"date" xml:"date"`
-	// Unique order ID
-	ID int `form:"id" json:"id" xml:"id"`
-	// Unique item ID
-	ItemID int `form:"item_id" json:"item_id" xml:"item_id"`
-	// item name
-	ItemName string `form:"item_name" json:"item_name" xml:"item_name"`
-	// item price
-	Price int `form:"price" json:"price" xml:"price"`
-	// item quantity
-	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
-	// Register's user ID
-	UserID int `form:"user_id" json:"user_id" xml:"user_id"`
-}
-
-// Validate validates the GoaExampleOrders media type instance.
-func (mt *GoaExampleOrders) Validate() (err error) {
-
-	if mt.ItemName == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "item_name"))
-	}
-
-	return
-}
-
-// DecodeGoaExampleOrders decodes the GoaExampleOrders instance encoded in resp body.
-func (c *Client) DecodeGoaExampleOrders(resp *http.Response) (*GoaExampleOrders, error) {
-	var decoded GoaExampleOrders
-	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
-	return &decoded, err
-}
-
-// GoaExampleOrdersCollection is the media type for an array of GoaExampleOrders (default view)
-//
-// Identifier: application/vnd.goa.example.orders+json; type=collection; view=default
-type GoaExampleOrdersCollection []*GoaExampleOrders
-
-// Validate validates the GoaExampleOrdersCollection media type instance.
-func (mt GoaExampleOrdersCollection) Validate() (err error) {
-	for _, e := range mt {
-		if e != nil {
-			if err2 := e.Validate(); err2 != nil {
-				err = goa.MergeErrors(err, err2)
-			}
-		}
-	}
-	return
-}
-
-// DecodeGoaExampleOrdersCollection decodes the GoaExampleOrdersCollection instance encoded in resp body.
-func (c *Client) DecodeGoaExampleOrdersCollection(resp *http.Response) (GoaExampleOrdersCollection, error) {
-	var decoded GoaExampleOrdersCollection
-	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
-	return decoded, err
-}
-
 // An item (default view)
 //
-// Identifier: application/vnd.goa.example.regisys.items+json; view=default
-type GoaExampleRegisysItems struct {
+// Identifier: application/vnd.regisys.items+json; view=default
+type RegisysItems struct {
 	// Unique item ID
 	ID int `form:"id" json:"id" xml:"id"`
 	// item name
@@ -97,8 +36,8 @@ type GoaExampleRegisysItems struct {
 	UserName string `form:"user_name" json:"user_name" xml:"user_name"`
 }
 
-// Validate validates the GoaExampleRegisysItems media type instance.
-func (mt *GoaExampleRegisysItems) Validate() (err error) {
+// Validate validates the RegisysItems media type instance.
+func (mt *RegisysItems) Validate() (err error) {
 
 	if mt.ItemName == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "item_name"))
@@ -111,20 +50,20 @@ func (mt *GoaExampleRegisysItems) Validate() (err error) {
 	return
 }
 
-// DecodeGoaExampleRegisysItems decodes the GoaExampleRegisysItems instance encoded in resp body.
-func (c *Client) DecodeGoaExampleRegisysItems(resp *http.Response) (*GoaExampleRegisysItems, error) {
-	var decoded GoaExampleRegisysItems
+// DecodeRegisysItems decodes the RegisysItems instance encoded in resp body.
+func (c *Client) DecodeRegisysItems(resp *http.Response) (*RegisysItems, error) {
+	var decoded RegisysItems
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// GoaExampleRegisysItemsCollection is the media type for an array of GoaExampleRegisysItems (default view)
+// RegisysItemsCollection is the media type for an array of RegisysItems (default view)
 //
-// Identifier: application/vnd.goa.example.regisys.items+json; type=collection; view=default
-type GoaExampleRegisysItemsCollection []*GoaExampleRegisysItems
+// Identifier: application/vnd.regisys.items+json; type=collection; view=default
+type RegisysItemsCollection []*RegisysItems
 
-// Validate validates the GoaExampleRegisysItemsCollection media type instance.
-func (mt GoaExampleRegisysItemsCollection) Validate() (err error) {
+// Validate validates the RegisysItemsCollection media type instance.
+func (mt RegisysItemsCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -135,17 +74,78 @@ func (mt GoaExampleRegisysItemsCollection) Validate() (err error) {
 	return
 }
 
-// DecodeGoaExampleRegisysItemsCollection decodes the GoaExampleRegisysItemsCollection instance encoded in resp body.
-func (c *Client) DecodeGoaExampleRegisysItemsCollection(resp *http.Response) (GoaExampleRegisysItemsCollection, error) {
-	var decoded GoaExampleRegisysItemsCollection
+// DecodeRegisysItemsCollection decodes the RegisysItemsCollection instance encoded in resp body.
+func (c *Client) DecodeRegisysItemsCollection(resp *http.Response) (RegisysItemsCollection, error) {
+	var decoded RegisysItemsCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// An order (default view)
+//
+// Identifier: application/vnd.regisys.orders+json; view=default
+type RegisysOrders struct {
+	// Order date
+	Date time.Time `form:"date" json:"date" xml:"date"`
+	// Unique order ID
+	ID int `form:"id" json:"id" xml:"id"`
+	// Unique item ID
+	ItemID int `form:"item_id" json:"item_id" xml:"item_id"`
+	// item name
+	ItemName string `form:"item_name" json:"item_name" xml:"item_name"`
+	// item price
+	Price int `form:"price" json:"price" xml:"price"`
+	// item quantity
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+	// Register's user ID
+	UserID int `form:"user_id" json:"user_id" xml:"user_id"`
+}
+
+// Validate validates the RegisysOrders media type instance.
+func (mt *RegisysOrders) Validate() (err error) {
+
+	if mt.ItemName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "item_name"))
+	}
+
+	return
+}
+
+// DecodeRegisysOrders decodes the RegisysOrders instance encoded in resp body.
+func (c *Client) DecodeRegisysOrders(resp *http.Response) (*RegisysOrders, error) {
+	var decoded RegisysOrders
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// RegisysOrdersCollection is the media type for an array of RegisysOrders (default view)
+//
+// Identifier: application/vnd.regisys.orders+json; type=collection; view=default
+type RegisysOrdersCollection []*RegisysOrders
+
+// Validate validates the RegisysOrdersCollection media type instance.
+func (mt RegisysOrdersCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeRegisysOrdersCollection decodes the RegisysOrdersCollection instance encoded in resp body.
+func (c *Client) DecodeRegisysOrdersCollection(resp *http.Response) (RegisysOrdersCollection, error) {
+	var decoded RegisysOrdersCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
 
 // Username and ID (default view)
 //
-// Identifier: application/vnd.goa.example.token+json; view=default
-type GoaExampleToken struct {
+// Identifier: application/vnd.regisys.token+json; view=default
+type RegisysToken struct {
 	// Group of user
 	Group string `form:"group" json:"group" xml:"group"`
 	// Unique user ID
@@ -156,8 +156,8 @@ type GoaExampleToken struct {
 	Username string `form:"username" json:"username" xml:"username"`
 }
 
-// Validate validates the GoaExampleToken media type instance.
-func (mt *GoaExampleToken) Validate() (err error) {
+// Validate validates the RegisysToken media type instance.
+func (mt *RegisysToken) Validate() (err error) {
 
 	if mt.Username == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "username"))
@@ -169,17 +169,17 @@ func (mt *GoaExampleToken) Validate() (err error) {
 	return
 }
 
-// DecodeGoaExampleToken decodes the GoaExampleToken instance encoded in resp body.
-func (c *Client) DecodeGoaExampleToken(resp *http.Response) (*GoaExampleToken, error) {
-	var decoded GoaExampleToken
+// DecodeRegisysToken decodes the RegisysToken instance encoded in resp body.
+func (c *Client) DecodeRegisysToken(resp *http.Response) (*RegisysToken, error) {
+	var decoded RegisysToken
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
 // Users (default view)
 //
-// Identifier: application/vnd.goa.example.user+json; view=default
-type GoaExampleUser struct {
+// Identifier: application/vnd.regisys.user+json; view=default
+type RegisysUser struct {
 	// Group of user
 	Group string `form:"group" json:"group" xml:"group"`
 	// Unique user ID
@@ -190,8 +190,8 @@ type GoaExampleUser struct {
 	Name string `form:"name" json:"name" xml:"name"`
 }
 
-// Validate validates the GoaExampleUser media type instance.
-func (mt *GoaExampleUser) Validate() (err error) {
+// Validate validates the RegisysUser media type instance.
+func (mt *RegisysUser) Validate() (err error) {
 
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
@@ -203,20 +203,20 @@ func (mt *GoaExampleUser) Validate() (err error) {
 	return
 }
 
-// DecodeGoaExampleUser decodes the GoaExampleUser instance encoded in resp body.
-func (c *Client) DecodeGoaExampleUser(resp *http.Response) (*GoaExampleUser, error) {
-	var decoded GoaExampleUser
+// DecodeRegisysUser decodes the RegisysUser instance encoded in resp body.
+func (c *Client) DecodeRegisysUser(resp *http.Response) (*RegisysUser, error) {
+	var decoded RegisysUser
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// GoaExampleUserCollection is the media type for an array of GoaExampleUser (default view)
+// RegisysUserCollection is the media type for an array of RegisysUser (default view)
 //
-// Identifier: application/vnd.goa.example.user+json; type=collection; view=default
-type GoaExampleUserCollection []*GoaExampleUser
+// Identifier: application/vnd.regisys.user+json; type=collection; view=default
+type RegisysUserCollection []*RegisysUser
 
-// Validate validates the GoaExampleUserCollection media type instance.
-func (mt GoaExampleUserCollection) Validate() (err error) {
+// Validate validates the RegisysUserCollection media type instance.
+func (mt RegisysUserCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -227,9 +227,9 @@ func (mt GoaExampleUserCollection) Validate() (err error) {
 	return
 }
 
-// DecodeGoaExampleUserCollection decodes the GoaExampleUserCollection instance encoded in resp body.
-func (c *Client) DecodeGoaExampleUserCollection(resp *http.Response) (GoaExampleUserCollection, error) {
-	var decoded GoaExampleUserCollection
+// DecodeRegisysUserCollection decodes the RegisysUserCollection instance encoded in resp body.
+func (c *Client) DecodeRegisysUserCollection(resp *http.Response) (RegisysUserCollection, error) {
+	var decoded RegisysUserCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }

@@ -62,8 +62,8 @@ type OrdersStorage interface {
 	Update(ctx context.Context, orders *Orders) error
 	Delete(ctx context.Context, id int) error
 
-	ListGoaExampleOrders(ctx context.Context) []*app.GoaExampleOrders
-	OneGoaExampleOrders(ctx context.Context, id int) (*app.GoaExampleOrders, error)
+	ListRegisysOrders(ctx context.Context) []*app.RegisysOrders
+	OneRegisysOrders(ctx context.Context, id int) (*app.RegisysOrders, error)
 
 	UpdateFromAddOrderPayload(ctx context.Context, payload *app.AddOrderPayload, id int) error
 }

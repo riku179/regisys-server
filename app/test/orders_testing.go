@@ -410,7 +410,7 @@ func ShowOrdersNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ShowOrdersOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OrdersController, date *time.Time, user *string) (http.ResponseWriter, app.GoaExampleOrdersCollection) {
+func ShowOrdersOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OrdersController, date *time.Time, user *string) (http.ResponseWriter, app.RegisysOrdersCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -475,12 +475,12 @@ func ShowOrdersOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt app.GoaExampleOrdersCollection
+	var mt app.RegisysOrdersCollection
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(app.GoaExampleOrdersCollection)
+		mt, ok = resp.(app.RegisysOrdersCollection)
 		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of app.GoaExampleOrdersCollection", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.RegisysOrdersCollection", resp)
 		}
 		err = mt.Validate()
 		if err != nil {

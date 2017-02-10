@@ -20,12 +20,12 @@ import (
 
 // MediaType Retrieval Functions
 
-// ListGoaExampleUser returns an array of view: default.
-func (m *UserDB) ListGoaExampleUser(ctx context.Context) []*app.GoaExampleUser {
-	defer goa.MeasureSince([]string{"goa", "db", "goaExampleUser", "listgoaExampleUser"}, time.Now())
+// ListRegisysUser returns an array of view: default.
+func (m *UserDB) ListRegisysUser(ctx context.Context) []*app.RegisysUser {
+	defer goa.MeasureSince([]string{"goa", "db", "regisysUser", "listregisysUser"}, time.Now())
 
 	var native []*User
-	var objs []*app.GoaExampleUser
+	var objs []*app.RegisysUser
 	err := m.Db.Scopes().Table(m.TableName()).Find(&native).Error
 
 	if err != nil {
@@ -34,15 +34,15 @@ func (m *UserDB) ListGoaExampleUser(ctx context.Context) []*app.GoaExampleUser {
 	}
 
 	for _, t := range native {
-		objs = append(objs, t.UserToGoaExampleUser())
+		objs = append(objs, t.UserToRegisysUser())
 	}
 
 	return objs
 }
 
-// UserToGoaExampleUser loads a User and builds the default view of media type GoaExampleUser.
-func (m *User) UserToGoaExampleUser() *app.GoaExampleUser {
-	user := &app.GoaExampleUser{}
+// UserToRegisysUser loads a User and builds the default view of media type RegisysUser.
+func (m *User) UserToRegisysUser() *app.RegisysUser {
+	user := &app.RegisysUser{}
 	user.Group = m.Group
 	user.ID = m.ID
 	user.IsMember = m.IsMember
@@ -51,9 +51,9 @@ func (m *User) UserToGoaExampleUser() *app.GoaExampleUser {
 	return user
 }
 
-// OneGoaExampleUser loads a User and builds the default view of media type GoaExampleUser.
-func (m *UserDB) OneGoaExampleUser(ctx context.Context, id int) (*app.GoaExampleUser, error) {
-	defer goa.MeasureSince([]string{"goa", "db", "goaExampleUser", "onegoaExampleUser"}, time.Now())
+// OneRegisysUser loads a User and builds the default view of media type RegisysUser.
+func (m *UserDB) OneRegisysUser(ctx context.Context, id int) (*app.RegisysUser, error) {
+	defer goa.MeasureSince([]string{"goa", "db", "regisysUser", "oneregisysUser"}, time.Now())
 
 	var native User
 	err := m.Db.Scopes().Table(m.TableName()).Preload("Items").Preload("Orders").Where("id = ?", id).Find(&native).Error
@@ -63,6 +63,6 @@ func (m *UserDB) OneGoaExampleUser(ctx context.Context, id int) (*app.GoaExample
 		return nil, err
 	}
 
-	view := *native.UserToGoaExampleUser()
+	view := *native.UserToRegisysUser()
 	return &view, err
 }

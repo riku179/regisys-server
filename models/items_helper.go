@@ -20,12 +20,12 @@ import (
 
 // MediaType Retrieval Functions
 
-// ListGoaExampleRegisysItems returns an array of view: default.
-func (m *ItemsDB) ListGoaExampleRegisysItems(ctx context.Context) []*app.GoaExampleRegisysItems {
-	defer goa.MeasureSince([]string{"goa", "db", "goaExampleRegisysItems", "listgoaExampleRegisysItems"}, time.Now())
+// ListRegisysItems returns an array of view: default.
+func (m *ItemsDB) ListRegisysItems(ctx context.Context) []*app.RegisysItems {
+	defer goa.MeasureSince([]string{"goa", "db", "regisysItems", "listregisysItems"}, time.Now())
 
 	var native []*Items
-	var objs []*app.GoaExampleRegisysItems
+	var objs []*app.RegisysItems
 	err := m.Db.Scopes().Table(m.TableName()).Find(&native).Error
 
 	if err != nil {
@@ -34,15 +34,15 @@ func (m *ItemsDB) ListGoaExampleRegisysItems(ctx context.Context) []*app.GoaExam
 	}
 
 	for _, t := range native {
-		objs = append(objs, t.ItemsToGoaExampleRegisysItems())
+		objs = append(objs, t.ItemsToRegisysItems())
 	}
 
 	return objs
 }
 
-// ItemsToGoaExampleRegisysItems loads a Items and builds the default view of media type GoaExampleRegisysItems.
-func (m *Items) ItemsToGoaExampleRegisysItems() *app.GoaExampleRegisysItems {
-	items := &app.GoaExampleRegisysItems{}
+// ItemsToRegisysItems loads a Items and builds the default view of media type RegisysItems.
+func (m *Items) ItemsToRegisysItems() *app.RegisysItems {
+	items := &app.RegisysItems{}
 	items.ID = m.ID
 	items.ItemName = m.ItemName
 	items.MemberPrice = m.MemberPrice
@@ -53,9 +53,9 @@ func (m *Items) ItemsToGoaExampleRegisysItems() *app.GoaExampleRegisysItems {
 	return items
 }
 
-// OneGoaExampleRegisysItems loads a Items and builds the default view of media type GoaExampleRegisysItems.
-func (m *ItemsDB) OneGoaExampleRegisysItems(ctx context.Context, id int) (*app.GoaExampleRegisysItems, error) {
-	defer goa.MeasureSince([]string{"goa", "db", "goaExampleRegisysItems", "onegoaExampleRegisysItems"}, time.Now())
+// OneRegisysItems loads a Items and builds the default view of media type RegisysItems.
+func (m *ItemsDB) OneRegisysItems(ctx context.Context, id int) (*app.RegisysItems, error) {
+	defer goa.MeasureSince([]string{"goa", "db", "regisysItems", "oneregisysItems"}, time.Now())
 
 	var native Items
 	err := m.Db.Scopes().Table(m.TableName()).Preload("Orders").Where("id = ?", id).Find(&native).Error
@@ -65,6 +65,6 @@ func (m *ItemsDB) OneGoaExampleRegisysItems(ctx context.Context, id int) (*app.G
 		return nil, err
 	}
 
-	view := *native.ItemsToGoaExampleRegisysItems()
+	view := *native.ItemsToRegisysItems()
 	return &view, err
 }
