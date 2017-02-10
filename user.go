@@ -12,14 +12,12 @@ import (
 // UserController implements the user resource.
 type UserController struct {
 	*goa.Controller
-	DB *models.UserDB
 }
 
 // NewUserController creates a user controller.
-func NewUserController(service *goa.Service, db *models.UserDB) *UserController {
+func NewUserController(service *goa.Service) *UserController {
 	return &UserController{
 		Controller: service.NewController("UserController"),
-		DB:         db,
 	}
 }
 
@@ -34,7 +32,7 @@ func (c *UserController) Add(ctx *app.AddUserContext) error {
 	// UserController_Add: start_implement
 	hash, _ := bcrypt.GenerateFromPassword([]byte(ctx.Payload.Password), 10)
 	res_user := models.User{IsMember: false, Name: ctx.Payload.Name, Password: string(hash)}
-	c.DB.Add(ctx, &res_user)
+	UserDB.Add(ctx, &res_user)
 	// UserController_Add: end_implement
 	return nil
 }
@@ -45,7 +43,7 @@ func (c *UserController) Modify(ctx *app.ModifyUserContext) error {
 	login_user, _ := user.FromContext(ctx)
 
 	// target user requested modify group by login_user
-	target_user, err := c.DB.Get(ctx, ctx.ID)
+	target_user, err := UserDB.Get(ctx, ctx.ID)
 	if err == gorm.ErrRecordNotFound {
 		return ctx.NotFound()
 	}
@@ -64,7 +62,7 @@ func (c *UserController) Modify(ctx *app.ModifyUserContext) error {
 	// and 'Admin' can do anything
 
 	// UserController_Modify: start_implement
-	err = c.DB.UpdateFromModifyUserPayload(ctx, ctx.Payload, ctx.ID)
+	err = UserDB.UpdateFromModifyUserPayload(ctx, ctx.Payload, ctx.ID)
 	if err != nil {
 		goa.LogError(ctx, "Failed to access DB", err)
 	}
@@ -76,7 +74,7 @@ func (c *UserController) Modify(ctx *app.ModifyUserContext) error {
 func (c *UserController) Show(ctx *app.ShowUserContext) error {
 	// UserController_Show: start_implement
 	// get requested user from DB
-	req_user, err := c.DB.Get(ctx, ctx.ID)
+	req_user, err := UserDB.Get(ctx, ctx.ID)
 	if err == gorm.ErrRecordNotFound {
 		return ctx.NotFound()
 	}
@@ -93,7 +91,7 @@ func (c *UserController) Show(ctx *app.ShowUserContext) error {
 // ShowList runs the showList action.
 func (c *UserController) ShowList(ctx *app.ShowListUserContext) error {
 	//UserController_ShowList: start_implement
-	users, err := c.DB.List(ctx)
+	users, err := UserDB.List(ctx)
 	if err != nil {
 		goa.LogError(ctx, "Failed to access DB", err)
 	}

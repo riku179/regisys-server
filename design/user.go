@@ -56,7 +56,7 @@ var _ = Resource("user", func() {
 	})
 })
 
-var ShowUserMedia = MediaType("application/vnd.goa.example.user+json", func() {
+var ShowUserMedia = MediaType("application/vnd.regisys.user+json", func() {
 	Description("Users")
 	Attributes(func() {
 		Attribute("id", Integer, "Unique user ID")

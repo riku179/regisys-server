@@ -28,7 +28,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.JWTController, isMember bool) (http.ResponseWriter, *app.GoaExampleToken) {
+func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.JWTController, isMember bool, authorization string) (http.ResponseWriter, *app.GoaExampleToken) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -60,6 +60,10 @@ func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
+	}
+	{
+		sliceVal := []string{authorization}
+		req.Header["Authorization"] = sliceVal
 	}
 	prms := url.Values{}
 	{
@@ -106,7 +110,7 @@ func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SigninJWTUnauthorized(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.JWTController, isMember bool) http.ResponseWriter {
+func SigninJWTUnauthorized(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.JWTController, isMember bool, authorization string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -138,6 +142,10 @@ func SigninJWTUnauthorized(t goatest.TInterface, ctx context.Context, service *g
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
+	}
+	{
+		sliceVal := []string{authorization}
+		req.Header["Authorization"] = sliceVal
 	}
 	prms := url.Values{}
 	{

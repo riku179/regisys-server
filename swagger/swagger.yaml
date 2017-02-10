@@ -589,6 +589,11 @@ paths:
         name: is_member
         required: true
         type: boolean
+      - description: Basic Auth Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK

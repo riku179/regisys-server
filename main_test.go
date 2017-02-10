@@ -1,42 +1,17 @@
-//go:generate goagen bootstrap -d regisys/design
-
 package main
 
 import (
 	"fmt"
-	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/riku179/regisys/app"
 	"github.com/riku179/regisys/models"
 	"os"
+	"testing"
 )
 
-var (
-	// ErrUnauthorized is the error returned for unauthorized requests.
-	ErrUnauthorized     = goa.NewErrorClass("unauthorized", 401)
-	errValidationFailed = goa.NewErrorClass("validation_failed", 401)
-	ItemsDB             *models.ItemsDB
-	UserDB              *models.UserDB
-	OrdersDB            *models.OrdersDB
-	MYSQL_USER          = os.Getenv("MYSQL_USER")
-	MYSQL_PASSWORD      = os.Getenv("MYSQL_PASSWORD")
-	MYSQL_DATABASE      = os.Getenv("MYSQL_DATABASE")
-	DEBUG               = os.Getenv("DEBUG")
-	service             = goa.New("regisys")
-)
-
-const (
-	Admin    = "admin"
-	Register = "register"
-	Normal   = "normal"
-)
-
-func main() {
-	// Create service
-
-	// Connect DB
+func TestMain(m *testing.M) {
+	os.Setenv(MYSQL_DATABASE, "testing")
 	db, err := gorm.Open("mysql", fmt.Sprintf("%v:%v@tcp(db:3306)/%v?parseTime=true&charset=utf8", MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE))
 	if err != nil {
 		exitOnFailure(err)
@@ -85,17 +60,6 @@ func main() {
 	c5 := NewUserController(service)
 	app.MountUserController(service, c5)
 
-	// Start service
-	if err := service.ListenAndServe(":8080"); err != nil {
-		service.LogError("startup", "err", err)
-	}
-}
-
-// exitOnFailure prints a fatal error message and exits the process with status 1.
-func exitOnFailure(err error) {
-	if err == nil {
-		return
-	}
-	fmt.Fprintf(os.Stderr, "[CRIT] %s", err.Error())
-	os.Exit(1)
+	code := m.Run()
+	os.Exit(code)
 }

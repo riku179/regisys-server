@@ -60,7 +60,7 @@ var _ = Resource("items", func() {
 	})
 })
 
-var ItemMedia = MediaType("application/vnd.goa.example.regisys.items+json", func() {
+var ItemMedia = MediaType("application/vnd.regisys.items+json", func() {
 	Description("An item")
 
 	Attributes(func() {

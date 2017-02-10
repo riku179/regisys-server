@@ -20,6 +20,10 @@ var _ = Resource("jwt", func() {
 			Param("is_member", Boolean, "Is member of MMA")
 			Required("is_member")
 		})
+		Headers(func() {
+			Header("Authorization", String, "Basic Auth Header")
+			Required("Authorization")
+		})
 
 		Response(OK, func() {
 			Headers(func() {
@@ -31,7 +35,7 @@ var _ = Resource("jwt", func() {
 	})
 })
 
-var SignInMedia = MediaType("application/vnd.goa.example.token+json", func() {
+var SignInMedia = MediaType("application/vnd.regisys.token+json", func() {
 	Description("Username and ID")
 	Attributes(func() {
 		Attribute("id", Integer, "Unique user ID")

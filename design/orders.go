@@ -49,7 +49,7 @@ var _ = Resource("orders", func() {
 	})
 })
 
-var OrderMedia = MediaType("application/vnd.goa.example.orders+json", func() {
+var OrderMedia = MediaType("application/vnd.regisys.orders+json", func() {
 	Description("An order")
 	Attributes(func() {
 		Attribute("id", Integer, "Unique order ID")

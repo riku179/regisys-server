@@ -10,9 +10,13 @@ services:
             - '8080:8080'
         working_dir: /go/src/github.com/riku179/regisys
         entrypoint: './wait-for-it.sh -t 60 db:3306 -- '
-        command: 'go run *.go'
+        command: 'go run main.go jwt.go items.go orders.go user.go swagger.go'
         environment:
             - HOST_ADDR=0.0.0.0:8080
+            - MYSQL_DATABASE=regisys
+            - MYSQL_USER=admin
+            - MYSQL_PASSWORD=foobar
+            - DEBUG=TRUE
         links:
             - db
         depends_on:

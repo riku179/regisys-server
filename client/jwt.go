@@ -25,8 +25,8 @@ func SigninJWTPath() string {
 }
 
 // Create a valid JWT
-func (c *Client) SigninJWT(ctx context.Context, path string, isMember bool) (*http.Response, error) {
-	req, err := c.NewSigninJWTRequest(ctx, path, isMember)
+func (c *Client) SigninJWT(ctx context.Context, path string, isMember bool, authorization string) (*http.Response, error) {
+	req, err := c.NewSigninJWTRequest(ctx, path, isMember, authorization)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (c *Client) SigninJWT(ctx context.Context, path string, isMember bool) (*ht
 }
 
 // NewSigninJWTRequest create the request corresponding to the signin action endpoint of the jwt resource.
-func (c *Client) NewSigninJWTRequest(ctx context.Context, path string, isMember bool) (*http.Request, error) {
+func (c *Client) NewSigninJWTRequest(ctx context.Context, path string, isMember bool, authorization string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
@@ -48,6 +48,10 @@ func (c *Client) NewSigninJWTRequest(ctx context.Context, path string, isMember 
 	if err != nil {
 		return nil, err
 	}
+	header := req.Header
+
+	header.Set("Authorization", authorization)
+
 	if c.SigninBasicAuthSigner != nil {
 		c.SigninBasicAuthSigner.Sign(req)
 	}

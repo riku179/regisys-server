@@ -3,20 +3,17 @@ package main
 import (
 	"github.com/goadesign/goa"
 	"github.com/riku179/regisys/app"
-	"github.com/riku179/regisys/models"
 )
 
 // OrdersController implements the orders resource.
 type OrdersController struct {
 	*goa.Controller
-	DB *models.OrdersDB
 }
 
 // NewOrdersController creates a orders controller.
-func NewOrdersController(service *goa.Service, db *models.OrdersDB) *OrdersController {
+func NewOrdersController(service *goa.Service) *OrdersController {
 	return &OrdersController{
 		Controller: service.NewController("OrdersController"),
-		DB:         db,
 	}
 }
 
