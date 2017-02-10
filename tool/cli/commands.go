@@ -141,10 +141,10 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "item_name": "Molestiae magni quae ut tenetur nihil eos.",
-   "member_price": 6311483591368200811,
-   "price": 7849536275300465135,
-   "quantity": 5152369185030202978
+   "item_name": "Ut rerum nobis.",
+   "member_price": 2514159059026680118,
+   "price": 4715551413911070033,
+   "quantity": 24941019248932122
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
 	}
@@ -160,10 +160,10 @@ Payload example:
 Payload example:
 
 {
-   "item_id": 413254433334546445,
-   "price": 692620301302807586,
-   "quantity": 5899157054105302438,
-   "user_id": 1105437504714296401
+   "item_id": 520721309930849131,
+   "price": 6311483591368200811,
+   "quantity": 7849536275300465135,
+   "user_id": 5152369185030202978
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -179,8 +179,8 @@ Payload example:
 Payload example:
 
 {
-   "name": "Illo vero voluptatum quidem.",
-   "password": "Neque id omnis eveniet ut sed aliquam."
+   "name": "Consequuntur voluptas aut illo animi.",
+   "password": "Aperiam earum."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -224,11 +224,11 @@ Payload example:
 Payload example:
 
 {
-   "id": 8146831818233394072,
-   "item_name": "Voluptas aut illo animi dicta aperiam.",
-   "member_price": 655884208255480511,
-   "price": 5693119682379006692,
-   "quantity": 1762076070320727430
+   "id": 1299470091090727982,
+   "item_name": "Atque et optio molestiae magni quae.",
+   "member_price": 6144811010436733541,
+   "price": 1718703717495735613,
+   "quantity": 5203681815946760459
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}

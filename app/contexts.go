@@ -220,9 +220,11 @@ func NewSigninJWTContext(ctx context.Context, r *http.Request, service *goa.Serv
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *SigninJWTContext) OK(r *RegisysToken) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.regisys.token+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+func (ctx *SigninJWTContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
 }
 
 // Unauthorized sends a HTTP response with status code 401.

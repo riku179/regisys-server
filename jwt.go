@@ -99,11 +99,11 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 
 	// Generate JWT
 	token := jwtgo.New(jwtgo.SigningMethodRS512)
-	in60m := time.Now().Add(time.Duration(60) * time.Minute).Unix()
+	// token expire 24h after
+	in60m := time.Now().Add(time.Duration(1440) * time.Minute).Unix()
 	token.Claims = jwtgo.MapClaims{
 		"exp":       in60m,             // time when the token will expire (60 minutes from now)
 		"iat":       time.Now().Unix(), // when the token was issued/created (now)
-		"nbf":       2,                 // time before which the token is not yet valid (2 minutes ago)
 		"sub":       user.ID,           // the subject/principal is whom the token is about
 		"scopes":    "api:access",      // token scope - not a standard claim
 		"group":     user.Group,        // group of user - not a standard claim
@@ -120,13 +120,7 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	ctx.ResponseData.Header().Set("Authorization", "Bearer "+signedToken)
 
 	// JWTController_Signin: end_implement
-	res := &app.RegisysToken{
-		ID:       user.ID,
-		Username: user.Name,
-		Group:    user.Group,
-		IsMember: user.IsMember,
-	}
-	return ctx.OK(res)
+	return nil
 }
 
 // LoadJWTPublicKeys loads PEM encoded RSA public keys used to validata and decrypt the JWT.

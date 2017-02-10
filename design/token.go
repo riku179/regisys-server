@@ -29,25 +29,7 @@ var _ = Resource("jwt", func() {
 			Headers(func() {
 				Header("Authorization", String, "Generated JWT")
 			})
-			Media(SignInMedia)
 		})
 		Response(Unauthorized)
-	})
-})
-
-var SignInMedia = MediaType("application/vnd.regisys.token+json", func() {
-	Description("Username and ID")
-	Attributes(func() {
-		Attribute("id", Integer, "Unique user ID")
-		Attribute("username", String, "Username")
-		Attribute("group", String, "Group of user")
-		Attribute("is_member", Boolean, "Is member of MMA")
-		Required("id", "username", "group", "is_member")
-	})
-	View("default", func() {
-		Attribute("id")
-		Attribute("username")
-		Attribute("group")
-		Attribute("is_member")
 	})
 })
