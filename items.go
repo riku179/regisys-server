@@ -2,12 +2,14 @@ package main
 
 import (
 	"github.com/goadesign/goa"
-	"github.com/riku179/regisys/app"
+	"github.com/riku179/regisys-server/app"
+	"github.com/riku179/regisys-server/models"
 )
 
 // ItemsController implements the items resource.
 type ItemsController struct {
 	*goa.Controller
+	DB *models.ItemsDB
 }
 
 // NewItemsController creates a items controller.
@@ -54,6 +56,6 @@ func (c *ItemsController) Show(ctx *app.ShowItemsContext) error {
 	// Put your logic here
 
 	// ItemsController_Show: end_implement
-	res := app.GoaExampleRegisysItemsCollection{}
+	res := app.RegisysItemsCollection{}
 	return ctx.OK(res)
 }

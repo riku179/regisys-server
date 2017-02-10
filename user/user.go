@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/riku179/regisys/models"
+	"github.com/riku179/regisys-server/models"
 	"golang.org/x/net/context"
 )
 

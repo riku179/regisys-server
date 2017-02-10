@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
-	"github.com/riku179/regisys/app"
-	"github.com/riku179/regisys/models"
-	"github.com/riku179/regisys/user"
+	"github.com/riku179/regisys-server/app"
+	"github.com/riku179/regisys-server/models"
+	"github.com/riku179/regisys-server/user"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -79,7 +79,7 @@ func (c *UserController) Show(ctx *app.ShowUserContext) error {
 		return ctx.NotFound()
 	}
 	// UserController_Show: end_implement
-	res := &app.GoaExampleUser{
+	res := &app.RegisysUser{
 		ID:       req_user.ID,
 		Group:    req_user.Group,
 		Name:     req_user.Name,
@@ -97,9 +97,9 @@ func (c *UserController) ShowList(ctx *app.ShowListUserContext) error {
 	}
 	// UserController_ShowList: end_implement
 	//res := app.GoaExampleUserCollection{}
-	res := []*app.GoaExampleUser{}
+	res := []*app.RegisysUser{}
 	for _, usr := range users {
-		res = append(res, &app.GoaExampleUser{
+		res = append(res, &app.RegisysUser{
 			ID:       usr.ID,
 			Group:    usr.Group,
 			Name:     usr.Name,

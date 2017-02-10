@@ -8,8 +8,8 @@ import (
 	"github.com/goadesign/goa/middleware"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/riku179/regisys/app"
-	"github.com/riku179/regisys/models"
+	"github.com/riku179/regisys-server/app"
+	"github.com/riku179/regisys-server/models"
 	"os"
 )
 

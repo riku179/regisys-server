@@ -2,12 +2,14 @@ package main
 
 import (
 	"github.com/goadesign/goa"
-	"github.com/riku179/regisys/app"
+	"github.com/riku179/regisys-server/app"
+	"github.com/riku179/regisys-server/models"
 )
 
 // OrdersController implements the orders resource.
 type OrdersController struct {
 	*goa.Controller
+	DB *models.OrdersDB
 }
 
 // NewOrdersController creates a orders controller.
@@ -44,6 +46,6 @@ func (c *OrdersController) Show(ctx *app.ShowOrdersContext) error {
 	// Put your logic here
 
 	// OrdersController_Show: end_implement
-	res := app.GoaExampleOrdersCollection{}
+	res := app.RegisysOrdersCollection{}
 	return ctx.OK(res)
 }

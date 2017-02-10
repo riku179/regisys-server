@@ -1,0 +1,19 @@
+{
+    "dependencies": {
+        "github.com/dgrijalva/jwt-go": {
+            "branch": "master"
+        },
+        "github.com/goadesign/goa": {
+            "branch": "master"
+        },
+        "github.com/goadesign/gorma": {
+            "branch": "master"
+        },
+        "github.com/spf13/cobra": {
+            "branch": "master"
+        },
+        "golang.org/x/net": {
+            "branch": "master"
+        }
+    }
+}

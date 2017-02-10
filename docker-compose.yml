@@ -5,10 +5,10 @@ services:
         image: golang:1.7
         volumes:
             - 'lib:/go'
-            - '.:/go/src/github.com/riku179/regisys'
+            - '.:/go/src/github.com/riku179/regisys-server'
         ports:
             - '8080:8080'
-        working_dir: /go/src/github.com/riku179/regisys
+        working_dir: /go/src/github.com/riku179/regisys-server
         entrypoint: './wait-for-it.sh -t 60 db:3306 -- '
         command: 'go run main.go jwt.go items.go orders.go user.go swagger.go'
         environment:
