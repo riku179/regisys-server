@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
-	"github.com/riku179/regisys/app"
-	"github.com/riku179/regisys/models"
-	"github.com/riku179/regisys/user"
+	"github.com/riku179/regisys-server/app"
+	"github.com/riku179/regisys-server/models"
+	"github.com/riku179/regisys-server/user"
 	"golang.org/x/crypto/bcrypt"
 )
 

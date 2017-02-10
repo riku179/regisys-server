@@ -2,18 +2,21 @@ package main
 
 import (
 	"github.com/goadesign/goa"
-	"github.com/riku179/regisys/app"
+	"github.com/riku179/regisys-server/app"
+	"github.com/riku179/regisys-server/models"
 )
 
 // ItemsController implements the items resource.
 type ItemsController struct {
 	*goa.Controller
+	DB *models.ItemsDB
 }
 
 // NewItemsController creates a items controller.
-func NewItemsController(service *goa.Service) *ItemsController {
+func NewItemsController(service *goa.Service, db *models.ItemsDB) *ItemsController {
 	return &ItemsController{
 		Controller: service.NewController("ItemsController"),
+		DB:         db,
 	}
 }
 
