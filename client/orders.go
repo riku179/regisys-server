@@ -13,11 +13,12 @@ package client
 import (
 	"bytes"
 	"fmt"
-	"golang.org/x/net/context"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 // AddOrdersPath computes a request path to the add action of orders.

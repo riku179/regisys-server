@@ -3,6 +3,11 @@ package main
 import (
 	"crypto/rsa"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"path/filepath"
+	"time"
+
 	jwtgo "github.com/dgrijalva/jwt-go"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware/security/jwt"
@@ -13,10 +18,6 @@ import (
 	"github.com/riku179/regisys-server/user"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/net/context"
-	"io/ioutil"
-	"net/http"
-	"path/filepath"
-	"time"
 )
 
 // NewJWTMiddleware creates a middleware that checks for the presence of a JWT Authorization header
@@ -66,10 +67,11 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	username, password, ok := ctx.BasicAuth()
 	if !ok {
 		goa.LogInfo(ctx, "failed basic auth")
-		return ErrUnauthorized("missing auth")
+		return ctx.Unauthorized()
 	} else if username == "" {
 		goa.LogInfo(ctx, "missing username in basicauth header")
-		return ErrUnauthorized("missing username in header")
+		ctx.Unauthorized()
+		return ctx.Unauthorized()
 	}
 
 	// User data(id,name,group) is bound to this User instance
@@ -78,7 +80,7 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	if ctx.IsMember {
 		//	Authenticate with LDAP
 		if ldap_auth.LdapAuth() != nil {
-			return ErrUnauthorized("Unknown user")
+			return ctx.Unauthorized()
 		}
 		err := UserDB.Db.Where("name = ?", username).First(&user).Error
 		if err == gorm.ErrRecordNotFound {
@@ -89,11 +91,11 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 		// Authenticate with username and password
 		err := UserDB.Db.Where("name = ?", username).First(&user).Error
 		if err == gorm.ErrRecordNotFound {
-			return ErrUnauthorized("Unknown user")
+			return ctx.Unauthorized()
 		}
 		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if err != nil {
-			return ErrUnauthorized("Wrong password")
+			return ctx.Unauthorized()
 		}
 	}
 

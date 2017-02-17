@@ -1,5 +1,5 @@
 {
-    "memo": "70f1f6955fca4823ca31540c8d6ff99eec69c49df1559ee4153187df68b8ec8c",
+    "memo": "170ceaf4a29513258afd6a456da759debd159732157799345ab741e587882b8a",
     "projects": [
         {
             "name": "bitbucket.org/pkg/inflect",
@@ -127,15 +127,15 @@
             ]
         },
         {
-            "name": "github.com/riku179/regisys",
+            "name": "github.com/riku179/regisys-server",
             "branch": "develop",
-            "revision": "945d9811e83f99e5ae608850a91de0814e3c7700",
+            "revision": "3059ca5b6f345d6a82e2ce5dfdf2af1a0aa80c06",
             "packages": [
                 "app",
-                "app/test",
                 "client",
+                "ldap_auth",
                 "models",
-                "tool/cli"
+                "user"
             ]
         },
         {

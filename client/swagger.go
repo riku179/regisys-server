@@ -12,13 +12,14 @@ package client
 
 import (
 	"fmt"
-	"golang.org/x/net/context"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
+
+	"golang.org/x/net/context"
 )
 
 // Download downloads /files with the given filename and writes it to the file dest.

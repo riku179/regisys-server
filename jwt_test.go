@@ -3,18 +3,25 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	"github.com/riku179/regisys/app/test"
 	"testing"
+
+	"github.com/riku179/regisys-server/app/test"
 )
 
-var ctrl, _ = NewJWTController(service)
+var jwtCtrl, _ = NewJWTController(service)
 
-func TestNewJWTController(t *testing.T) {
+func TestSigninJWTOK(t *testing.T) {
 	ctx := context.Background()
-	basicToken := base64.StdEncoding.EncodeToString([]byte("user:password"))
+	basicToken := base64.StdEncoding.EncodeToString([]byte("JohnDoe:foobar"))
 	basicHeader := "Basic " + basicToken
 
-	//ctx = context.WithValue(ctx, "Authorization")
-	resp, _ := test.SigninJWTOK(t, ctx, service, ctrl, true, basicHeader)
-	jwtToken := resp.Header().Get("Authorization")
+	test.SigninJWTOK(t, ctx, service, jwtCtrl, false, basicHeader)
+}
+
+func TestSigninJWTUnauthorization(t *testing.T) {
+	ctx := context.Background()
+	basicToken := base64.StdEncoding.EncodeToString([]byte("Michael:Jackson"))
+	basicHeader := "Basic " + basicToken
+
+	test.SigninJWTUnauthorized(t, ctx, service, jwtCtrl, false, basicHeader)
 }

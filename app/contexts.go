@@ -11,11 +11,12 @@
 package app
 
 import (
-	"github.com/goadesign/goa"
-	"golang.org/x/net/context"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/goadesign/goa"
+	"golang.org/x/net/context"
 )
 
 // AddItemsContext provides the items add action context.
@@ -220,11 +221,9 @@ func NewSigninJWTContext(ctx context.Context, r *http.Request, service *goa.Serv
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *SigninJWTContext) OK(resp []byte) error {
-	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
-	ctx.ResponseData.WriteHeader(200)
-	_, err := ctx.ResponseData.Write(resp)
-	return err
+func (ctx *SigninJWTContext) OK(r *RegisysToken) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.regisys.token+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
 // Unauthorized sends a HTTP response with status code 401.
