@@ -1,4 +1,5 @@
 # docker-compose.yml for production
+# this version not expose ports
 version: "2"
 services:
   app:
