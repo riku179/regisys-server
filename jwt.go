@@ -70,30 +70,29 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 		return ctx.Unauthorized()
 	} else if username == "" {
 		goa.LogInfo(ctx, "missing username in basicauth header")
-		ctx.Unauthorized()
 		return ctx.Unauthorized()
 	}
 
 	// User data(id,name,group) is bound to this User instance
-	var user models.User
+	var reqUser models.User
 
 	if ctx.IsMember {
 		//	Authenticate with LDAP
 		if ldap_auth.LdapAuth() != nil {
 			return ctx.Unauthorized()
 		}
-		err := UserDB.Db.Where("name = ?", username).First(&user).Error
+		err := UserDB.Db.Where("name = ?", username).First(&reqUser).Error
 		if err == gorm.ErrRecordNotFound {
-			user = models.User{IsMember: true, Name: username}
-			UserDB.Add(ctx, &user)
+			reqUser = models.User{IsMember: true, Name: username}
+			UserDB.Add(ctx, &reqUser)
 		}
 	} else {
 		// Authenticate with username and password
-		err := UserDB.Db.Where("name = ?", username).First(&user).Error
+		err := UserDB.Db.Where("name = ?", username).First(&reqUser).Error
 		if err == gorm.ErrRecordNotFound {
 			return ctx.Unauthorized()
 		}
-		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		err = bcrypt.CompareHashAndPassword([]byte(reqUser.Password), []byte(password))
 		if err != nil {
 			return ctx.Unauthorized()
 		}
@@ -106,11 +105,11 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	token.Claims = jwtgo.MapClaims{
 		"exp":       in60m,             // time when the token will expire (60 minutes from now)
 		"iat":       time.Now().Unix(), // when the token was issued/created (now)
-		"sub":       user.ID,           // the subject/principal is whom the token is about
+		"sub":       reqUser.ID,        // the subject/principal is whom the token is about
 		"scopes":    "api:access",      // token scope - not a standard claim
-		"group":     user.Group,        // group of user - not a standard claim
-		"user_name": user.Name,         // username - not a standard claim
-		"is_member": user.IsMember,     // is member of MMA - not a standard claim
+		"group":     reqUser.Group,     // group of user - not a standard claim
+		"user_name": reqUser.Name,      // username - not a standard claim
+		"is_member": reqUser.IsMember,  // is member of MMA - not a standard claim
 	}
 	// Sign token by private key
 	signedToken, err := token.SignedString(c.privateKey)
@@ -144,7 +143,7 @@ func loadJWTPublicKeys() ([]jwt.Key, error) {
 		keys[i] = key
 	}
 	if len(keys) == 0 {
-		return nil, fmt.Errorf("couldn't load public keys for JWT security")
+		return nil, fmt.Errorf("couldn't load public keys for JWT security%s", "")
 	}
 
 	return keys, nil

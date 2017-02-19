@@ -34,7 +34,7 @@ func (c *UserController) Add(ctx *app.AddUserContext) error {
 	res_user := models.User{IsMember: false, Name: ctx.Payload.Name, Password: string(hash)}
 	UserDB.Add(ctx, &res_user)
 	// UserController_Add: end_implement
-	return nil
+	return ctx.NoContent()
 }
 
 // Modify runs the modify action.
@@ -48,8 +48,8 @@ func (c *UserController) Modify(ctx *app.ModifyUserContext) error {
 		return ctx.NotFound()
 	}
 
-	// Normal user can do nothing
-	if login_user.Group == Normal {
+	// only 'Register' or 'Admin' user can do
+	if login_user.Group != Register && login_user.Group != Admin {
 		return ctx.Forbidden()
 	}
 
@@ -67,7 +67,7 @@ func (c *UserController) Modify(ctx *app.ModifyUserContext) error {
 		goa.LogError(ctx, "Failed to access DB", err)
 	}
 	// UserController_Modify: end_implement
-	return nil
+	return ctx.NoContent()
 }
 
 // Show runs the show action.

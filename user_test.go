@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"testing"
 
 	"github.com/riku179/regisys-server/app"
@@ -11,34 +12,144 @@ import (
 
 var userCtrl = NewUserController(service)
 
-func TestAddUserForbidden(t *testing.T) {
+func TestAddForbidden(t *testing.T) {
 	// only MMA member can add OB account
-	ctx = user.NewContext(ctx, &models.User{
+	OB := &models.User{Name: "OB", Password: "password", Group: Normal,
 		IsMember: false,
-		Name:     "Mr.OB",
-		Password: "foobar",
-	})
+	}
+	obCtx := user.NewContext(ctx, OB)
 
-	test.AddUserForbidden(t, ctx, service, userCtrl, &app.AddUserPayload{Name: "foo", Password: "bar"})
+	test.AddUserForbidden(
+		t, obCtx, service, userCtrl, &app.AddUserPayload{Name: "foo", Password: "bar"})
 }
 
-func TestAddUserNoContent(t *testing.T) {
-	// only MMA member can add non-MMA user
-	ctx = user.NewContext(ctx, &models.User{
-		IsMember: true,
-		Name:     "Mr.MMA",
-		Password: "foobar",
-	})
+func TestAddNoContent(t *testing.T) {
+	//// only MMA member can add non-MMA user
+	normal, normalCtx := PrepareUser(Normal)
+	defer UserDB.Delete(ctx, normal.ID)
 
-	addUserPayload := &app.AddUserPayload{Name: "foo", Password: "bar"}
+	test.AddUserNoContent(
+		t, normalCtx, service, userCtrl, &app.AddUserPayload{Name: "foo", Password: "bar"})
 
-	test.AddUserNoContent(t, ctx, service, userCtrl, addUserPayload)
+	// check user exists
+	fooID, err := getUserID("foo")
+	defer UserDB.Delete(ctx, fooID)
+	if err != nil {
+		t.Fatalf("user not found in DB [Err] %+v", err)
+	}
 }
 
-func TestModifyUserForbidden(t *testing.T) {
+func TestModifyForbidden(t *testing.T) {
 	// Power: Admin > Register > Normal
-	// User cannot modify others have more power than themselves
+	// User cannot modify others who have more power than themselves
+	// and, User cannot change others to more powerful than themselves
+	normal, normalCtx := PrepareUser(Normal)
+	register, registerCtx := PrepareUser(Register)
+	admin, _ := PrepareUser(Admin)
+	defer UserDB.Delete(ctx, register.ID)
+	defer UserDB.Delete(ctx, normal.ID)
+	defer UserDB.Delete(ctx, admin.ID)
+	// Normal user try other Register -> Admin
+	test.ModifyUserForbidden(
+		t, normalCtx, service, userCtrl, register.ID, &app.ModifyUserPayload{
+			Group: Register,
+		})
 
-	// Normal -> Register
-	modifyUserPayload := &app.ModifyUserPayload{Group: ""}
+	// Register user try other Admin -> Register
+	test.ModifyUserForbidden(
+		t, registerCtx, service, userCtrl, admin.ID, &app.ModifyUserPayload{
+			Group: Normal,
+		})
+
+	// Register user try other Normal -> Admin
+	test.ModifyUserForbidden(
+		t, registerCtx, service, userCtrl, normal.ID, &app.ModifyUserPayload{
+			Group: Admin,
+		})
+}
+
+func TestModifyNoContent(t *testing.T) {
+	// reference comment in TestModifyForbidden()
+
+	normal, _ := PrepareUser(Normal)
+	register, registerCtx := PrepareUser(Register)
+	admin, adminCtx := PrepareUser(Admin)
+	defer UserDB.Delete(ctx, register.ID)
+	defer UserDB.Delete(ctx, normal.ID)
+	defer UserDB.Delete(ctx, admin.ID)
+
+	// Register user try other Normal -> Register
+	test.ModifyUserNoContent(
+		t, registerCtx, service, userCtrl, normal.ID, &app.ModifyUserPayload{
+			Group: Register,
+		})
+	//Admin user try other Register -> Admin
+	test.ModifyUserNoContent(
+		t, adminCtx, service, userCtrl, register.ID, &app.ModifyUserPayload{
+			Group: Admin,
+		})
+
+	u, err := UserDB.Get(ctx, normal.ID)
+	if err != nil {
+		t.Fatalf("cought error to get user from DB [Err] %+v", err)
+	}
+	if u.Group != Register {
+		t.Fatalf("user's group didn't change. got: %+v", u.Group)
+	}
+
+	u, err = UserDB.Get(ctx, register.ID)
+	if err != nil {
+		t.Fatalf("cought error to get user from DB [Err] %+v", err)
+	}
+	if u.Group != Admin {
+		t.Fatalf("user's group didn't change. got: %+v", u.Group)
+	}
+}
+
+func TestModifyNotFound(t *testing.T) {
+	admin, adminCtx := PrepareUser(Admin)
+	defer UserDB.Delete(ctx, admin.ID)
+
+	// user of ID:114514 doesn't exist
+	test.ModifyUserNotFound(t, adminCtx, service, userCtrl, 114514, &app.ModifyUserPayload{
+		Group: Register,
+	})
+}
+
+func TestShowUserOK(t *testing.T) {
+	normal, normalCtx := PrepareUser(Normal)
+	defer UserDB.Delete(ctx, normal.ID)
+
+	test.ShowUserOK(t, normalCtx, service, userCtrl, normal.ID)
+}
+
+func TestShowNotFound(t *testing.T) {
+	normal, normalCtx := PrepareUser(Normal)
+	defer UserDB.Delete(ctx, normal.ID)
+
+	// user of ID:114514 doesn't exist
+	test.ShowUserNotFound(t, normalCtx, service, userCtrl, 114514)
+}
+
+func TestShowListOK(t *testing.T) {
+	normal, normalCtx := PrepareUser(Normal)
+	defer UserDB.Delete(ctx, normal.ID)
+
+	test.ShowListUserOK(t, normalCtx, service, userCtrl)
+}
+
+func PrepareUser(group string) (usr *models.User, ctx context.Context) {
+	usr = &models.User{Name: group, Password: "password", Group: group, IsMember: true}
+	UserDB.Add(ctx, usr)
+	ctx = user.NewContext(ctx, usr)
+	return
+}
+
+func getUserID(username string) (int, error) {
+	var register = models.User{}
+	err := UserDB.Db.Where("name = ?", username).First(&register).Error
+	if err != nil {
+		return 0, err
+	}
+	return register.ID, nil
 }
