@@ -4,18 +4,18 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/riku179/regisys-server/app"
 	"github.com/riku179/regisys-server/models"
-	"os"
 )
 
 var (
 	// ErrUnauthorized is the error returned for unauthorized requests.
-	ErrUnauthorized     = goa.NewErrorClass("unauthorized", 401)
 	errValidationFailed = goa.NewErrorClass("validation_failed", 401)
 	ItemsDB             *models.ItemsDB
 	UserDB              *models.UserDB

@@ -11,11 +11,12 @@
 package app
 
 import (
-	"github.com/goadesign/goa"
-	"golang.org/x/net/context"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/goadesign/goa"
+	"golang.org/x/net/context"
 )
 
 // AddItemsContext provides the items add action context.

@@ -1,4 +1,5 @@
-# docker-compose.yml for DEV
+# docker-compose.yml for production
+# this version not expose ports
 version: "2"
 services:
   app:
@@ -6,8 +7,6 @@ services:
     volumes:
       - 'lib:/go'
       - '.:/go/src/github.com/riku179/regisys-server'
-    ports:
-      - '8080:8080'
     working_dir: /go/src/github.com/riku179/regisys-server
     entrypoint: './wait-for-it.sh -t 60 db:3306 -- '
     command: 'go run main.go jwt.go items.go orders.go user.go swagger.go'
@@ -26,8 +25,6 @@ services:
     image: mariadb
     volumes:
       - data:/var/lib/mysql
-    ports:
-      - '3306:3306'
     command: '-C utf8'
     environment:
       - MYSQL_DATABASE=regisys

@@ -11,8 +11,9 @@
 package app
 
 import (
-	"github.com/goadesign/goa"
 	"time"
+
+	"github.com/goadesign/goa"
 )
 
 // An item (default view)

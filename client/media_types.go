@@ -11,9 +11,10 @@
 package client
 
 import (
-	"github.com/goadesign/goa"
 	"net/http"
 	"time"
+
+	"github.com/goadesign/goa"
 )
 
 // An item (default view)
