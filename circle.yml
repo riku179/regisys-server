@@ -1,14 +1,14 @@
 machine:
-	services:
-		- docker
+  services:
+    - docker
 
 dependencies:
-	override:
-		- docker-compose run up -d db
+  override:
+    - docker-compose run up -d db
 
 test:
-	pre:
-		- docker-compose run --rm app go-wrapper download
+  pre:
+    - docker-compose run --rm app go-wrapper download
 
-	override:
-		- docker-compose run --rm app go test
+  override:
+    - docker-compose run --rm app go test
