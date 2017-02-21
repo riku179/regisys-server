@@ -26,10 +26,10 @@ import (
 )
 
 // SigninJWTOK runs the method Signin of the given controller with the given parameters.
-// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.JWTController, isMember bool, authorization string) (http.ResponseWriter, *app.RegisysToken) {
+func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.JWTController, isMember bool, authorization string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -90,21 +90,9 @@ func SigninJWTOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.RegisysToken
-	if resp != nil {
-		var ok bool
-		mt, ok = resp.(*app.RegisysToken)
-		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of app.RegisysToken", resp)
-		}
-		err = mt.Validate()
-		if err != nil {
-			t.Errorf("invalid response media type: %s", err)
-		}
-	}
 
 	// Return results
-	return rw, mt
+	return rw
 }
 
 // SigninJWTUnauthorized runs the method Signin of the given controller with the given parameters.

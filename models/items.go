@@ -68,9 +68,9 @@ type ItemsStorage interface {
 	ListRegisysItems(ctx context.Context) []*app.RegisysItems
 	OneRegisysItems(ctx context.Context, id int) (*app.RegisysItems, error)
 
-	UpdateFromAddGoodsPayload(ctx context.Context, payload *app.AddGoodsPayload, id int) error
+	UpdateFromAddItemPayload(ctx context.Context, payload *app.AddItemPayload, id int) error
 
-	UpdateFromModifyGoodsPayload(ctx context.Context, payload *app.ModifyGoodsPayload, id int) error
+	UpdateFromModifyItemPayload(ctx context.Context, payload *app.ModifyItemPayload, id int) error
 }
 
 // TableName overrides the table name settings in Gorm to force a specific table name
@@ -152,9 +152,9 @@ func (m *ItemsDB) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-// ItemsFromAddGoodsPayload Converts source AddGoodsPayload to target Items model
+// ItemsFromAddItemPayload Converts source AddItemPayload to target Items model
 // only copying the non-nil fields from the source.
-func ItemsFromAddGoodsPayload(payload *app.AddGoodsPayload) *Items {
+func ItemsFromAddItemPayload(payload *app.AddItemPayload) *Items {
 	items := &Items{}
 	items.ItemName = payload.ItemName
 	items.MemberPrice = payload.MemberPrice
@@ -164,9 +164,9 @@ func ItemsFromAddGoodsPayload(payload *app.AddGoodsPayload) *Items {
 	return items
 }
 
-// UpdateFromAddGoodsPayload applies non-nil changes from AddGoodsPayload to the model and saves it
-func (m *ItemsDB) UpdateFromAddGoodsPayload(ctx context.Context, payload *app.AddGoodsPayload, id int) error {
-	defer goa.MeasureSince([]string{"goa", "db", "items", "updatefromaddGoodsPayload"}, time.Now())
+// UpdateFromAddItemPayload applies non-nil changes from AddItemPayload to the model and saves it
+func (m *ItemsDB) UpdateFromAddItemPayload(ctx context.Context, payload *app.AddItemPayload, id int) error {
+	defer goa.MeasureSince([]string{"goa", "db", "items", "updatefromaddItemPayload"}, time.Now())
 
 	var obj Items
 	err := m.Db.Table(m.TableName()).Where("id = ?", id).Find(&obj).Error
@@ -183,11 +183,10 @@ func (m *ItemsDB) UpdateFromAddGoodsPayload(ctx context.Context, payload *app.Ad
 	return err
 }
 
-// ItemsFromModifyGoodsPayload Converts source ModifyGoodsPayload to target Items model
+// ItemsFromModifyItemPayload Converts source ModifyItemPayload to target Items model
 // only copying the non-nil fields from the source.
-func ItemsFromModifyGoodsPayload(payload *app.ModifyGoodsPayload) *Items {
+func ItemsFromModifyItemPayload(payload *app.ModifyItemPayload) *Items {
 	items := &Items{}
-	items.ID = payload.ID
 	if payload.ItemName != nil {
 		items.ItemName = *payload.ItemName
 	}
@@ -204,9 +203,9 @@ func ItemsFromModifyGoodsPayload(payload *app.ModifyGoodsPayload) *Items {
 	return items
 }
 
-// UpdateFromModifyGoodsPayload applies non-nil changes from ModifyGoodsPayload to the model and saves it
-func (m *ItemsDB) UpdateFromModifyGoodsPayload(ctx context.Context, payload *app.ModifyGoodsPayload, id int) error {
-	defer goa.MeasureSince([]string{"goa", "db", "items", "updatefrommodifyGoodsPayload"}, time.Now())
+// UpdateFromModifyItemPayload applies non-nil changes from ModifyItemPayload to the model and saves it
+func (m *ItemsDB) UpdateFromModifyItemPayload(ctx context.Context, payload *app.ModifyItemPayload, id int) error {
+	defer goa.MeasureSince([]string{"goa", "db", "items", "updatefrommodifyItemPayload"}, time.Now())
 
 	var obj Items
 	err := m.Db.Table(m.TableName()).Where("id = ?", id).Find(&obj).Error
@@ -214,7 +213,6 @@ func (m *ItemsDB) UpdateFromModifyGoodsPayload(ctx context.Context, payload *app
 		goa.LogError(ctx, "error retrieving Items", "error", err.Error())
 		return err
 	}
-	obj.ID = payload.ID
 	if payload.ItemName != nil {
 		obj.ItemName = *payload.ItemName
 	}

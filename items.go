@@ -2,8 +2,10 @@ package main
 
 import (
 	"github.com/goadesign/goa"
+	"github.com/jinzhu/gorm"
 	"github.com/riku179/regisys-server/app"
 	"github.com/riku179/regisys-server/models"
+	"github.com/riku179/regisys-server/user"
 )
 
 // ItemsController implements the items resource.
@@ -21,41 +23,78 @@ func NewItemsController(service *goa.Service) *ItemsController {
 
 // Add runs the add action.
 func (c *ItemsController) Add(ctx *app.AddItemsContext) error {
-	// ItemsController_Add: start_implement
+	reqUser := user.FromContext(ctx)
 
-	// Put your logic here
-
-	// ItemsController_Add: end_implement
-	return nil
+	ItemsDB.Add(ctx, &models.Items{
+		ItemName:    ctx.Payload.ItemName,
+		Quantity:    ctx.Payload.Quantity,
+		Price:       ctx.Payload.Price,
+		MemberPrice: ctx.Payload.MemberPrice,
+		UserID:      reqUser.ID, // 商品の所有ユーザのID
+	})
+	return ctx.NoContent()
 }
 
 // Delete runs the delete action.
 func (c *ItemsController) Delete(ctx *app.DeleteItemsContext) error {
-	// ItemsController_Delete: start_implement
+	reqUser := user.FromContext(ctx)
 
-	// Put your logic here
+	reqItem, err := ItemsDB.Get(ctx, ctx.ID)
 
-	// ItemsController_Delete: end_implement
-	return nil
+	if err == gorm.ErrRecordNotFound {
+		// 指定された商品が無い
+		return ctx.NotFound()
+	} else if reqItem.UserID != reqUser.ID {
+		// 指定された商品の所有者IDがリクエストしたユーザーののIDと一致しない
+		return ctx.Forbidden()
+	} else {
+		// OK
+		ItemsDB.Delete(ctx, ctx.ID)
+	}
+	return ctx.NoContent()
 }
 
 // Modify runs the modify action.
 func (c *ItemsController) Modify(ctx *app.ModifyItemsContext) error {
-	// ItemsController_Modify: start_implement
+	reqUser := user.FromContext(ctx)
 
-	// Put your logic here
+	reqItem, err := ItemsDB.Get(ctx, ctx.ID)
 
-	// ItemsController_Modify: end_implement
-	return nil
+	if err == gorm.ErrRecordNotFound {
+		// 指定された商品が無い
+		return ctx.NotFound()
+	} else if reqItem.UserID != reqUser.ID {
+		// 指定された商品の所有者IDがリクエストしたユーザーののIDと一致しない
+		return ctx.Forbidden()
+	} else {
+		// OK
+		ItemsDB.UpdateFromModifyItemPayload(ctx, ctx.Payload, ctx.ID)
+	}
+	return ctx.NoContent()
 }
 
 // Show runs the show action.
 func (c *ItemsController) Show(ctx *app.ShowItemsContext) error {
-	// ItemsController_Show: start_implement
+	var res app.RegisysItemsCollection
 
-	// Put your logic here
+	// ユーザーが指定されていない場合は全てのItemを返す
+	if ctx.User == nil {
+		return ctx.OK(ItemsDB.ListRegisysItems(ctx))
+	}
 
-	// ItemsController_Show: end_implement
-	res := app.RegisysItemsCollection{}
+	_, err := UserDB.Get(ctx, *ctx.User)
+	if err == gorm.ErrRecordNotFound {
+		// ユーザーが存在しない
+		return ctx.NotFound()
+	} else {
+		// ユーザーが指定されている場合はそのユーザーのItemのみ返す
+		var items []*models.Items
+		ItemsDB.Db.Where("user_id = ?", ctx.User).Find(&items)
+
+		for _, t := range items {
+			res = append(res, t.ItemsToRegisysItems())
+		}
+	}
+
 	return ctx.OK(res)
 }

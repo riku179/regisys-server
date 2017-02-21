@@ -12,7 +12,7 @@ import (
 
 var userCtrl = NewUserController(service)
 
-func TestAddForbidden(t *testing.T) {
+func TestAddUser_Forbidden(t *testing.T) {
 	// only MMA member can add OB account
 	OB := &models.User{Name: "OB", Password: "password", Group: Normal,
 		IsMember: false,
@@ -23,7 +23,7 @@ func TestAddForbidden(t *testing.T) {
 		t, obCtx, service, userCtrl, &app.AddUserPayload{Name: "foo", Password: "bar"})
 }
 
-func TestAddNoContent(t *testing.T) {
+func TestAddUser_NoContent(t *testing.T) {
 	//// only MMA member can add non-MMA user
 	normal, normalCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, normal.ID)
@@ -32,14 +32,14 @@ func TestAddNoContent(t *testing.T) {
 		t, normalCtx, service, userCtrl, &app.AddUserPayload{Name: "foo", Password: "bar"})
 
 	// check user exists
-	fooID, err := getUserID("foo")
-	defer UserDB.Delete(ctx, fooID)
-	if err != nil {
-		t.Fatalf("user not found in DB [Err] %+v", err)
+	var addUser models.User
+	UserDB.Db.Last(&addUser)
+	if addUser.Name != "foo" {
+		t.Fatalf("Username expected: foo, but received: %+v", addUser.Name)
 	}
 }
 
-func TestModifyForbidden(t *testing.T) {
+func TestModifyUser_Forbidden(t *testing.T) {
 	// Power: Admin > Register > Normal
 	// User cannot modify others who have more power than themselves
 	// and, User cannot change others to more powerful than themselves
@@ -68,7 +68,7 @@ func TestModifyForbidden(t *testing.T) {
 		})
 }
 
-func TestModifyNoContent(t *testing.T) {
+func TestModifyUser_NoContent(t *testing.T) {
 	// reference comment in TestModifyForbidden()
 
 	normal, _ := PrepareUser(Normal)
@@ -106,7 +106,7 @@ func TestModifyNoContent(t *testing.T) {
 	}
 }
 
-func TestModifyNotFound(t *testing.T) {
+func TestModifyUser_NotFound(t *testing.T) {
 	admin, adminCtx := PrepareUser(Admin)
 	defer UserDB.Delete(ctx, admin.ID)
 
@@ -116,14 +116,14 @@ func TestModifyNotFound(t *testing.T) {
 	})
 }
 
-func TestShowUserOK(t *testing.T) {
+func TestShowUser_OK(t *testing.T) {
 	normal, normalCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, normal.ID)
 
 	test.ShowUserOK(t, normalCtx, service, userCtrl, normal.ID)
 }
 
-func TestShowNotFound(t *testing.T) {
+func TestShowUser_NotFound(t *testing.T) {
 	normal, normalCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, normal.ID)
 
@@ -131,25 +131,17 @@ func TestShowNotFound(t *testing.T) {
 	test.ShowUserNotFound(t, normalCtx, service, userCtrl, 114514)
 }
 
-func TestShowListOK(t *testing.T) {
+func TestShowList_OK(t *testing.T) {
 	normal, normalCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, normal.ID)
 
 	test.ShowListUserOK(t, normalCtx, service, userCtrl)
 }
 
+// Prepare User model and context from user's group
 func PrepareUser(group string) (usr *models.User, ctx context.Context) {
 	usr = &models.User{Name: group, Password: "password", Group: group, IsMember: true}
 	UserDB.Add(ctx, usr)
 	ctx = user.NewContext(ctx, usr)
 	return
-}
-
-func getUserID(username string) (int, error) {
-	var register = models.User{}
-	err := UserDB.Db.Where("name = ?", username).First(&register).Error
-	if err != nil {
-		return 0, err
-	}
-	return register.ID, nil
 }

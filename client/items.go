@@ -27,7 +27,7 @@ func AddItemsPath() string {
 }
 
 // Add item
-func (c *Client) AddItems(ctx context.Context, path string, payload *AddGoodsPayload, contentType string) (*http.Response, error) {
+func (c *Client) AddItems(ctx context.Context, path string, payload *AddItemPayload, contentType string) (*http.Response, error) {
 	req, err := c.NewAddItemsRequest(ctx, path, payload, contentType)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (c *Client) AddItems(ctx context.Context, path string, payload *AddGoodsPay
 }
 
 // NewAddItemsRequest create the request corresponding to the add action endpoint of the items resource.
-func (c *Client) NewAddItemsRequest(ctx context.Context, path string, payload *AddGoodsPayload, contentType string) (*http.Request, error) {
+func (c *Client) NewAddItemsRequest(ctx context.Context, path string, payload *AddItemPayload, contentType string) (*http.Request, error) {
 	var body bytes.Buffer
 	if contentType == "" {
 		contentType = "*/*" // Use default encoder
@@ -105,7 +105,7 @@ func ModifyItemsPath(id int) string {
 }
 
 // Modify item
-func (c *Client) ModifyItems(ctx context.Context, path string, payload *ModifyGoodsPayload, contentType string) (*http.Response, error) {
+func (c *Client) ModifyItems(ctx context.Context, path string, payload *ModifyItemPayload, contentType string) (*http.Response, error) {
 	req, err := c.NewModifyItemsRequest(ctx, path, payload, contentType)
 	if err != nil {
 		return nil, err
@@ -114,7 +114,7 @@ func (c *Client) ModifyItems(ctx context.Context, path string, payload *ModifyGo
 }
 
 // NewModifyItemsRequest create the request corresponding to the modify action endpoint of the items resource.
-func (c *Client) NewModifyItemsRequest(ctx context.Context, path string, payload *ModifyGoodsPayload, contentType string) (*http.Request, error) {
+func (c *Client) NewModifyItemsRequest(ctx context.Context, path string, payload *ModifyItemPayload, contentType string) (*http.Request, error) {
 	var body bytes.Buffer
 	if contentType == "" {
 		contentType = "*/*" // Use default encoder
