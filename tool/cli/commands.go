@@ -142,10 +142,10 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "item_name": "Molestiae magni quae ut tenetur nihil eos.",
-   "member_price": 6311483591368200811,
-   "price": 7849536275300465135,
-   "quantity": 5152369185030202978
+   "item_name": "Iusto voluptatibus sed.",
+   "member_price": 4989876322623126538,
+   "price": 1222133670873330863,
+   "quantity": 2805046877621128138
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
 	}
@@ -161,10 +161,10 @@ Payload example:
 Payload example:
 
 {
-   "item_id": 413254433334546445,
-   "price": 692620301302807586,
-   "quantity": 5899157054105302438,
-   "user_id": 1105437504714296401
+   "item_id": 24941019248932122,
+   "price": 1299470091090727982,
+   "quantity": 555592556527412862,
+   "user_id": 8270207379164010786
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -180,8 +180,8 @@ Payload example:
 Payload example:
 
 {
-   "name": "Illo vero voluptatum quidem.",
-   "password": "Neque id omnis eveniet ut sed aliquam."
+   "name": "Optio molestiae magni quae ut tenetur.",
+   "password": "Eos soluta."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -225,11 +225,10 @@ Payload example:
 Payload example:
 
 {
-   "id": 8146831818233394072,
-   "item_name": "Voluptas aut illo animi dicta aperiam.",
-   "member_price": 655884208255480511,
-   "price": 5693119682379006692,
-   "quantity": 1762076070320727430
+   "item_name": "Unde ut rerum.",
+   "member_price": 8030592679185516917,
+   "price": 2514159059026680118,
+   "quantity": 4715551413911070033
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
@@ -534,7 +533,7 @@ func (cmd *AddItemsCommand) Run(c *client.Client, args []string) error {
 	} else {
 		path = "/item"
 	}
-	var payload client.AddGoodsPayload
+	var payload client.AddItemPayload
 	if cmd.Payload != "" {
 		err := json.Unmarshal([]byte(cmd.Payload), &payload)
 		if err != nil {
@@ -593,7 +592,7 @@ func (cmd *ModifyItemsCommand) Run(c *client.Client, args []string) error {
 	} else {
 		path = fmt.Sprintf("/item/%v", cmd.ID)
 	}
-	var payload client.ModifyGoodsPayload
+	var payload client.ModifyItemPayload
 	if cmd.Payload != "" {
 		err := json.Unmarshal([]byte(cmd.Payload), &payload)
 		if err != nil {

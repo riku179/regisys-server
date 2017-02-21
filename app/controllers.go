@@ -59,7 +59,7 @@ func MountItemsController(service *goa.Service, ctrl ItemsController) {
 		}
 		// Build the payload
 		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
-			rctx.Payload = rawPayload.(*AddGoodsPayload)
+			rctx.Payload = rawPayload.(*AddItemPayload)
 		} else {
 			return goa.MissingPayloadError()
 		}
@@ -97,7 +97,7 @@ func MountItemsController(service *goa.Service, ctrl ItemsController) {
 		}
 		// Build the payload
 		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
-			rctx.Payload = rawPayload.(*ModifyGoodsPayload)
+			rctx.Payload = rawPayload.(*ModifyItemPayload)
 		} else {
 			return goa.MissingPayloadError()
 		}
@@ -126,7 +126,7 @@ func MountItemsController(service *goa.Service, ctrl ItemsController) {
 
 // unmarshalAddItemsPayload unmarshals the request body into the context request data Payload field.
 func unmarshalAddItemsPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
-	payload := &addGoodsPayload{}
+	payload := &addItemPayload{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
@@ -141,7 +141,7 @@ func unmarshalAddItemsPayload(ctx context.Context, service *goa.Service, req *ht
 
 // unmarshalModifyItemsPayload unmarshals the request body into the context request data Payload field.
 func unmarshalModifyItemsPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
-	payload := &modifyGoodsPayload{}
+	payload := &modifyItemPayload{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}

@@ -32,8 +32,6 @@ type RegisysItems struct {
 	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
 	// Unique User ID
 	UserID int `form:"user_id" json:"user_id" xml:"user_id"`
-	// Username
-	UserName string `form:"user_name" json:"user_name" xml:"user_name"`
 }
 
 // Validate validates the RegisysItems media type instance.
@@ -41,10 +39,6 @@ func (mt *RegisysItems) Validate() (err error) {
 
 	if mt.ItemName == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "item_name"))
-	}
-
-	if mt.UserName == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "user_name"))
 	}
 
 	return
@@ -111,33 +105,6 @@ func (mt RegisysOrdersCollection) Validate() (err error) {
 			}
 		}
 	}
-	return
-}
-
-// Username and ID (default view)
-//
-// Identifier: application/vnd.regisys.token+json; view=default
-type RegisysToken struct {
-	// Group of user
-	Group string `form:"group" json:"group" xml:"group"`
-	// Unique user ID
-	ID int `form:"id" json:"id" xml:"id"`
-	// Is member of MMA
-	IsMember bool `form:"is_member" json:"is_member" xml:"is_member"`
-	// Username
-	Username string `form:"username" json:"username" xml:"username"`
-}
-
-// Validate validates the RegisysToken media type instance.
-func (mt *RegisysToken) Validate() (err error) {
-
-	if mt.Username == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "username"))
-	}
-	if mt.Group == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "group"))
-	}
-
 	return
 }
 

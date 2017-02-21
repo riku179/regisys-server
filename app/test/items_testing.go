@@ -30,7 +30,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func AddItemsNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ItemsController, payload *app.AddGoodsPayload) http.ResponseWriter {
+func AddItemsNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ItemsController, payload *app.AddItemPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -265,11 +265,69 @@ func DeleteItemsNotFound(t goatest.TInterface, ctx context.Context, service *goa
 	return rw
 }
 
+// ModifyItemsForbidden runs the method Modify of the given controller with the given parameters and payload.
+// It returns the response writer so it's possible to inspect the response headers.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func ModifyItemsForbidden(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ItemsController, id int, payload *app.ModifyItemPayload) http.ResponseWriter {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/item/%v", id),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "ItemsTest"), rw, req, prms)
+	modifyCtx, err := app.NewModifyItemsContext(goaCtx, req, service)
+	if err != nil {
+		panic("invalid test data " + err.Error()) // bug
+	}
+	modifyCtx.Payload = payload
+
+	// Perform action
+	err = ctrl.Modify(modifyCtx)
+
+	// Validate response
+	if err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", err, logBuf.String())
+	}
+	if rw.Code != 403 {
+		t.Errorf("invalid response status code: got %+v, expected 403", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
 // ModifyItemsNoContent runs the method Modify of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ModifyItemsNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ItemsController, id int, payload *app.ModifyGoodsPayload) http.ResponseWriter {
+func ModifyItemsNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ItemsController, id int, payload *app.ModifyItemPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -327,7 +385,7 @@ func ModifyItemsNoContent(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ModifyItemsNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ItemsController, id int, payload *app.ModifyGoodsPayload) http.ResponseWriter {
+func ModifyItemsNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ItemsController, id int, payload *app.ModifyItemPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer

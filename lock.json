@@ -1,5 +1,5 @@
 {
-    "memo": "170ceaf4a29513258afd6a456da759debd159732157799345ab741e587882b8a",
+    "memo": "6bcf9f7b391794809d56001f0175b73a5e6bfae3b4e29d840ac7566cee7e4565",
     "projects": [
         {
             "name": "bitbucket.org/pkg/inflect",
@@ -35,8 +35,8 @@
         },
         {
             "name": "github.com/dimfeld/httptreemux",
-            "branch": "master",
-            "revision": "d80c43eb9e175a95c938c070e90a5e7fc6ac7954",
+            "version": "v3.7.0",
+            "revision": "a12c89c2c0f23f880dfd74af4832a23bae6e837a",
             "packages": [
                 "."
             ]
@@ -52,7 +52,7 @@
         {
             "name": "github.com/goadesign/goa",
             "branch": "master",
-            "revision": "39d1cfec8bf61dc84fb007786fa2bd6d8b575463",
+            "revision": "393cf482732ce52919d44ad23c22aeb69b97ddf8",
             "packages": [
                 ".",
                 "client",
@@ -112,7 +112,7 @@
         },
         {
             "name": "github.com/kr/text",
-            "branch": "main",
+            "branch": "master",
             "revision": "7cafcd837844e784b526369c9bce262804aebc60",
             "packages": [
                 "."
@@ -127,21 +127,19 @@
             ]
         },
         {
-            "name": "github.com/riku179/regisys-server",
-            "branch": "develop",
-            "revision": "3059ca5b6f345d6a82e2ce5dfdf2af1a0aa80c06",
+            "name": "github.com/riku179/regisys",
+            "branch": "working",
+            "revision": "08ec520c070e84e258f59d49e114ce647220d526",
             "packages": [
-                "app",
                 "client",
-                "ldap_auth",
                 "models",
-                "user"
+                "tool/cli"
             ]
         },
         {
             "name": "github.com/satori/go.uuid",
-            "branch": "master",
-            "revision": "b061729afc07e77a8aa4fad0a2fd840958f1942a",
+            "version": "v1.1.0",
+            "revision": "879c5887cd475cd7864858769793b2ceb0d44feb",
             "packages": [
                 "."
             ]
@@ -149,7 +147,7 @@
         {
             "name": "github.com/spf13/cobra",
             "branch": "master",
-            "revision": "99600f6874c95daab762dc2373dc3ee1f6a48575",
+            "revision": "ee4055870c2d5f7ce112642377e32c9929c3bbaf",
             "packages": [
                 "."
             ]
@@ -181,7 +179,7 @@
         {
             "name": "golang.org/x/net",
             "branch": "master",
-            "revision": "236b8f043b920452504e263bc21d354427127473",
+            "revision": "6b27048ae5e6ad1ef927e72e437531493de612fe",
             "packages": [
                 "context",
                 "websocket"
@@ -190,7 +188,7 @@
         {
             "name": "golang.org/x/tools",
             "branch": "master",
-            "revision": "396c176f119e89f957290de823600e03660610ce",
+            "revision": "8e779ee0a4509783f6940db32d1a4e8df910cc8b",
             "packages": [
                 "go/ast/astutil"
             ]

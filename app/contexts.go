@@ -24,7 +24,7 @@ type AddItemsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Payload *AddGoodsPayload
+	Payload *AddItemPayload
 }
 
 // NewAddItemsContext parses the incoming request URL and body, performs validations and creates the
@@ -98,7 +98,7 @@ type ModifyItemsContext struct {
 	*goa.ResponseData
 	*goa.RequestData
 	ID      int
-	Payload *ModifyGoodsPayload
+	Payload *ModifyItemPayload
 }
 
 // NewModifyItemsContext parses the incoming request URL and body, performs validations and creates the
@@ -125,6 +125,12 @@ func NewModifyItemsContext(ctx context.Context, r *http.Request, service *goa.Se
 // NoContent sends a HTTP response with status code 204.
 func (ctx *ModifyItemsContext) NoContent() error {
 	ctx.ResponseData.WriteHeader(204)
+	return nil
+}
+
+// Forbidden sends a HTTP response with status code 403.
+func (ctx *ModifyItemsContext) Forbidden() error {
+	ctx.ResponseData.WriteHeader(403)
 	return nil
 }
 
@@ -221,9 +227,11 @@ func NewSigninJWTContext(ctx context.Context, r *http.Request, service *goa.Serv
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *SigninJWTContext) OK(r *RegisysToken) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.regisys.token+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+func (ctx *SigninJWTContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
 }
 
 // Unauthorized sends a HTTP response with status code 401.

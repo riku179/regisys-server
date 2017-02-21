@@ -10,10 +10,12 @@
 
 package client
 
-import "github.com/goadesign/goa"
+import (
+	"github.com/goadesign/goa"
+)
 
-// addGoodsPayload user type.
-type addGoodsPayload struct {
+// addItemPayload user type.
+type addItemPayload struct {
 	// item name
 	ItemName *string `form:"item_name,omitempty" json:"item_name,omitempty" xml:"item_name,omitempty"`
 	// Membership discount
@@ -24,8 +26,8 @@ type addGoodsPayload struct {
 	Quantity *int `form:"quantity,omitempty" json:"quantity,omitempty" xml:"quantity,omitempty"`
 }
 
-// Validate validates the addGoodsPayload type instance.
-func (ut *addGoodsPayload) Validate() (err error) {
+// Validate validates the addItemPayload type instance.
+func (ut *addItemPayload) Validate() (err error) {
 	if ut.ItemName == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "item_name"))
 	}
@@ -41,9 +43,9 @@ func (ut *addGoodsPayload) Validate() (err error) {
 	return
 }
 
-// Publicize creates AddGoodsPayload from addGoodsPayload
-func (ut *addGoodsPayload) Publicize() *AddGoodsPayload {
-	var pub AddGoodsPayload
+// Publicize creates AddItemPayload from addItemPayload
+func (ut *addItemPayload) Publicize() *AddItemPayload {
+	var pub AddItemPayload
 	if ut.ItemName != nil {
 		pub.ItemName = *ut.ItemName
 	}
@@ -59,8 +61,8 @@ func (ut *addGoodsPayload) Publicize() *AddGoodsPayload {
 	return &pub
 }
 
-// AddGoodsPayload user type.
-type AddGoodsPayload struct {
+// AddItemPayload user type.
+type AddItemPayload struct {
 	// item name
 	ItemName string `form:"item_name" json:"item_name" xml:"item_name"`
 	// Membership discount
@@ -71,8 +73,8 @@ type AddGoodsPayload struct {
 	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
 }
 
-// Validate validates the AddGoodsPayload type instance.
-func (ut *AddGoodsPayload) Validate() (err error) {
+// Validate validates the AddItemPayload type instance.
+func (ut *AddItemPayload) Validate() (err error) {
 	if ut.ItemName == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "item_name"))
 	}
@@ -191,10 +193,8 @@ func (ut *AddUserPayload) Validate() (err error) {
 	return
 }
 
-// modifyGoodsPayload user type.
-type modifyGoodsPayload struct {
-	// Unique item ID
-	ID *int `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+// modifyItemPayload user type.
+type modifyItemPayload struct {
 	// item name
 	ItemName *string `form:"item_name,omitempty" json:"item_name,omitempty" xml:"item_name,omitempty"`
 	// Membership discount
@@ -205,20 +205,9 @@ type modifyGoodsPayload struct {
 	Quantity *int `form:"quantity,omitempty" json:"quantity,omitempty" xml:"quantity,omitempty"`
 }
 
-// Validate validates the modifyGoodsPayload type instance.
-func (ut *modifyGoodsPayload) Validate() (err error) {
-	if ut.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
-	}
-	return
-}
-
-// Publicize creates ModifyGoodsPayload from modifyGoodsPayload
-func (ut *modifyGoodsPayload) Publicize() *ModifyGoodsPayload {
-	var pub ModifyGoodsPayload
-	if ut.ID != nil {
-		pub.ID = *ut.ID
-	}
+// Publicize creates ModifyItemPayload from modifyItemPayload
+func (ut *modifyItemPayload) Publicize() *ModifyItemPayload {
+	var pub ModifyItemPayload
 	if ut.ItemName != nil {
 		pub.ItemName = ut.ItemName
 	}
@@ -234,10 +223,8 @@ func (ut *modifyGoodsPayload) Publicize() *ModifyGoodsPayload {
 	return &pub
 }
 
-// ModifyGoodsPayload user type.
-type ModifyGoodsPayload struct {
-	// Unique item ID
-	ID int `form:"id" json:"id" xml:"id"`
+// ModifyItemPayload user type.
+type ModifyItemPayload struct {
 	// item name
 	ItemName *string `form:"item_name,omitempty" json:"item_name,omitempty" xml:"item_name,omitempty"`
 	// Membership discount

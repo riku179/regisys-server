@@ -45,6 +45,7 @@ var _ = Resource("items", func() {
 
 		Response(NoContent)
 		Response(NotFound)
+		Response(Forbidden)
 	})
 
 	Action("delete", func() {
@@ -69,9 +70,8 @@ var ItemMedia = MediaType("application/vnd.regisys.items+json", func() {
 		Attribute("price", Integer, "item price")
 		Attribute("member_price", Integer, "Membership discount")
 		Attribute("user_id", Integer, "Unique User ID")
-		Attribute("user_name", String, "Username")
 		Attribute("quantity", Integer, "item quantity")
-		Required("id", "item_name", "price", "member_price", "user_id", "user_name", "quantity")
+		Required("id", "item_name", "price", "member_price", "user_id", "quantity")
 	})
 
 	View("default", func() {
@@ -80,12 +80,11 @@ var ItemMedia = MediaType("application/vnd.regisys.items+json", func() {
 		Attribute("price")
 		Attribute("member_price")
 		Attribute("user_id")
-		Attribute("user_name")
 		Attribute("quantity")
 	})
 })
 
-var AddItemPayload = Type("AddGoodsPayload", func() {
+var AddItemPayload = Type("AddItemPayload", func() {
 	Member("item_name", String, "item name")
 	Member("price", Integer, "item price")
 	Member("member_price", Integer, "Membership discount")
@@ -93,11 +92,9 @@ var AddItemPayload = Type("AddGoodsPayload", func() {
 	Required("item_name", "price", "member_price", "quantity")
 })
 
-var ModifyItemPayload = Type("ModifyGoodsPayload", func() {
-	Member("id", Integer, "Unique item ID")
+var ModifyItemPayload = Type("ModifyItemPayload", func() {
 	Member("item_name", String, "item name")
 	Member("price", Integer, "item price")
 	Member("member_price", Integer, "Membership discount")
 	Member("quantity", Integer, "item quantity")
-	Required("id")
 })

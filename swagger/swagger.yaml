@@ -4,30 +4,30 @@ consumes:
 - application/gob
 - application/x-gob
 definitions:
-  AddGoodsPayload:
+  AddItemPayload:
     example:
-      item_name: Molestiae magni quae ut tenetur nihil eos.
-      member_price: 6.3114837e+18
-      price: 7.849536e+18
-      quantity: 5.152369e+18
+      item_name: Iusto voluptatibus sed.
+      member_price: 4.989876e+18
+      price: 1.2221337e+18
+      quantity: 2.8050469e+18
     properties:
       item_name:
         description: item name
-        example: Molestiae magni quae ut tenetur nihil eos.
+        example: Iusto voluptatibus sed.
         type: string
       member_price:
         description: Membership discount
-        example: 6.3114837e+18
+        example: 4.989876e+18
         format: int64
         type: integer
       price:
         description: item price
-        example: 7.849536e+18
+        example: 1.2221337e+18
         format: int64
         type: integer
       quantity:
         description: item quantity
-        example: 5.152369e+18
+        example: 2.8050469e+18
         format: int64
         type: integer
     required:
@@ -35,33 +35,33 @@ definitions:
     - price
     - member_price
     - quantity
-    title: AddGoodsPayload
+    title: AddItemPayload
     type: object
   AddOrderPayload:
     example:
-      item_id: 4.1325443e+17
-      price: 6.926203e+17
-      quantity: 5.899157e+18
-      user_id: 1.1054375e+18
+      item_id: 2.494102e+16
+      price: 1.29947e+18
+      quantity: 5.5559257e+17
+      user_id: 8.2702076e+18
     properties:
       item_id:
         description: Unique item ID
-        example: 4.1325443e+17
+        example: 2.494102e+16
         format: int64
         type: integer
       price:
         description: item price
-        example: 6.926203e+17
+        example: 1.29947e+18
         format: int64
         type: integer
       quantity:
         description: item quantity
-        example: 5.899157e+18
+        example: 5.5559257e+17
         format: int64
         type: integer
       user_id:
         description: Register's user ID
-        example: 1.1054375e+18
+        example: 8.2702076e+18
         format: int64
         type: integer
     required:
@@ -73,55 +73,47 @@ definitions:
     type: object
   AddUserPayload:
     example:
-      name: Illo vero voluptatum quidem.
-      password: Neque id omnis eveniet ut sed aliquam.
+      name: Optio molestiae magni quae ut tenetur.
+      password: Eos soluta.
     properties:
       name:
-        example: Illo vero voluptatum quidem.
+        example: Optio molestiae magni quae ut tenetur.
         type: string
       password:
-        example: Neque id omnis eveniet ut sed aliquam.
+        example: Eos soluta.
         type: string
     required:
     - name
     - password
     title: AddUserPayload
     type: object
-  ModifyGoodsPayload:
+  ModifyItemPayload:
     example:
-      id: 8.146832e+18
-      item_name: Voluptas aut illo animi dicta aperiam.
-      member_price: 6.558842e+17
-      price: 5.6931195e+18
-      quantity: 1.7620761e+18
+      item_name: Unde ut rerum.
+      member_price: 8.0305927e+18
+      price: 2.514159e+18
+      quantity: 4.7155514e+18
     properties:
-      id:
-        description: Unique item ID
-        example: 8.146832e+18
-        format: int64
-        type: integer
       item_name:
         description: item name
-        example: Voluptas aut illo animi dicta aperiam.
+        example: Unde ut rerum.
         type: string
       member_price:
         description: Membership discount
-        example: 6.558842e+17
+        example: 8.0305927e+18
         format: int64
         type: integer
       price:
         description: item price
-        example: 5.6931195e+18
+        example: 2.514159e+18
         format: int64
         type: integer
       quantity:
         description: item quantity
-        example: 1.7620761e+18
+        example: 4.7155514e+18
         format: int64
         type: integer
-    required:
-    - id
-    title: ModifyGoodsPayload
+    title: ModifyItemPayload
     type: object
   ModifyUserPayload:
     example:
@@ -147,7 +139,6 @@ definitions:
       price: 4.8955365e+18
       quantity: 2.1326141e+18
       user_id: 7.137601e+18
-      user_name: Et quia natus voluptates maiores nemo.
     properties:
       id:
         description: Unique item ID
@@ -178,17 +169,12 @@ definitions:
         example: 7.137601e+18
         format: int64
         type: integer
-      user_name:
-        description: Username
-        example: Et quia natus voluptates maiores nemo.
-        type: string
     required:
     - id
     - item_name
     - price
     - member_price
     - user_id
-    - user_name
     - quantity
     title: 'Mediatype identifier: application/vnd.regisys.items+json; view=default'
     type: object
@@ -202,7 +188,18 @@ definitions:
       price: 4.8955365e+18
       quantity: 2.1326141e+18
       user_id: 7.137601e+18
-      user_name: Et quia natus voluptates maiores nemo.
+    - id: 8.8047286e+18
+      item_name: Ea voluptas.
+      member_price: 6.0676516e+18
+      price: 4.8955365e+18
+      quantity: 2.1326141e+18
+      user_id: 7.137601e+18
+    - id: 8.8047286e+18
+      item_name: Ea voluptas.
+      member_price: 6.0676516e+18
+      price: 4.8955365e+18
+      quantity: 2.1326141e+18
+      user_id: 7.137601e+18
     items:
       $ref: '#/definitions/RegisysItems'
     title: 'Mediatype identifier: application/vnd.regisys.items+json; type=collection;
@@ -211,46 +208,46 @@ definitions:
   RegisysOrders:
     description: An order (default view)
     example:
-      date: 2001-03-01T17:32:21+09:00
-      id: 2.9891975e+18
-      item_id: 1.4690026e+18
-      item_name: Consequuntur officiis fuga ab officiis omnis dolorem.
-      price: 1.5330122e+18
-      quantity: 8.314856e+18
-      user_id: 5.18985e+18
+      date: 1990-05-08T11:47:04+09:00
+      id: 1.1690981e+18
+      item_id: 4.223596e+18
+      item_name: Maiores nemo quia molestias reprehenderit quo.
+      price: 1.6009976e+18
+      quantity: 4.1943023e+18
+      user_id: 5.148723e+18
     properties:
       date:
         description: Order date
-        example: 2001-03-01T17:32:21+09:00
+        example: 1990-05-08T11:47:04+09:00
         format: date-time
         type: string
       id:
         description: Unique order ID
-        example: 2.9891975e+18
+        example: 1.1690981e+18
         format: int64
         type: integer
       item_id:
         description: Unique item ID
-        example: 1.4690026e+18
+        example: 4.223596e+18
         format: int64
         type: integer
       item_name:
         description: item name
-        example: Consequuntur officiis fuga ab officiis omnis dolorem.
+        example: Maiores nemo quia molestias reprehenderit quo.
         type: string
       price:
         description: item price
-        example: 1.5330122e+18
+        example: 1.6009976e+18
         format: int64
         type: integer
       quantity:
         description: item quantity
-        example: 8.314856e+18
+        example: 4.1943023e+18
         format: int64
         type: integer
       user_id:
         description: Register's user ID
-        example: 5.18985e+18
+        example: 5.148723e+18
         format: int64
         type: integer
     required:
@@ -267,74 +264,42 @@ definitions:
     description: RegisysOrdersCollection is the media type for an array of RegisysOrders
       (default view)
     example:
-    - date: 2001-03-01T17:32:21+09:00
-      id: 2.9891975e+18
-      item_id: 1.4690026e+18
-      item_name: Consequuntur officiis fuga ab officiis omnis dolorem.
-      price: 1.5330122e+18
-      quantity: 8.314856e+18
-      user_id: 5.18985e+18
+    - date: 1990-05-08T11:47:04+09:00
+      id: 1.1690981e+18
+      item_id: 4.223596e+18
+      item_name: Maiores nemo quia molestias reprehenderit quo.
+      price: 1.6009976e+18
+      quantity: 4.1943023e+18
+      user_id: 5.148723e+18
     items:
       $ref: '#/definitions/RegisysOrders'
     title: 'Mediatype identifier: application/vnd.regisys.orders+json; type=collection;
       view=default'
     type: array
-  RegisysToken:
-    description: Username and ID (default view)
+  RegisysUser:
+    description: Users (default view)
     example:
-      group: Maxime quis hic facere distinctio.
-      id: 6.8017796e+17
+      group: Officiis omnis dolorem consequatur optio.
+      id: 5.18985e+18
       is_member: false
-      username: Voluptatibus sed at voluptas inventore.
+      name: Maxime quis hic facere distinctio.
     properties:
       group:
         description: Group of user
-        example: Maxime quis hic facere distinctio.
+        example: Officiis omnis dolorem consequatur optio.
         type: string
       id:
         description: Unique user ID
-        example: 6.8017796e+17
+        example: 5.18985e+18
         format: int64
         type: integer
       is_member:
         description: Is member of MMA
         example: false
         type: boolean
-      username:
-        description: Username
-        example: Voluptatibus sed at voluptas inventore.
-        type: string
-    required:
-    - id
-    - username
-    - group
-    - is_member
-    title: 'Mediatype identifier: application/vnd.regisys.token+json; view=default'
-    type: object
-  RegisysUser:
-    description: Users (default view)
-    example:
-      group: Unde ut rerum.
-      id: 8.0305927e+18
-      is_member: true
-      name: Quam quia rerum atque.
-    properties:
-      group:
-        description: Group of user
-        example: Unde ut rerum.
-        type: string
-      id:
-        description: Unique user ID
-        example: 8.0305927e+18
-        format: int64
-        type: integer
-      is_member:
-        description: Is member of MMA
-        example: true
-        type: boolean
       name:
         description: Username
-        example: Quam quia rerum atque.
+        example: Maxime quis hic facere distinctio.
         type: string
     required:
     - id
@@ -347,18 +312,14 @@ definitions:
     description: RegisysUserCollection is the media type for an array of RegisysUser
       (default view)
     example:
-    - group: Unde ut rerum.
-      id: 8.0305927e+18
-      is_member: true
-      name: Quam quia rerum atque.
-    - group: Unde ut rerum.
-      id: 8.0305927e+18
-      is_member: true
-      name: Quam quia rerum atque.
-    - group: Unde ut rerum.
-      id: 8.0305927e+18
-      is_member: true
-      name: Quam quia rerum atque.
+    - group: Officiis omnis dolorem consequatur optio.
+      id: 5.18985e+18
+      is_member: false
+      name: Maxime quis hic facere distinctio.
+    - group: Officiis omnis dolorem consequatur optio.
+      id: 5.18985e+18
+      is_member: false
+      name: Maxime quis hic facere distinctio.
     items:
       $ref: '#/definitions/RegisysUser'
     title: 'Mediatype identifier: application/vnd.regisys.user+json; type=collection;
@@ -410,7 +371,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/AddGoodsPayload'
+          $ref: '#/definitions/AddItemPayload'
       responses:
         "204":
           description: No Content
@@ -468,10 +429,12 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/ModifyGoodsPayload'
+          $ref: '#/definitions/ModifyItemPayload'
       responses:
         "204":
           description: No Content
+        "403":
+          description: Forbidden
         "404":
           description: Not Found
       schemes:
@@ -593,8 +556,6 @@ paths:
             Authorization:
               description: Generated JWT
               type: string
-          schema:
-            $ref: '#/definitions/RegisysToken'
         "401":
           description: Unauthorized
       schemes:
