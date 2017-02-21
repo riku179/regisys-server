@@ -78,6 +78,7 @@ func TestModifyItem_NoContent(t *testing.T) {
 			ItemName: &newName,
 		})
 
+	testItem, _ = ItemsDB.Get(ctx, testItem.ID)
 	if testItem.ItemName != "bar" {
 		t.Fatalf("Expected ItemName: bar, but receive: %+v", testItem.ItemName)
 	}
