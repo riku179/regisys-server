@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	"github.com/riku179/regisys-server/app"
@@ -25,13 +27,11 @@ func NewItemsController(service *goa.Service) *ItemsController {
 func (c *ItemsController) Add(ctx *app.AddItemsContext) error {
 	reqUser := user.FromContext(ctx)
 
-	ItemsDB.Add(ctx, &models.Items{
-		ItemName:    ctx.Payload.ItemName,
-		Quantity:    ctx.Payload.Quantity,
-		Price:       ctx.Payload.Price,
-		MemberPrice: ctx.Payload.MemberPrice,
-		UserID:      reqUser.ID, // 商品の所有ユーザのID
-	})
+	items := models.ItemsFromAddItemPayload(ctx.Payload)
+	items.UserID = reqUser.ID // 商品の所有ユーザのID
+
+	ItemsDB.Add(ctx, items)
+
 	return ctx.NoContent()
 }
 
@@ -44,8 +44,18 @@ func (c *ItemsController) Delete(ctx *app.DeleteItemsContext) error {
 	if err == gorm.ErrRecordNotFound {
 		// 指定された商品が無い
 		return ctx.NotFound()
-	} else if reqItem.UserID != reqUser.ID {
+	}
+	if reqItem.UserID != reqUser.ID {
 		// 指定された商品の所有者IDがリクエストしたユーザーののIDと一致しない
+		fmt.Printf("reqItem.UserID: %+v, reqUser.ID: %+v", reqItem.UserID, reqUser.ID)
+		return ctx.Forbidden()
+	}
+
+	var relatedOrder *models.Orders
+	OrdersDB.Db.Where("item_id = ?", ctx.ID).First(&relatedOrder)
+	if relatedOrder != nil {
+		// 既に購入処理がされた商品は削除できない
+		fmt.Printf("relatedOrder: %+v", relatedOrder)
 		return ctx.Forbidden()
 	} else {
 		// OK
@@ -63,8 +73,16 @@ func (c *ItemsController) Modify(ctx *app.ModifyItemsContext) error {
 	if err == gorm.ErrRecordNotFound {
 		// 指定された商品が無い
 		return ctx.NotFound()
-	} else if reqItem.UserID != reqUser.ID {
+	}
+	if reqItem.UserID != reqUser.ID {
 		// 指定された商品の所有者IDがリクエストしたユーザーののIDと一致しない
+		return ctx.Forbidden()
+	}
+
+	relatedOrder := &models.Orders{}
+	OrdersDB.Db.Where("item_id = ?", ctx.ID).First(relatedOrder)
+	if relatedOrder != nil {
+		// 既に購入処理がされた商品は削除できない
 		return ctx.Forbidden()
 	} else {
 		// OK

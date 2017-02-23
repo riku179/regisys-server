@@ -40,6 +40,26 @@ func (ut *addItemPayload) Validate() (err error) {
 	if ut.Quantity == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "quantity"))
 	}
+	if ut.ItemName != nil {
+		if ok := goa.ValidatePattern(`.+`, *ut.ItemName); !ok {
+			err = goa.MergeErrors(err, goa.InvalidPatternError(`response.item_name`, *ut.ItemName, `.+`))
+		}
+	}
+	if ut.MemberPrice != nil {
+		if *ut.MemberPrice < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.member_price`, *ut.MemberPrice, 0, true))
+		}
+	}
+	if ut.Price != nil {
+		if *ut.Price < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.price`, *ut.Price, 0, true))
+		}
+	}
+	if ut.Quantity != nil {
+		if *ut.Quantity < 1 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.quantity`, *ut.Quantity, 1, true))
+		}
+	}
 	return
 }
 
@@ -79,19 +99,29 @@ func (ut *AddItemPayload) Validate() (err error) {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "item_name"))
 	}
 
+	if ok := goa.ValidatePattern(`.+`, ut.ItemName); !ok {
+		err = goa.MergeErrors(err, goa.InvalidPatternError(`response.item_name`, ut.ItemName, `.+`))
+	}
+	if ut.MemberPrice < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError(`response.member_price`, ut.MemberPrice, 0, true))
+	}
+	if ut.Price < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError(`response.price`, ut.Price, 0, true))
+	}
+	if ut.Quantity < 1 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError(`response.quantity`, ut.Quantity, 1, true))
+	}
 	return
 }
 
 // addOrderPayload user type.
 type addOrderPayload struct {
+	// Is it bought for member's price
+	IsMemberPrice *bool `form:"is_member_price,omitempty" json:"is_member_price,omitempty" xml:"is_member_price,omitempty"`
 	// Unique item ID
 	ItemID *int `form:"item_id,omitempty" json:"item_id,omitempty" xml:"item_id,omitempty"`
-	// item price
-	Price *int `form:"price,omitempty" json:"price,omitempty" xml:"price,omitempty"`
 	// item quantity
 	Quantity *int `form:"quantity,omitempty" json:"quantity,omitempty" xml:"quantity,omitempty"`
-	// Register's user ID
-	UserID *int `form:"user_id,omitempty" json:"user_id,omitempty" xml:"user_id,omitempty"`
 }
 
 // Validate validates the addOrderPayload type instance.
@@ -102,11 +132,13 @@ func (ut *addOrderPayload) Validate() (err error) {
 	if ut.Quantity == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "quantity"))
 	}
-	if ut.Price == nil {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "price"))
+	if ut.IsMemberPrice == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "is_member_price"))
 	}
-	if ut.UserID == nil {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "user_id"))
+	if ut.Quantity != nil {
+		if *ut.Quantity < 1 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.quantity`, *ut.Quantity, 1, true))
+		}
 	}
 	return
 }
@@ -114,42 +146,42 @@ func (ut *addOrderPayload) Validate() (err error) {
 // Publicize creates AddOrderPayload from addOrderPayload
 func (ut *addOrderPayload) Publicize() *AddOrderPayload {
 	var pub AddOrderPayload
+	if ut.IsMemberPrice != nil {
+		pub.IsMemberPrice = *ut.IsMemberPrice
+	}
 	if ut.ItemID != nil {
 		pub.ItemID = *ut.ItemID
 	}
-	if ut.Price != nil {
-		pub.Price = *ut.Price
-	}
 	if ut.Quantity != nil {
 		pub.Quantity = *ut.Quantity
-	}
-	if ut.UserID != nil {
-		pub.UserID = *ut.UserID
 	}
 	return &pub
 }
 
 // AddOrderPayload user type.
 type AddOrderPayload struct {
+	// Is it bought for member's price
+	IsMemberPrice bool `form:"is_member_price" json:"is_member_price" xml:"is_member_price"`
 	// Unique item ID
 	ItemID int `form:"item_id" json:"item_id" xml:"item_id"`
-	// item price
-	Price int `form:"price" json:"price" xml:"price"`
 	// item quantity
 	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
-	// Register's user ID
-	UserID int `form:"user_id" json:"user_id" xml:"user_id"`
 }
 
 // Validate validates the AddOrderPayload type instance.
 func (ut *AddOrderPayload) Validate() (err error) {
 
+	if ut.Quantity < 1 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError(`response.quantity`, ut.Quantity, 1, true))
+	}
 	return
 }
 
 // addUserPayload user type.
 type addUserPayload struct {
-	Name     *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// username
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// password
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 }
 
@@ -160,6 +192,16 @@ func (ut *addUserPayload) Validate() (err error) {
 	}
 	if ut.Password == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "password"))
+	}
+	if ut.Name != nil {
+		if ok := goa.ValidatePattern(`.+`, *ut.Name); !ok {
+			err = goa.MergeErrors(err, goa.InvalidPatternError(`response.name`, *ut.Name, `.+`))
+		}
+	}
+	if ut.Password != nil {
+		if ok := goa.ValidatePattern(`.+`, *ut.Password); !ok {
+			err = goa.MergeErrors(err, goa.InvalidPatternError(`response.password`, *ut.Password, `.+`))
+		}
 	}
 	return
 }
@@ -178,7 +220,9 @@ func (ut *addUserPayload) Publicize() *AddUserPayload {
 
 // AddUserPayload user type.
 type AddUserPayload struct {
-	Name     string `form:"name" json:"name" xml:"name"`
+	// username
+	Name string `form:"name" json:"name" xml:"name"`
+	// password
 	Password string `form:"password" json:"password" xml:"password"`
 }
 
@@ -189,6 +233,12 @@ func (ut *AddUserPayload) Validate() (err error) {
 	}
 	if ut.Password == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "password"))
+	}
+	if ok := goa.ValidatePattern(`.+`, ut.Name); !ok {
+		err = goa.MergeErrors(err, goa.InvalidPatternError(`response.name`, ut.Name, `.+`))
+	}
+	if ok := goa.ValidatePattern(`.+`, ut.Password); !ok {
+		err = goa.MergeErrors(err, goa.InvalidPatternError(`response.password`, ut.Password, `.+`))
 	}
 	return
 }
@@ -203,6 +253,31 @@ type modifyItemPayload struct {
 	Price *int `form:"price,omitempty" json:"price,omitempty" xml:"price,omitempty"`
 	// item quantity
 	Quantity *int `form:"quantity,omitempty" json:"quantity,omitempty" xml:"quantity,omitempty"`
+}
+
+// Validate validates the modifyItemPayload type instance.
+func (ut *modifyItemPayload) Validate() (err error) {
+	if ut.ItemName != nil {
+		if ok := goa.ValidatePattern(`.+`, *ut.ItemName); !ok {
+			err = goa.MergeErrors(err, goa.InvalidPatternError(`response.item_name`, *ut.ItemName, `.+`))
+		}
+	}
+	if ut.MemberPrice != nil {
+		if *ut.MemberPrice < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.member_price`, *ut.MemberPrice, 0, true))
+		}
+	}
+	if ut.Price != nil {
+		if *ut.Price < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.price`, *ut.Price, 0, true))
+		}
+	}
+	if ut.Quantity != nil {
+		if *ut.Quantity < 1 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.quantity`, *ut.Quantity, 1, true))
+		}
+	}
+	return
 }
 
 // Publicize creates ModifyItemPayload from modifyItemPayload
@@ -233,6 +308,31 @@ type ModifyItemPayload struct {
 	Price *int `form:"price,omitempty" json:"price,omitempty" xml:"price,omitempty"`
 	// item quantity
 	Quantity *int `form:"quantity,omitempty" json:"quantity,omitempty" xml:"quantity,omitempty"`
+}
+
+// Validate validates the ModifyItemPayload type instance.
+func (ut *ModifyItemPayload) Validate() (err error) {
+	if ut.ItemName != nil {
+		if ok := goa.ValidatePattern(`.+`, *ut.ItemName); !ok {
+			err = goa.MergeErrors(err, goa.InvalidPatternError(`response.item_name`, *ut.ItemName, `.+`))
+		}
+	}
+	if ut.MemberPrice != nil {
+		if *ut.MemberPrice < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.member_price`, *ut.MemberPrice, 0, true))
+		}
+	}
+	if ut.Price != nil {
+		if *ut.Price < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.price`, *ut.Price, 0, true))
+		}
+	}
+	if ut.Quantity != nil {
+		if *ut.Quantity < 1 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`response.quantity`, *ut.Quantity, 1, true))
+		}
+	}
+	return
 }
 
 // modifyUserPayload user type.

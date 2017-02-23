@@ -12,7 +12,6 @@ package client
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/goadesign/goa"
 )
@@ -80,8 +79,8 @@ func (c *Client) DecodeRegisysItemsCollection(resp *http.Response) (RegisysItems
 //
 // Identifier: application/vnd.regisys.orders+json; view=default
 type RegisysOrders struct {
-	// Order date
-	Date time.Time `form:"date" json:"date" xml:"date"`
+	// Order datetime
+	Datetime int `form:"datetime" json:"datetime" xml:"datetime"`
 	// Unique order ID
 	ID int `form:"id" json:"id" xml:"id"`
 	// Unique item ID

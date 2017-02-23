@@ -21,14 +21,15 @@ import (
 
 // Orders Relational Model
 type Orders struct {
-	ID        int `gorm:"primary_key"`           // Unique order ID
-	ItemID    int `sql:"not null;default:false"` // has many Orders
-	Price     int `sql:"not null;default:false"`
-	Quantity  int `sql:"not null;default:false"`
-	UpdatedAt time.Time
-	UserID    int        // has many Orders
-	CreatedAt time.Time  // timestamp
-	DeletedAt *time.Time // timestamp
+	ID            int `gorm:"primary_key"` // Unique order ID
+	IsMemberPrice bool
+	ItemID        int `sql:"not null;default:false"` // has many Orders
+	Price         int `sql:"not null;default:false"`
+	Quantity      int `sql:"not null;default:false"`
+	UpdatedAt     time.Time
+	UserID        int        // has many Orders
+	CreatedAt     time.Time  // timestamp
+	DeletedAt     *time.Time // timestamp
 }
 
 // TableName overrides the table name settings in Gorm to force a specific table name
@@ -152,10 +153,9 @@ func (m *OrdersDB) Delete(ctx context.Context, id int) error {
 // only copying the non-nil fields from the source.
 func OrdersFromAddOrderPayload(payload *app.AddOrderPayload) *Orders {
 	orders := &Orders{}
+	orders.IsMemberPrice = payload.IsMemberPrice
 	orders.ItemID = payload.ItemID
-	orders.Price = payload.Price
 	orders.Quantity = payload.Quantity
-	orders.UserID = payload.UserID
 
 	return orders
 }
@@ -170,10 +170,9 @@ func (m *OrdersDB) UpdateFromAddOrderPayload(ctx context.Context, payload *app.A
 		goa.LogError(ctx, "error retrieving Orders", "error", err.Error())
 		return err
 	}
+	obj.IsMemberPrice = payload.IsMemberPrice
 	obj.ItemID = payload.ItemID
-	obj.Price = payload.Price
 	obj.Quantity = payload.Quantity
-	obj.UserID = payload.UserID
 
 	err = m.Db.Save(&obj).Error
 	return err

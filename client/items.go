@@ -166,8 +166,8 @@ func (c *Client) NewShowItemsRequest(ctx context.Context, path string, user *int
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
 	if user != nil {
-		tmp15 := strconv.Itoa(*user)
-		values.Set("user", tmp15)
+		tmp14 := strconv.Itoa(*user)
+		values.Set("user", tmp14)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)

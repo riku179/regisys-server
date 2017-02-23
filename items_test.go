@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 
+	"fmt"
+
 	"github.com/riku179/regisys-server/app"
 	"github.com/riku179/regisys-server/app/test"
 	"github.com/riku179/regisys-server/models"
@@ -63,14 +65,17 @@ func TestDeleteItem_Forbidden(t *testing.T) {
 
 	// usr cannot delete other's items
 	test.DeleteItemsForbidden(t, userCtx, service, itemCtrl, adminItem.ID)
+	//TODO 既に購入処理がされていた場合、商品の編集が拒否されるテスト
 }
 
 func TestModifyItem_NoContent(t *testing.T) {
 	reqUser, userCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, reqUser.ID)
+	fmt.Printf("reqUser.ID: %+v\n", reqUser.ID)
 
 	testItem := PrepareItems("foo", reqUser.ID)
 	defer ItemsDB.Delete(ctx, testItem.ID)
+	fmt.Printf("testItem.ID: %+v\n", testItem.ID)
 
 	newName := "bar"
 	test.ModifyItemsNoContent(
@@ -107,6 +112,11 @@ func TestModifyItem_Forbidden(t *testing.T) {
 	test.ModifyItemsForbidden(t, userCtx, service, itemCtrl, adminItem.ID, &app.ModifyItemPayload{
 		ItemName: &newName,
 	})
+	//TODO 既に購入処理がされていた場合、商品の編集が拒否されるテスト
+	// -> 価格の編集だけはしたい
+	//OrdersDB.Add(ctx, &models.Orders{
+	//	ItemID:
+	//})
 }
 
 func TestShowItem_OK(t *testing.T) {

@@ -13,7 +13,6 @@ package app
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/goadesign/goa"
 	"golang.org/x/net/context"
@@ -272,6 +271,12 @@ func (ctx *AddOrdersContext) Forbidden() error {
 	return nil
 }
 
+// NotFound sends a HTTP response with status code 404.
+func (ctx *AddOrdersContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
 // DeleteOrdersContext provides the orders delete action context.
 type DeleteOrdersContext struct {
 	context.Context
@@ -324,8 +329,9 @@ type ShowOrdersContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Date *time.Time
-	User *string
+	TimeEnd   int
+	TimeStart int
+	User      *int
 }
 
 // NewShowOrdersContext parses the incoming request URL and body, performs validations and creates the
@@ -337,20 +343,52 @@ func NewShowOrdersContext(ctx context.Context, r *http.Request, service *goa.Ser
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := ShowOrdersContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramDate := req.Params["date"]
-	if len(paramDate) > 0 {
-		rawDate := paramDate[0]
-		if date, err2 := time.Parse(time.RFC3339, rawDate); err2 == nil {
-			tmp7 := &date
-			rctx.Date = tmp7
+	paramTimeEnd := req.Params["time_end"]
+	if len(paramTimeEnd) == 0 {
+		rctx.TimeEnd = 2147483647
+	} else {
+		rawTimeEnd := paramTimeEnd[0]
+		if timeEnd, err2 := strconv.Atoi(rawTimeEnd); err2 == nil {
+			rctx.TimeEnd = timeEnd
 		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("date", rawDate, "datetime"))
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("time_end", rawTimeEnd, "integer"))
+		}
+		if rctx.TimeEnd < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`time_end`, rctx.TimeEnd, 0, true))
+		}
+		if rctx.TimeEnd > 2.147483647e+09 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`time_end`, rctx.TimeEnd, 2.147483647e+09, false))
+		}
+	}
+	paramTimeStart := req.Params["time_start"]
+	if len(paramTimeStart) == 0 {
+		rctx.TimeStart = 0
+	} else {
+		rawTimeStart := paramTimeStart[0]
+		if timeStart, err2 := strconv.Atoi(rawTimeStart); err2 == nil {
+			rctx.TimeStart = timeStart
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("time_start", rawTimeStart, "integer"))
+		}
+		if rctx.TimeStart < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`time_start`, rctx.TimeStart, 0, true))
 		}
 	}
 	paramUser := req.Params["user"]
 	if len(paramUser) > 0 {
 		rawUser := paramUser[0]
-		rctx.User = &rawUser
+		if user, err2 := strconv.Atoi(rawUser); err2 == nil {
+			tmp10 := user
+			tmp9 := &tmp10
+			rctx.User = tmp9
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("user", rawUser, "integer"))
+		}
+		if rctx.User != nil {
+			if *rctx.User < 0 {
+				err = goa.MergeErrors(err, goa.InvalidRangeError(`user`, *rctx.User, 0, true))
+			}
+		}
 	}
 	return &rctx, err
 }

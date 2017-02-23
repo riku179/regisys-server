@@ -15,7 +15,7 @@ services:
       - MYSQL_DATABASE=regisys
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=foobar
-      - DEBUG=TRUE
+      - DEBUG=false
     links:
       - db
     depends_on:
@@ -31,6 +31,7 @@ services:
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=foobar
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - TZ=Asia/Tokyo
 
 
 volumes:

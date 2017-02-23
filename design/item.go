@@ -85,16 +85,32 @@ var ItemMedia = MediaType("application/vnd.regisys.items+json", func() {
 })
 
 var AddItemPayload = Type("AddItemPayload", func() {
-	Member("item_name", String, "item name")
-	Member("price", Integer, "item price")
-	Member("member_price", Integer, "Membership discount")
-	Member("quantity", Integer, "item quantity")
+	Member("item_name", String, "item name", func() {
+		Pattern(".+")
+	})
+	Member("price", Integer, "item price", func() {
+		Minimum(0)
+	})
+	Member("member_price", Integer, "Membership discount", func() {
+		Minimum(0)
+	})
+	Member("quantity", Integer, "item quantity", func() {
+		Minimum(1)
+	})
 	Required("item_name", "price", "member_price", "quantity")
 })
 
 var ModifyItemPayload = Type("ModifyItemPayload", func() {
-	Member("item_name", String, "item name")
-	Member("price", Integer, "item price")
-	Member("member_price", Integer, "Membership discount")
-	Member("quantity", Integer, "item quantity")
+	Member("item_name", String, "item name", func() {
+		Pattern(".+")
+	})
+	Member("price", Integer, "item price", func() {
+		Minimum(0)
+	})
+	Member("member_price", Integer, "Membership discount", func() {
+		Minimum(0)
+	})
+	Member("quantity", Integer, "item quantity", func() {
+		Minimum(1)
+	})
 })
