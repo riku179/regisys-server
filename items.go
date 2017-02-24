@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	"github.com/riku179/regisys-server/app"
@@ -47,15 +45,13 @@ func (c *ItemsController) Delete(ctx *app.DeleteItemsContext) error {
 	}
 	if reqItem.UserID != reqUser.ID {
 		// 指定された商品の所有者IDがリクエストしたユーザーののIDと一致しない
-		fmt.Printf("reqItem.UserID: %+v, reqUser.ID: %+v", reqItem.UserID, reqUser.ID)
 		return ctx.Forbidden()
 	}
 
-	var relatedOrder *models.Orders
+	var relatedOrder []*models.Orders
 	OrdersDB.Db.Where("item_id = ?", ctx.ID).First(&relatedOrder)
-	if relatedOrder != nil {
+	if len(relatedOrder) != 0 {
 		// 既に購入処理がされた商品は削除できない
-		fmt.Printf("relatedOrder: %+v", relatedOrder)
 		return ctx.Forbidden()
 	} else {
 		// OK
@@ -79,10 +75,16 @@ func (c *ItemsController) Modify(ctx *app.ModifyItemsContext) error {
 		return ctx.Forbidden()
 	}
 
-	relatedOrder := &models.Orders{}
-	OrdersDB.Db.Where("item_id = ?", ctx.ID).First(relatedOrder)
-	if relatedOrder != nil {
+	var relatedOrder []*models.Orders
+	OrdersDB.Db.Where(models.Orders{ItemID: ctx.ID}).First(&relatedOrder)
+
+	if len(relatedOrder) != 0 {
 		// 既に購入処理がされた商品は削除できない
+		if ctx.Payload.ItemName == nil && ctx.Payload.Quantity == nil {
+			// が、価格の変更だけならOK
+			ItemsDB.UpdateFromModifyItemPayload(ctx, ctx.Payload, ctx.ID)
+			return ctx.NoContent()
+		}
 		return ctx.Forbidden()
 	} else {
 		// OK

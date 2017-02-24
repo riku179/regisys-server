@@ -3,8 +3,6 @@ package main
 import (
 	"testing"
 
-	"fmt"
-
 	"github.com/riku179/regisys-server/app"
 	"github.com/riku179/regisys-server/app/test"
 	"github.com/riku179/regisys-server/models"
@@ -26,6 +24,7 @@ func TestAddItem_NoContent(t *testing.T) {
 	var testItem models.Items
 	ItemsDB.Db.Last(&testItem)
 
+	defer ItemsDB.Delete(ctx, testItem.ID)
 	if testItem.ItemName != "foo" {
 		t.Fatalf("Expected ItemName: hoge, but received: %+v", testItem.ItemName)
 	} else if reqUser.ID != testItem.UserID {
@@ -71,22 +70,22 @@ func TestDeleteItem_Forbidden(t *testing.T) {
 func TestModifyItem_NoContent(t *testing.T) {
 	reqUser, userCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, reqUser.ID)
-	fmt.Printf("reqUser.ID: %+v\n", reqUser.ID)
 
 	testItem := PrepareItems("foo", reqUser.ID)
 	defer ItemsDB.Delete(ctx, testItem.ID)
-	fmt.Printf("testItem.ID: %+v\n", testItem.ID)
 
 	newName := "bar"
 	test.ModifyItemsNoContent(
 		t, userCtx, service, itemCtrl, testItem.ID, &app.ModifyItemPayload{
 			ItemName: &newName,
 		})
+	//TODO 既に会計情報がついていても値段の変更のみするテスト
 
 	testItem, _ = ItemsDB.Get(ctx, testItem.ID)
 	if testItem.ItemName != "bar" {
 		t.Fatalf("Expected ItemName: bar, but receive: %+v", testItem.ItemName)
 	}
+
 }
 
 func TestModifyItem_NotFound(t *testing.T) {
@@ -101,7 +100,7 @@ func TestModifyItem_NotFound(t *testing.T) {
 
 func TestModifyItem_Forbidden(t *testing.T) {
 	normalUser, userCtx := PrepareUser(Normal)
-	adminUser, _ := PrepareUser(Admin)
+	adminUser, adminCtx := PrepareUser(Admin)
 	defer UserDB.Delete(ctx, normalUser.ID)
 	defer UserDB.Delete(ctx, adminUser.ID)
 
@@ -112,11 +111,19 @@ func TestModifyItem_Forbidden(t *testing.T) {
 	test.ModifyItemsForbidden(t, userCtx, service, itemCtrl, adminItem.ID, &app.ModifyItemPayload{
 		ItemName: &newName,
 	})
-	//TODO 既に購入処理がされていた場合、商品の編集が拒否されるテスト
-	// -> 価格の編集だけはしたい
-	//OrdersDB.Add(ctx, &models.Orders{
-	//	ItemID:
-	//})
+	testOrder := &models.Orders{
+		ItemID:        adminItem.ID, //10
+		Quantity:      1,
+		IsMemberPrice: false,
+		Price:         100,
+		UserID:        adminUser.ID,
+	}
+	OrdersDB.Add(ctx, testOrder)
+	defer OrdersDB.Delete(ctx, testOrder.ID)
+
+	test.ModifyItemsForbidden(t, adminCtx, service, itemCtrl, adminItem.ID, &app.ModifyItemPayload{
+		ItemName: &newName,
+	})
 }
 
 func TestShowItem_OK(t *testing.T) {
