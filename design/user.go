@@ -74,8 +74,12 @@ var ShowUserMedia = MediaType("application/vnd.regisys.user+json", func() {
 })
 
 var AddUserPayload = Type("AddUserPayload", func() {
-	Member("name", String)
-	Member("password", String)
+	Member("name", String, "username", func() {
+		Pattern(".+")
+	})
+	Member("password", String, "password", func() {
+		Pattern(".+")
+	})
 	Required("name", "password")
 })
 

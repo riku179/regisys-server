@@ -34,6 +34,7 @@ services:
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=foobar
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - TZ=Asia/Tokyo
 
 
 volumes:

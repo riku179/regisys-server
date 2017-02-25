@@ -17,8 +17,19 @@ var _ = Resource("orders", func() {
 		Description("Get orders")
 		Routing(GET(""))
 		Params(func() {
-			Param("user", String, "Unique user ID")
-			Param("date", DateTime, "Order date")
+			Param("user", Integer, "Unique user ID", func() {
+				Minimum(0)
+			})
+			Param("time_start", Integer, "Start Order date(UnixTime)", func() {
+				Minimum(0)
+				Default(0)
+			})
+			Param("time_end", Integer, "End Order date(UnixTime)", func() {
+				Minimum(0)
+				Maximum(2147483647)
+				Default(2147483647)
+			})
+			Required("time_start", "time_end")
 		})
 
 		Response(OK, func() {
@@ -33,6 +44,7 @@ var _ = Resource("orders", func() {
 		Payload(AddOrderPayload)
 
 		Response(NoContent)
+		Response(NotFound)
 		Response(Forbidden)
 	})
 
@@ -58,8 +70,8 @@ var OrderMedia = MediaType("application/vnd.regisys.orders+json", func() {
 		Attribute("quantity", Integer, "item quantity")
 		Attribute("price", Integer, "item price")
 		Attribute("user_id", Integer, "Register's user ID")
-		Attribute("date", DateTime, "Order date")
-		Required("id", "item_id", "item_name", "quantity", "price", "user_id", "date")
+		Attribute("datetime", Integer, "Order datetime")
+		Required("id", "item_id", "item_name", "quantity", "price", "user_id", "datetime")
 	})
 	View("default", func() {
 		Attribute("id")
@@ -68,14 +80,15 @@ var OrderMedia = MediaType("application/vnd.regisys.orders+json", func() {
 		Attribute("quantity")
 		Attribute("price")
 		Attribute("user_id")
-		Attribute("date")
+		Attribute("datetime")
 	})
 })
 
 var AddOrderPayload = Type("AddOrderPayload", func() {
 	Member("item_id", Integer, "Unique item ID")
-	Member("quantity", Integer, "item quantity")
-	Member("price", Integer, "item price")
-	Member("user_id", Integer, "Register's user ID")
-	Required("item_id", "quantity", "price", "user_id")
+	Member("quantity", Integer, "item quantity", func() {
+		Minimum(1)
+	})
+	Member("is_member_price", Boolean, "Is it bought for member's price")
+	Required("item_id", "quantity", "is_member_price")
 })

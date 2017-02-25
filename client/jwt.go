@@ -42,8 +42,8 @@ func (c *Client) NewSigninJWTRequest(ctx context.Context, path string, isMember 
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	tmp16 := strconv.FormatBool(isMember)
-	values.Set("is_member", tmp16)
+	tmp15 := strconv.FormatBool(isMember)
+	values.Set("is_member", tmp15)
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {

@@ -1,9 +1,15 @@
 package main
 
 import (
+	"context"
+
+	"time"
+
 	"github.com/goadesign/goa"
+	"github.com/jinzhu/gorm"
 	"github.com/riku179/regisys-server/app"
 	"github.com/riku179/regisys-server/models"
+	"github.com/riku179/regisys-server/user"
 )
 
 // OrdersController implements the orders resource.
@@ -21,31 +27,98 @@ func NewOrdersController(service *goa.Service) *OrdersController {
 
 // Add runs the add action.
 func (c *OrdersController) Add(ctx *app.AddOrdersContext) error {
-	// OrdersController_Add: start_implement
+	reqUser := user.FromContext(ctx)
+	// Register以上の権限が無いとダメ
+	if reqUser.Group != Register && reqUser.Group != Admin {
+		return ctx.Forbidden()
+	}
 
-	// Put your logic here
+	item, err := ItemsDB.Get(ctx, ctx.Payload.ItemID)
+	if err == gorm.ErrRecordNotFound {
+		return ctx.NotFound()
+	}
 
-	// OrdersController_Add: end_implement
-	return nil
+	order := models.OrdersFromAddOrderPayload(ctx.Payload)
+	order.UserID = reqUser.ID // レジ担当者ID
+
+	// メンバー価格の適用
+	if ctx.Payload.IsMemberPrice {
+		order.Price = item.MemberPrice
+	} else {
+		order.Price = item.Price
+	}
+
+	OrdersDB.Add(ctx, order)
+
+	return ctx.NoContent()
 }
 
 // Delete runs the delete action.
 func (c *OrdersController) Delete(ctx *app.DeleteOrdersContext) error {
-	// OrdersController_Delete: start_implement
+	reqUser := user.FromContext(ctx)
+	if reqUser.Group != Register && reqUser.Group != Admin {
+		return ctx.Forbidden()
+	}
 
-	// Put your logic here
+	_, err := ItemsDB.Get(ctx, ctx.ID)
+	if err == gorm.ErrRecordNotFound {
+		// 指定された商品が存在しない
+		return ctx.NotFound()
+	}
 
-	// OrdersController_Delete: end_implement
-	return nil
+	OrdersDB.Delete(ctx, ctx.ID)
+
+	return ctx.NoContent()
 }
 
 // Show runs the show action.
 func (c *OrdersController) Show(ctx *app.ShowOrdersContext) error {
-	// OrdersController_Show: start_implement
+	timeStart := time.Unix(int64(ctx.TimeStart), 0)
+	timeEnd := time.Unix(int64(ctx.TimeEnd), 0)
 
-	// Put your logic here
+	if ctx.User == nil {
+		// 全ユーザー
+		orders := []*models.Orders{}
+		OrdersDB.Db.Where(
+			"created_at >= ? AND created_at <= ?", timeStart, timeEnd,
+		).Find(&orders)
+		res := OrdersToRegisysOrders(ctx, orders)
 
-	// OrdersController_Show: end_implement
+		return ctx.OK(res)
+
+	} else {
+		// 指定ユーザーの取引のみ
+		orders := []*models.Orders{}
+
+		OrdersDB.Db.Where(
+			"user_id = ?", ctx.User,
+		).Where(
+			"created_at >= ? AND created_at <= ?", timeStart, timeEnd,
+		).Find(&orders)
+
+		res := OrdersToRegisysOrders(ctx, orders)
+
+		return ctx.OK(res)
+	}
+
+	//return ctx.OK(res)
+	return ctx.NotFound()
+}
+
+// []*models.Orders -> []*app.RegisysOrders
+func OrdersToRegisysOrders(ctx context.Context, orders []*models.Orders) app.RegisysOrdersCollection {
 	res := app.RegisysOrdersCollection{}
-	return ctx.OK(res)
+	for _, v := range orders {
+		item, _ := ItemsDB.Get(ctx, v.ItemID)
+		res = append(res, &app.RegisysOrders{
+			ID:       v.ID,
+			ItemID:   v.ItemID,
+			Price:    v.Price,
+			Quantity: v.Quantity,
+			UserID:   v.UserID,
+			Datetime: int(v.CreatedAt.Unix()),
+			ItemName: item.ItemName,
+		})
+	}
+	return res
 }

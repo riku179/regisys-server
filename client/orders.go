@@ -16,7 +16,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"time"
 
 	"golang.org/x/net/context"
 )
@@ -105,8 +104,8 @@ func ShowOrdersPath() string {
 }
 
 // Get orders
-func (c *Client) ShowOrders(ctx context.Context, path string, date *time.Time, user *string) (*http.Response, error) {
-	req, err := c.NewShowOrdersRequest(ctx, path, date, user)
+func (c *Client) ShowOrders(ctx context.Context, path string, timeEnd int, timeStart int, user *int) (*http.Response, error) {
+	req, err := c.NewShowOrdersRequest(ctx, path, timeEnd, timeStart, user)
 	if err != nil {
 		return nil, err
 	}
@@ -114,19 +113,20 @@ func (c *Client) ShowOrders(ctx context.Context, path string, date *time.Time, u
 }
 
 // NewShowOrdersRequest create the request corresponding to the show action endpoint of the orders resource.
-func (c *Client) NewShowOrdersRequest(ctx context.Context, path string, date *time.Time, user *string) (*http.Request, error) {
+func (c *Client) NewShowOrdersRequest(ctx context.Context, path string, timeEnd int, timeStart int, user *int) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	if date != nil {
-		tmp17 := date.Format(time.RFC3339)
-		values.Set("date", tmp17)
-	}
+	tmp16 := strconv.Itoa(timeEnd)
+	values.Set("time_end", tmp16)
+	tmp17 := strconv.Itoa(timeStart)
+	values.Set("time_start", tmp17)
 	if user != nil {
-		values.Set("user", *user)
+		tmp18 := strconv.Itoa(*user)
+		values.Set("user", tmp18)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)
