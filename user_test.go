@@ -35,6 +35,7 @@ func TestAddUser_NoContent(t *testing.T) {
 	// check user exists
 	var addUser models.User
 	UserDB.Db.Last(&addUser)
+	defer UserDB.Delete(ctx, addUser.ID)
 	if addUser.Name != "foo" {
 		t.Fatalf("Username expected: foo, but received: %+v", addUser.Name)
 	}
