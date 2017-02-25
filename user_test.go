@@ -13,12 +13,12 @@ import (
 var userCtrl = NewUserController(service)
 
 func TestAddUser_Forbidden(t *testing.T) {
-	// only MMA member can add OB account
 	OB := &models.User{Name: "OB", Password: "password", Group: Normal,
 		IsMember: false,
 	}
 	obCtx := user.NewContext(ctx, OB)
 
+	t.Log("非メンバーユーザーが他ユーザーを追加")
 	test.AddUserForbidden(
 		t, obCtx, service, userCtrl, &app.AddUserPayload{Name: "foo", Password: "bar"})
 }
@@ -28,6 +28,7 @@ func TestAddUser_NoContent(t *testing.T) {
 	normal, normalCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, normal.ID)
 
+	t.Log("メンバーユーザーが他ユーザーを追加")
 	test.AddUserNoContent(
 		t, normalCtx, service, userCtrl, &app.AddUserPayload{Name: "foo", Password: "bar"})
 
@@ -49,19 +50,20 @@ func TestModifyUser_Forbidden(t *testing.T) {
 	defer UserDB.Delete(ctx, register.ID)
 	defer UserDB.Delete(ctx, normal.ID)
 	defer UserDB.Delete(ctx, admin.ID)
-	// Normal user try other Register -> Admin
+
+	t.Log("Normal user try other Register -> Admin")
 	test.ModifyUserForbidden(
 		t, normalCtx, service, userCtrl, register.ID, &app.ModifyUserPayload{
 			Group: Register,
 		})
 
-	// Register user try other Admin -> Register
+	t.Log("Register user try other Admin -> Register")
 	test.ModifyUserForbidden(
 		t, registerCtx, service, userCtrl, admin.ID, &app.ModifyUserPayload{
 			Group: Normal,
 		})
 
-	// Register user try other Normal -> Admin
+	t.Log("Register user try other Normal -> Admin")
 	test.ModifyUserForbidden(
 		t, registerCtx, service, userCtrl, normal.ID, &app.ModifyUserPayload{
 			Group: Admin,
@@ -78,12 +80,12 @@ func TestModifyUser_NoContent(t *testing.T) {
 	defer UserDB.Delete(ctx, normal.ID)
 	defer UserDB.Delete(ctx, admin.ID)
 
-	// Register user try other Normal -> Register
+	t.Log("Register user try other Normal -> Register")
 	test.ModifyUserNoContent(
 		t, registerCtx, service, userCtrl, normal.ID, &app.ModifyUserPayload{
 			Group: Register,
 		})
-	//Admin user try other Register -> Admin
+	t.Log("Admin user try other Register -> Admin")
 	test.ModifyUserNoContent(
 		t, adminCtx, service, userCtrl, register.ID, &app.ModifyUserPayload{
 			Group: Admin,
@@ -110,7 +112,7 @@ func TestModifyUser_NotFound(t *testing.T) {
 	admin, adminCtx := PrepareUser(Admin)
 	defer UserDB.Delete(ctx, admin.ID)
 
-	// user of ID:114514 doesn't exist
+	t.Log("存在しないユーザーのグループを更新")
 	test.ModifyUserNotFound(t, adminCtx, service, userCtrl, 114514, &app.ModifyUserPayload{
 		Group: Register,
 	})
@@ -120,6 +122,7 @@ func TestShowUser_OK(t *testing.T) {
 	normal, normalCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, normal.ID)
 
+	t.Log("存在するユーザーを取得")
 	test.ShowUserOK(t, normalCtx, service, userCtrl, normal.ID)
 }
 
@@ -127,7 +130,7 @@ func TestShowUser_NotFound(t *testing.T) {
 	normal, normalCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, normal.ID)
 
-	// user of ID:114514 doesn't exist
+	t.Log("存在しないユーザーを取得")
 	test.ShowUserNotFound(t, normalCtx, service, userCtrl, 114514)
 }
 
@@ -135,6 +138,7 @@ func TestShowList_OK(t *testing.T) {
 	normal, normalCtx := PrepareUser(Normal)
 	defer UserDB.Delete(ctx, normal.ID)
 
+	t.Log("全てのユーザーをの一覧を表示")
 	test.ShowListUserOK(t, normalCtx, service, userCtrl)
 }
 
