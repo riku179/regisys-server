@@ -26,9 +26,11 @@ services:
     image: mariadb
     volumes:
       - data:/var/lib/mysql
+#      - ./query.log:/var/log/mysql.log:rw
     ports:
       - '3306:3306'
     command: '-C utf8'
+#    command: '-C utf8 --general-log=true --general-log-file=/var/log/mysql.log'
     environment:
       - MYSQL_DATABASE=regisys
       - MYSQL_USER=admin

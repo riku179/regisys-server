@@ -60,9 +60,9 @@ func (c *OrdersController) Delete(ctx *app.DeleteOrdersContext) error {
 		return ctx.Forbidden()
 	}
 
-	_, err := ItemsDB.Get(ctx, ctx.ID)
+	_, err := OrdersDB.Get(ctx, ctx.ID)
 	if err == gorm.ErrRecordNotFound {
-		// 指定された商品が存在しない
+		// 指定された購入履歴が存在しない
 		return ctx.NotFound()
 	}
 
@@ -85,24 +85,22 @@ func (c *OrdersController) Show(ctx *app.ShowOrdersContext) error {
 		res := OrdersToRegisysOrders(ctx, orders)
 
 		return ctx.OK(res)
-
-	} else {
-		// 指定ユーザーの取引のみ
-		orders := []*models.Orders{}
-
-		OrdersDB.Db.Where(
-			"user_id = ?", ctx.User,
-		).Where(
-			"created_at >= ? AND created_at <= ?", timeStart, timeEnd,
-		).Find(&orders)
-
-		res := OrdersToRegisysOrders(ctx, orders)
-
-		return ctx.OK(res)
+	} else if _, err := UserDB.Get(ctx, *ctx.User); err == gorm.ErrRecordNotFound {
+		return ctx.NotFound()
 	}
 
-	//return ctx.OK(res)
-	return ctx.NotFound()
+	// 指定ユーザーの取引のみ
+	orders := []*models.Orders{}
+
+	OrdersDB.Db.Where(
+		"user_id = ?", ctx.User,
+	).Where(
+		"created_at >= ? AND created_at <= ?", timeStart, timeEnd,
+	).Find(&orders)
+
+	res := OrdersToRegisysOrders(ctx, orders)
+
+	return ctx.OK(res)
 }
 
 // []*models.Orders -> []*app.RegisysOrders
