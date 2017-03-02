@@ -7,9 +7,9 @@ machine:
 
 dependencies:
   override:
-    - docker-compose -f docker-compose.deploy.yml up -d db
-    - docker-compose -f docker-compose.deploy.yml run app go-wrapper download
+    - docker-compose -f docker-compose.prod.yml up -d db
+    - docker-compose -f docker-compose.prod.yml run app go-wrapper download
 
 test:
   override:
-    - docker-compose -f docker-compose.deploy.yml run app go test
+    - docker-compose -f docker-compose.prod.yml run app go test
