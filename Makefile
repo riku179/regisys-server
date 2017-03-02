@@ -1,9 +1,15 @@
 HOST_ADDR := localhost:8080
 
-all : goagen gormgen swagger/dist
+# docker内の依存関係解決
+install :
+	docker-compose run --rm app go-wrapper download
 
-goagen:
-	go get github.com/goadesign/goa/goagen
+# 開発環境構築のためのローカルの依存関係解決
+develop :
+	go get -u github.com/golang/dep/cmd/dep
+	dep ensure
+
+generate : goagen gormgen swagger/dist
 
 goagen :
 	env HOST_ADDR=$(HOST_ADDR) goagen -d github.com/riku179/regisys-server/design bootstrap
@@ -13,9 +19,6 @@ gormgen : goagen
 
 swagger/dist : swagger-ui
 	cp -r swagger-ui/dist swagger/dist
-
-js :
-	env HOST_ADDR=$(HOST_ADDR) goagen -d github.com/riku179/regisys/design js
 
 swagger-ui :
 	@git clone https://github.com/swagger-api/swagger-ui.git

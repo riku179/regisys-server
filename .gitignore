@@ -6,3 +6,4 @@ js/
 dist/
 swagger-ui/
 vendor/
+query.log

@@ -2,7 +2,7 @@
 version: "2"
 services:
   app:
-    image: golang:1.7
+    image: golang:1.8
     volumes:
       - 'lib:/go'
       - '.:/go/src/github.com/riku179/regisys-server'
@@ -13,6 +13,7 @@ services:
     command: 'go run main.go jwt.go items.go orders.go user.go swagger.go'
     environment:
       - HOST_ADDR=0.0.0.0:8080
+      - MYSQL_ADDR=db
       - MYSQL_DATABASE=regisys
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=foobar
