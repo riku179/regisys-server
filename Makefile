@@ -1,13 +1,8 @@
-HOST_ADDR := localhost:8080
+HOST_ADDR := 'localhost:8080'
 
 # docker内の依存関係解決
 install :
 	docker-compose run --rm app go-wrapper download
-
-# 開発環境構築のためのローカルの依存関係解決
-develop :
-	go get -u github.com/golang/dep/cmd/dep
-	dep ensure
 
 generate : goagen gormgen swagger/dist
 

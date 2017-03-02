@@ -2,29 +2,40 @@
 
 Backend Register system for MMA Junk-Ichi 2017
 
-## Install Server
-	$ cd regisys
+## サーバー起動
+
+* 必要に応じて`jwtkey/{jwt.key,jwt.key.pub}`を差し替え
+* portは`8080`でlisten
+* docker-composeのデフォルトは`8080:8080`
+
+	$ docker-compose -f docker-compose.prod.yml run --rm app go-wrapper download
+	$ docker-compose -f docker-compose.prod.yml up -d
+	
+configはdocker-compose.prod.ymlを修正
+
+## 開発環境
+
+depが必要。リポジトリはGOPATH以下にcloneする
+    $ go get -u github.com/golang/dep/cmd/dep
+	$ dep ensure
+
+### 開発用サーバー起動
+
 	$ docker-compose run --rm app go-wrapper download
-Replace jwtkey/{jwt.key,jwt.key.pub} as needed.
-
-## Start Server
 	$ docker-compose up -d
-A server is listening on `localhost:8080` by default.
 
-## Access Server
-### build client
-	$ cd tool/regisys-cli
-	$ go build
+### 概略
 
-### Get token
-	$ ./regisys-cli signin jwt --user <username> --pass <password> --is_member <true/false> --dump
-	...
-	2017/01/15 00:13:06 [INFO] started id=Qzv17j28 GET=http://localhost:8080/token?is_member=false
-	2017/01/15 00:13:06 [INFO] request headers Authorization=Basic Zm9vOmJhcg== 	User-Agent=regisys-cli/0
-	2017/01/15 00:13:06 [INFO] completed id=Qzv17j28 status=200 time=5.623883ms
-	2017/01/15 00:13:06 [INFO] response headers Date=Sat, 14 Jan 2017 15:13:06 GMT Content-Length=30 
-	Authorization=Bearer eyJhbGciOi...IgVAIUaGE0boGA Content-Type=application/vnd.goa.example.token+json
-key is `eyJhbGciO...IgVAIUaGE0boGA`
+* `/app, /client, /models, /tool`は`/design`のDSLをもとに生成されるため、編集しない
+* `/design`以下を編集した場合は`make generate`で生成する
+* 認証にはBasicと [jwt](https://jwt.io/) を使用
 
-### Access with token
-	$ ./regisys-cli show goods --key eyJhbGciO...IgVAIUaGE0boGA
+#### ドキュメント
+
+1. ブラウザでサーバー (デフォルトで`localhost:8080`)にアクセスし、`http://petstore.swagger.io/v2/swagger.json`を`http://localhost:8080/swagger.json`に入れ替えて`Explore` でswagger-uiが起動する
+
+1. JWT`/token`のAuthorizationに`<username>:<password>`をbase64エンコードして先頭に`Basic `をつけたもの(ex. `Basic Zm9vOnBhc3N3b3JkCg==`)を入れて「Try it out!」
+
+1. `Response Headers`の`authorization`をコピー(ex.`Bearer Bearer eyJhbGciOiJ......`)して、ページの一番上の「Authorize」をクリックし、「Api key authorization」の`value`にペースとし、「Authorize」
+
+1. 各サービスにアクセスできる

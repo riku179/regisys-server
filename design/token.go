@@ -17,11 +17,15 @@ var _ = Resource("jwt", func() {
 		Security(SigninBasicAuth)
 		Routing(GET("/token"))
 		Params(func() {
-			Param("is_member", Boolean, "Is member of MMA")
+			Param("is_member", Boolean, "Is member of MMA", func() {
+				Example(true)
+			})
 			Required("is_member")
 		})
 		Headers(func() {
-			Header("Authorization", String, "Basic Auth Header")
+			Header("Authorization", String, "Basic Auth Header", func() {
+				Example("Basic Zm9vOnBhc3N3b3JkCg==")
+			})
 			Required("Authorization")
 		})
 
