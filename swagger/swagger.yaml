@@ -1,0 +1,731 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  AddItemPayload:
+    example:
+      item_name: DDR3 RAM 2G
+      member_price: 800
+      price: 1000
+      quantity: 4
+    properties:
+      item_name:
+        description: item name
+        example: DDR3 RAM 2G
+        pattern: .+
+        type: string
+      member_price:
+        description: Membership discount
+        example: 800
+        minimum: 0
+        type: integer
+      price:
+        description: item price
+        example: 1000
+        minimum: 0
+        type: integer
+      quantity:
+        description: item quantity
+        example: 4
+        minimum: 1
+        type: integer
+    required:
+    - item_name
+    - price
+    - member_price
+    - quantity
+    title: AddItemPayload
+    type: object
+  AddOrderPayload:
+    example:
+      is_member_price: false
+      item_id: 1
+      quantity: 3
+    properties:
+      is_member_price:
+        description: Is it bought for member's price
+        example: false
+        type: boolean
+      item_id:
+        description: Unique item ID
+        example: 1
+        format: int64
+        type: integer
+      quantity:
+        description: item quantity
+        example: 3
+        minimum: 1
+        type: integer
+    required:
+    - item_id
+    - quantity
+    - is_member_price
+    title: AddOrderPayload
+    type: object
+  AddUserPayload:
+    example:
+      name: Richard Matthew Stallman
+      password: password123
+    properties:
+      name:
+        description: username
+        example: Richard Matthew Stallman
+        pattern: .+
+        type: string
+      password:
+        description: password
+        example: password123
+        pattern: .+
+        type: string
+    required:
+    - name
+    - password
+    title: AddUserPayload
+    type: object
+  ModifyItemPayload:
+    example:
+      item_name: Mac Book Air
+      member_price: 400
+      price: 500
+      quantity: 6
+    properties:
+      item_name:
+        description: item name
+        example: Mac Book Air
+        pattern: .+
+        type: string
+      member_price:
+        description: Membership discount
+        example: 400
+        minimum: 0
+        type: integer
+      price:
+        description: item price
+        example: 500
+        minimum: 0
+        type: integer
+      quantity:
+        description: item quantity
+        example: 6
+        minimum: 1
+        type: integer
+    title: ModifyItemPayload
+    type: object
+  ModifyUserPayload:
+    example:
+      group: register
+    properties:
+      group:
+        enum:
+        - admin
+        - register
+        - normal
+        example: register
+        type: string
+    required:
+    - group
+    title: ModifyUserPayload
+    type: object
+  RegisysItems:
+    description: An item (default view)
+    example:
+      id: 1
+      item_name: Thinkpad X1 Carbon
+      member_price: 100000
+      price: 120000
+      quantity: 1
+      user_id: 1001
+    properties:
+      id:
+        description: Unique item ID
+        example: 1
+        format: int64
+        type: integer
+      item_name:
+        description: item name
+        example: Thinkpad X1 Carbon
+        type: string
+      member_price:
+        description: Membership discount
+        example: 100000
+        format: int64
+        type: integer
+      price:
+        description: item price
+        example: 120000
+        format: int64
+        type: integer
+      quantity:
+        description: item quantity
+        example: 1
+        format: int64
+        type: integer
+      user_id:
+        description: Unique User ID
+        example: 1001
+        format: int64
+        type: integer
+    required:
+    - id
+    - item_name
+    - price
+    - member_price
+    - user_id
+    - quantity
+    title: 'Mediatype identifier: application/vnd.regisys.items+json; view=default'
+    type: object
+  RegisysItemsCollection:
+    description: RegisysItemsCollection is the media type for an array of RegisysItems
+      (default view)
+    example:
+    - id: 1
+      item_name: Thinkpad X1 Carbon
+      member_price: 100000
+      price: 120000
+      quantity: 1
+      user_id: 1001
+    - id: 1
+      item_name: Thinkpad X1 Carbon
+      member_price: 100000
+      price: 120000
+      quantity: 1
+      user_id: 1001
+    - id: 1
+      item_name: Thinkpad X1 Carbon
+      member_price: 100000
+      price: 120000
+      quantity: 1
+      user_id: 1001
+    items:
+      $ref: '#/definitions/RegisysItems'
+    title: 'Mediatype identifier: application/vnd.regisys.items+json; type=collection;
+      view=default'
+    type: array
+  RegisysOrders:
+    description: An order (default view)
+    example:
+      datetime: 1.234568e+09
+      id: 1001
+      item_id: 1
+      item_name: Ryzen 7 1800X
+      price: 60000
+      quantity: 10
+      user_id: 1001
+    properties:
+      datetime:
+        description: Order datetime
+        example: 1.234568e+09
+        format: int64
+        type: integer
+      id:
+        description: Unique order ID
+        example: 1001
+        format: int64
+        type: integer
+      item_id:
+        description: Unique item ID
+        example: 1
+        format: int64
+        type: integer
+      item_name:
+        description: item name
+        example: Ryzen 7 1800X
+        type: string
+      price:
+        description: item price
+        example: 60000
+        format: int64
+        type: integer
+      quantity:
+        description: item quantity
+        example: 10
+        format: int64
+        type: integer
+      user_id:
+        description: Register's user ID
+        example: 1001
+        format: int64
+        type: integer
+    required:
+    - id
+    - item_id
+    - item_name
+    - quantity
+    - price
+    - user_id
+    - datetime
+    title: 'Mediatype identifier: application/vnd.regisys.orders+json; view=default'
+    type: object
+  RegisysOrdersCollection:
+    description: RegisysOrdersCollection is the media type for an array of RegisysOrders
+      (default view)
+    example:
+    - datetime: 1.234568e+09
+      id: 1001
+      item_id: 1
+      item_name: Ryzen 7 1800X
+      price: 60000
+      quantity: 10
+      user_id: 1001
+    - datetime: 1.234568e+09
+      id: 1001
+      item_id: 1
+      item_name: Ryzen 7 1800X
+      price: 60000
+      quantity: 10
+      user_id: 1001
+    - datetime: 1.234568e+09
+      id: 1001
+      item_id: 1
+      item_name: Ryzen 7 1800X
+      price: 60000
+      quantity: 10
+      user_id: 1001
+    items:
+      $ref: '#/definitions/RegisysOrders'
+    title: 'Mediatype identifier: application/vnd.regisys.orders+json; type=collection;
+      view=default'
+    type: array
+  RegisysUser:
+    description: Users (default view)
+    example:
+      group: register
+      id: 1001
+      is_member: true
+      name: Linus Benedict Torvalds
+    properties:
+      group:
+        description: Group of user
+        example: register
+        type: string
+      id:
+        description: Unique user ID
+        example: 1001
+        format: int64
+        type: integer
+      is_member:
+        description: Is member of MMA
+        example: true
+        type: boolean
+      name:
+        description: Username
+        example: Linus Benedict Torvalds
+        type: string
+    required:
+    - id
+    - name
+    - group
+    - is_member
+    title: 'Mediatype identifier: application/vnd.regisys.user+json; view=default'
+    type: object
+  RegisysUserCollection:
+    description: RegisysUserCollection is the media type for an array of RegisysUser
+      (default view)
+    example:
+    - group: register
+      id: 1001
+      is_member: true
+      name: Linus Benedict Torvalds
+    - group: register
+      id: 1001
+      is_member: true
+      name: Linus Benedict Torvalds
+    items:
+      $ref: '#/definitions/RegisysUser'
+    title: 'Mediatype identifier: application/vnd.regisys.user+json; type=collection;
+      view=default'
+    type: array
+host: localhost:8080
+info:
+  title: Register System for Junk-Ichi in MMA
+  version: ""
+paths:
+  /item:
+    get:
+      description: |-
+        Get items
+
+        Required security scopes:
+          * `api:access`
+      operationId: items#show
+      parameters:
+      - description: User ID
+        in: query
+        name: user
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RegisysItemsCollection'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: show items
+      tags:
+      - items
+    post:
+      description: |-
+        Add item
+
+        Required security scopes:
+          * `api:access`
+      operationId: items#add
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/AddItemPayload'
+      responses:
+        "204":
+          description: No Content
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: add items
+      tags:
+      - items
+  /item/{id}:
+    delete:
+      description: |-
+        Delete item
+
+        Required security scopes:
+          * `api:access`
+      operationId: items#delete
+      parameters:
+      - description: Unique item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: delete items
+      tags:
+      - items
+    put:
+      description: |-
+        Modify item
+
+        Required security scopes:
+          * `api:access`
+      operationId: items#modify
+      parameters:
+      - description: Unique item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ModifyItemPayload'
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: modify items
+      tags:
+      - items
+  /orders:
+    get:
+      description: |-
+        Get orders
+
+        Required security scopes:
+          * `api:access`
+      operationId: orders#show
+      parameters:
+      - default: 2.1474836e+09
+        description: End Order date(UnixTime)
+        in: query
+        maximum: 2.1474836e+09
+        minimum: 0
+        name: time_end
+        required: true
+        type: integer
+      - default: 0
+        description: Start Order date(UnixTime)
+        in: query
+        minimum: 0
+        name: time_start
+        required: true
+        type: integer
+      - description: Unique user ID
+        in: query
+        minimum: 0
+        name: user
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RegisysOrdersCollection'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: show orders
+      tags:
+      - orders
+    post:
+      description: |-
+        Add order
+
+        Required security scopes:
+          * `api:access`
+      operationId: orders#add
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/AddOrderPayload'
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: add orders
+      tags:
+      - orders
+  /orders/{id}:
+    delete:
+      description: |-
+        Disable order
+
+        Required security scopes:
+          * `api:access`
+      operationId: orders#delete
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: delete orders
+      tags:
+      - orders
+  /token:
+    get:
+      description: Create a valid JWT
+      operationId: jwt#signin
+      parameters:
+      - description: Is member of MMA
+        in: query
+        name: is_member
+        required: true
+        type: boolean
+      - description: Basic Auth Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            Authorization:
+              description: Generated JWT
+              type: string
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - SigninBasicAuth: []
+      summary: signin jwt
+      tags:
+      - jwt
+  /user:
+    post:
+      description: |-
+        Add user for NOT MMA member)
+
+        Required security scopes:
+          * `api:access`
+      operationId: user#add
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/AddUserPayload'
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Forbidden
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: add user
+      tags:
+      - user
+  /user/{id}:
+    get:
+      description: |-
+        Show one user
+
+        Required security scopes:
+          * `api:access`
+      operationId: user#show
+      parameters:
+      - description: Unique user ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RegisysUser'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: show user
+      tags:
+      - user
+    put:
+      description: |-
+        Modify group of user
+
+        Required security scopes:
+          * `api:access`
+      operationId: user#modify
+      parameters:
+      - description: Unique user ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ModifyUserPayload'
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: modify user
+      tags:
+      - user
+  /user/list:
+    get:
+      description: |-
+        Show users list
+
+        Required security scopes:
+          * `api:access`
+      operationId: user#showList
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RegisysUserCollection'
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: showList user
+      tags:
+      - user
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  Forbidden:
+    description: Forbidden
+  NoContent:
+    description: No Content
+  NotFound:
+    description: Not Found
+  Unauthorized:
+    description: Unauthorized
+schemes:
+- http
+securityDefinitions:
+  SigninBasicAuth:
+    type: basic
+  jwt:
+    description: |2-
+
+
+      **Security Scopes**:
+        * `api:access`: API access
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

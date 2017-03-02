@@ -1,0 +1,44 @@
+# docker-compose.yml for production
+# this version not expose ports
+version: "2"
+services:
+  app:
+    image: golang:1.8
+    volumes:
+      - 'lib:/go'
+      - '.:/go/src/github.com/riku179/regisys-server'
+      - '.:/go/bin'
+    working_dir: /go/src/github.com/riku179/regisys-server
+    entrypoint: './wait-for-it.sh -t 60 db:3306 -- '
+    command: 'go run main.go jwt.go items.go orders.go user.go swagger.go'
+    ports:
+      - 8080:8080
+    environment:
+      - HOST_ADDR=0.0.0.0:8080
+      - MYSQL_ADDR=db
+      - MYSQL_DATABASE=regisys
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=foobar
+      - DEBUG=false
+    links:
+      - db
+    depends_on:
+      - db
+
+  db:
+    image: mariadb
+    volumes:
+      - data:/var/lib/mysql
+    command: '-C utf8'
+    environment:
+      - MYSQL_DATABASE=regisys
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=foobar
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - TZ=Asia/Tokyo
+
+volumes:
+  lib:
+    driver: local
+  data:
+    driver: local

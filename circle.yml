@@ -1,0 +1,15 @@
+machine:
+  pre:
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+    - pip install docker-compose==1.8.0
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker-compose -f docker-compose.prod.yml up -d db
+    - docker-compose -f docker-compose.prod.yml run app go-wrapper download
+
+test:
+  override:
+    - docker-compose -f docker-compose.prod.yml run app go test
