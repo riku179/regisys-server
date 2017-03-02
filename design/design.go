@@ -1,9 +1,10 @@
 package design
 
 import (
+	"os"
+
 	. "github.com/goadesign/goa/design"
 	. "github.com/goadesign/goa/design/apidsl"
-	"os"
 )
 
 var JWT = JWTSecurity("jwt", func() {
