@@ -15,11 +15,11 @@ import (
 )
 
 var (
-	// ErrUnauthorized is the error returned for unauthorized requests.
 	errValidationFailed = goa.NewErrorClass("validation_failed", 401)
 	ItemsDB             *models.ItemsDB
 	UserDB              *models.UserDB
 	OrdersDB            *models.OrdersDB
+	MYSQL_ADDR          = os.Getenv("MYSQL_ADDR")
 	MYSQL_USER          = os.Getenv("MYSQL_USER")
 	MYSQL_PASSWORD      = os.Getenv("MYSQL_PASSWORD")
 	MYSQL_DATABASE      = os.Getenv("MYSQL_DATABASE")
@@ -37,7 +37,7 @@ func main() {
 	// Create service
 
 	// Connect DB
-	db, err := gorm.Open("mysql", fmt.Sprintf("%v:%v@tcp(db:3306)/%v?parseTime=true&charset=utf8", MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE))
+	db, err := gorm.Open("mysql", fmt.Sprintf("%v:%v@tcp(%v:3306)/%v?parseTime=true&charset=utf8", MYSQL_USER, MYSQL_PASSWORD, MYSQL_ADDR, MYSQL_DATABASE))
 	if err != nil {
 		exitOnFailure(err)
 	}
