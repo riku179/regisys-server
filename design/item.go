@@ -17,7 +17,9 @@ var _ = Resource("items", func() {
 		Description("Get items")
 		Routing(GET(""))
 		Params(func() {
-			Param("user", Integer, "User ID")
+			Param("user", Integer, "User ID", func() {
+				Example(1)
+			})
 		})
 
 		Response(OK, func() {
@@ -65,12 +67,24 @@ var ItemMedia = MediaType("application/vnd.regisys.items+json", func() {
 	Description("An item")
 
 	Attributes(func() {
-		Attribute("id", Integer, "Unique item ID")
-		Attribute("item_name", String, "item name")
-		Attribute("price", Integer, "item price")
-		Attribute("member_price", Integer, "Membership discount")
-		Attribute("user_id", Integer, "Unique User ID")
-		Attribute("quantity", Integer, "item quantity")
+		Attribute("id", Integer, "Unique item ID", func() {
+			Example(1)
+		})
+		Attribute("item_name", String, "item name", func() {
+			Example("Thinkpad X1 Carbon")
+		})
+		Attribute("price", Integer, "item price", func() {
+			Example(120000)
+		})
+		Attribute("member_price", Integer, "Membership discount", func() {
+			Example(100000)
+		})
+		Attribute("user_id", Integer, "Unique User ID", func() {
+			Example(1001)
+		})
+		Attribute("quantity", Integer, "item quantity", func() {
+			Example(1)
+		})
 		Required("id", "item_name", "price", "member_price", "user_id", "quantity")
 	})
 
@@ -87,15 +101,19 @@ var ItemMedia = MediaType("application/vnd.regisys.items+json", func() {
 var AddItemPayload = Type("AddItemPayload", func() {
 	Member("item_name", String, "item name", func() {
 		Pattern(".+")
+		Example("DDR3 RAM 2G")
 	})
 	Member("price", Integer, "item price", func() {
 		Minimum(0)
+		Example(1000)
 	})
 	Member("member_price", Integer, "Membership discount", func() {
 		Minimum(0)
+		Example(800)
 	})
 	Member("quantity", Integer, "item quantity", func() {
 		Minimum(1)
+		Example(4)
 	})
 	Required("item_name", "price", "member_price", "quantity")
 })
@@ -103,14 +121,18 @@ var AddItemPayload = Type("AddItemPayload", func() {
 var ModifyItemPayload = Type("ModifyItemPayload", func() {
 	Member("item_name", String, "item name", func() {
 		Pattern(".+")
+		Example("Mac Book Air")
 	})
 	Member("price", Integer, "item price", func() {
 		Minimum(0)
+		Example(500)
 	})
 	Member("member_price", Integer, "Membership discount", func() {
 		Minimum(0)
+		Example(400)
 	})
 	Member("quantity", Integer, "item quantity", func() {
 		Minimum(1)
+		Example(6)
 	})
 })
