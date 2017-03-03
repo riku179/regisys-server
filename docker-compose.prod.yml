@@ -28,8 +28,6 @@ services:
     image: mariadb
     volumes:
       - data:/var/lib/mysql
-    ports:
-      - '3306:3306'
     command: '-C utf8'
     environment:
       - MYSQL_DATABASE=regisys
