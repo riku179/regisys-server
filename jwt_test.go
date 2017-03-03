@@ -12,7 +12,7 @@ import (
 var jwtCtrl, _ = NewJWTController(service)
 
 func TestSigninOKbyMember(t *testing.T) {
-	normal, _ := PrepareUser(Normal)
+	normal, _ := PrepareUser(false)
 	defer UserDB.Delete(ctx, normal.ID)
 
 	basicHeader := genBasicHeader(normal.Name, normal.Password)
@@ -22,7 +22,7 @@ func TestSigninOKbyMember(t *testing.T) {
 
 func TestSigninOKbyNotMember(t *testing.T) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte("password"), 10)
-	OB := &models.User{Name: "OB", Password: string(hash), Group: Normal,
+	OB := &models.User{Name: "OB", Password: string(hash), IsRegister: false,
 		IsMember: false}
 	UserDB.Add(ctx, OB)
 	defer UserDB.Delete(ctx, OB.ID)

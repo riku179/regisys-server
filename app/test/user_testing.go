@@ -183,17 +183,6 @@ func ModifyUserForbidden(t goatest.TInterface, ctx context.Context, service *goa
 		service.Encoder.Register(newEncoder, "*/*")
 	}
 
-	// Validate payload
-	err := payload.Validate()
-	if err != nil {
-		e, ok := err.(goa.ServiceError)
-		if !ok {
-			panic(err) // bug
-		}
-		t.Errorf("unexpected payload validation error: %+v", e)
-		return nil
-	}
-
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
@@ -252,17 +241,6 @@ func ModifyUserNoContent(t goatest.TInterface, ctx context.Context, service *goa
 		service.Encoder.Register(newEncoder, "*/*")
 	}
 
-	// Validate payload
-	err := payload.Validate()
-	if err != nil {
-		e, ok := err.(goa.ServiceError)
-		if !ok {
-			panic(err) // bug
-		}
-		t.Errorf("unexpected payload validation error: %+v", e)
-		return nil
-	}
-
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
@@ -319,17 +297,6 @@ func ModifyUserNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
 		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
 		service.Encoder.Register(newEncoder, "*/*")
-	}
-
-	// Validate payload
-	err := payload.Validate()
-	if err != nil {
-		e, ok := err.(goa.ServiceError)
-		if !ok {
-			panic(err) // bug
-		}
-		t.Errorf("unexpected payload validation error: %+v", e)
-		return nil
 	}
 
 	// Setup request context

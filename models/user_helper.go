@@ -44,9 +44,9 @@ func (m *UserDB) ListRegisysUser(ctx context.Context) []*app.RegisysUser {
 // UserToRegisysUser loads a User and builds the default view of media type RegisysUser.
 func (m *User) UserToRegisysUser() *app.RegisysUser {
 	user := &app.RegisysUser{}
-	user.Group = m.Group
 	user.ID = m.ID
 	user.IsMember = m.IsMember
+	user.IsRegister = m.IsRegister
 	user.Name = m.Name
 
 	return user

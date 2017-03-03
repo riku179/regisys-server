@@ -71,7 +71,7 @@ func ModifyUserPath(id int) string {
 	return fmt.Sprintf("/user/%s", param0)
 }
 
-// Modify group of user
+// Modify is_register of user
 func (c *Client) ModifyUser(ctx context.Context, path string, payload *ModifyUserPayload, contentType string) (*http.Response, error) {
 	req, err := c.NewModifyUserRequest(ctx, path, payload, contentType)
 	if err != nil {

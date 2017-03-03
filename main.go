@@ -27,12 +27,6 @@ var (
 	service             = goa.New("regisys")
 )
 
-const (
-	Admin    = "admin"
-	Register = "register"
-	Normal   = "normal"
-)
-
 func main() {
 	// Create service
 

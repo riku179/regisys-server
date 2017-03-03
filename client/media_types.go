@@ -140,12 +140,12 @@ func (c *Client) DecodeRegisysOrdersCollection(resp *http.Response) (RegisysOrde
 //
 // Identifier: application/vnd.regisys.user+json; view=default
 type RegisysUser struct {
-	// Group of user
-	Group string `form:"group" json:"group" xml:"group"`
 	// Unique user ID
 	ID int `form:"id" json:"id" xml:"id"`
 	// Is member of MMA
 	IsMember bool `form:"is_member" json:"is_member" xml:"is_member"`
+	// Register or not
+	IsRegister bool `form:"is_register" json:"is_register" xml:"is_register"`
 	// Username
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -155,9 +155,6 @@ func (mt *RegisysUser) Validate() (err error) {
 
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
-	}
-	if mt.Group == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "group"))
 	}
 
 	return

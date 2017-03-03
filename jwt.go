@@ -73,7 +73,7 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 		return ctx.Unauthorized()
 	}
 
-	// User data(id,name,group) is bound to this User instance
+	// User data(id,name,is_member) is bound to this User instance
 	var reqUser models.User
 
 	if ctx.IsMember {
@@ -103,13 +103,13 @@ func (c *JWTController) Signin(ctx *app.SigninJWTContext) error {
 	// token expire 24h after
 	in60m := time.Now().Add(time.Duration(1440) * time.Minute).Unix()
 	token.Claims = jwtgo.MapClaims{
-		"exp":       in60m,             // time when the token will expire (60 minutes from now)
-		"iat":       time.Now().Unix(), // when the token was issued/created (now)
-		"sub":       reqUser.ID,        // the subject/principal is whom the token is about
-		"scopes":    "api:access",      // token scope - not a standard claim
-		"group":     reqUser.Group,     // group of user - not a standard claim
-		"user_name": reqUser.Name,      // username - not a standard claim
-		"is_member": reqUser.IsMember,  // is member of MMA - not a standard claim
+		"exp":         in60m,              // time when the token will expire (60 minutes from now)
+		"iat":         time.Now().Unix(),  // when the token was issued/created (now)
+		"sub":         reqUser.ID,         // the subject/principal is whom the token is about
+		"scopes":      "api:access",       // token scope - not a standard claim
+		"is_register": reqUser.IsRegister, // is register of user - not a standard claim
+		"user_name":   reqUser.Name,       // username - not a standard claim
+		"is_member":   reqUser.IsMember,   // is member of MMA - not a standard claim
 	}
 	// Sign token by private key
 	signedToken, err := token.SignedString(c.privateKey)
@@ -162,10 +162,10 @@ func checkUser() goa.Middleware {
 				return errValidationFailed("Failed to Validate")
 			}
 			ctx = user.NewContext(ctx, &models.User{
-				ID:       int(subject.(float64)),
-				Name:     claims["user_name"].(string),
-				Group:    claims["group"].(string),
-				IsMember: claims["is_member"].(bool),
+				ID:         int(subject.(float64)),
+				Name:       claims["user_name"].(string),
+				IsRegister: claims["is_register"].(bool),
+				IsMember:   claims["is_member"].(bool),
 			})
 			return h(ctx, rw, req)
 		}
