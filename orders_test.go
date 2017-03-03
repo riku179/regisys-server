@@ -14,8 +14,8 @@ import (
 var orderCtrl = NewOrdersController(service)
 
 func TestAddOrders_NoContent(t *testing.T) {
-	r, registerCtx := PrepareUser(Register)
-	user, _ := PrepareUser(Normal)
+	r, registerCtx := PrepareUser(true)
+	user, _ := PrepareUser(false)
 	item := PrepareItems("item1", user.ID)
 	defer UserDB.Delete(ctx, user.ID)
 	defer UserDB.Delete(ctx, r.ID)
@@ -37,12 +37,12 @@ func TestAddOrders_NoContent(t *testing.T) {
 }
 
 func TestAddOrders_Forbidden(t *testing.T) {
-	user, normalCtx := PrepareUser(Normal)
+	user, normalCtx := PrepareUser(false)
 	item := PrepareItems("item1", user.ID)
 	defer UserDB.Delete(ctx, user.ID)
 	defer ItemsDB.Delete(ctx, item.ID)
 
-	t.Log("Normalユーザーが購入処理をする")
+	t.Log("falseユーザーが購入処理をする")
 	test.AddOrdersForbidden(t, normalCtx, service, orderCtrl, &app.AddOrderPayload{
 		ItemID:        item.ID,
 		IsMemberPrice: false,
@@ -51,7 +51,7 @@ func TestAddOrders_Forbidden(t *testing.T) {
 }
 
 func TestAddOrders_NotFound(t *testing.T) {
-	r, registerCtx := PrepareUser(Register)
+	r, registerCtx := PrepareUser(true)
 	defer UserDB.Delete(ctx, r.ID)
 
 	t.Log("存在しない商品を購入する")
@@ -63,7 +63,7 @@ func TestAddOrders_NotFound(t *testing.T) {
 }
 
 func TestDeleteOrders_NoContent(t *testing.T) {
-	r, registerCtx := PrepareUser(Register)
+	r, registerCtx := PrepareUser(true)
 	testOrder := PrepareOrders(123)
 	defer UserDB.Delete(ctx, r.ID)
 	defer OrdersDB.Delete(ctx, testOrder.ID)
@@ -78,7 +78,7 @@ func TestDeleteOrders_NoContent(t *testing.T) {
 }
 
 func TestDeleteOrders_NotFound(t *testing.T) {
-	r, registerCtx := PrepareUser(Register)
+	r, registerCtx := PrepareUser(true)
 	defer UserDB.Delete(ctx, r.ID)
 
 	t.Log("存在しないオーダーを削除する")
@@ -86,7 +86,7 @@ func TestDeleteOrders_NotFound(t *testing.T) {
 }
 
 func TestDeleteOrders_Forbidden(t *testing.T) {
-	user, normalCtx := PrepareUser(Normal)
+	user, normalCtx := PrepareUser(false)
 	testOrder := PrepareOrders(123)
 	defer UserDB.Delete(ctx, user.ID)
 	defer UserDB.Delete(ctx, testOrder.ID)
@@ -96,7 +96,7 @@ func TestDeleteOrders_Forbidden(t *testing.T) {
 }
 
 func TestShowOrders_OK(t *testing.T) {
-	user, normalCtx := PrepareUser(Normal)
+	user, normalCtx := PrepareUser(false)
 	defer UserDB.Delete(ctx, user.ID)
 
 	t.Log("全オーダーを取得")
@@ -110,7 +110,7 @@ func TestShowOrders_OK(t *testing.T) {
 }
 
 func TestShowOrders_NotFound(t *testing.T) {
-	user, normalCtx := PrepareUser(Normal)
+	user, normalCtx := PrepareUser(false)
 	defer UserDB.Delete(ctx, user.ID)
 
 	t.Log("存在しないユーザーを指定してオーダーを取得")
@@ -119,10 +119,10 @@ func TestShowOrders_NotFound(t *testing.T) {
 }
 
 func PrepareOrders(itemID int) (orders *models.Orders) {
-	regiUser := &models.User{Name: Register, Group: Register, IsMember: true}
-	UserDB.Add(ctx, regiUser)
+	registerUser := &models.User{Name: "Register", IsRegister: true, IsMember: true}
+	UserDB.Add(ctx, registerUser)
 	orders = &models.Orders{
-		UserID:        regiUser.ID,
+		UserID:        registerUser.ID,
 		ItemID:        itemID,
 		Price:         100,
 		Quantity:      5,

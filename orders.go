@@ -28,8 +28,8 @@ func NewOrdersController(service *goa.Service) *OrdersController {
 // Add runs the add action.
 func (c *OrdersController) Add(ctx *app.AddOrdersContext) error {
 	reqUser := user.FromContext(ctx)
-	// Register以上の権限が無いとダメ
-	if reqUser.Group != Register && reqUser.Group != Admin {
+	// Registerじゃないとダメ
+	if reqUser.IsRegister == false {
 		return ctx.Forbidden()
 	}
 
@@ -56,7 +56,7 @@ func (c *OrdersController) Add(ctx *app.AddOrdersContext) error {
 // Delete runs the delete action.
 func (c *OrdersController) Delete(ctx *app.DeleteOrdersContext) error {
 	reqUser := user.FromContext(ctx)
-	if reqUser.Group != Register && reqUser.Group != Admin {
+	if reqUser.IsRegister == false {
 		return ctx.Forbidden()
 	}
 

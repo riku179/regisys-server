@@ -22,7 +22,7 @@ var _ = Resource("user", func() {
 	})
 
 	Action("modify", func() {
-		Description("Modify group of user")
+		Description("Modify is_register of user")
 		Routing(PUT("/:id"))
 		Params(func() {
 			Param("id", Integer, "Unique user ID", func() {
@@ -69,18 +69,19 @@ var ShowUserMedia = MediaType("application/vnd.regisys.user+json", func() {
 		Attribute("name", String, "Username", func() {
 			Example("Linus Benedict Torvalds")
 		})
-		Attribute("group", String, "Group of user", func() {
-			Example("register")
+
+		Attribute("is_register", Boolean, "Register or not", func() {
+			Example(false)
 		})
 		Attribute("is_member", Boolean, "Is member of MMA", func() {
 			Example(true)
 		})
-		Required("id", "name", "group", "is_member")
+		Required("id", "name", "is_register", "is_member")
 	})
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")
-		Attribute("group")
+		Attribute("is_register")
 		Attribute("is_member")
 	})
 })
@@ -98,9 +99,8 @@ var AddUserPayload = Type("AddUserPayload", func() {
 })
 
 var ModifyUserPayload = Type("ModifyUserPayload", func() {
-	Member("group", String, func() {
-		Enum("admin", "register", "normal")
-		Example("register")
+	Member("is_register", Boolean, func() {
+		Example(true)
 	})
-	Required("group")
+	Required("is_register")
 })

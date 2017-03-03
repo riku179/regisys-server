@@ -42,24 +42,16 @@ func (c *UserController) Modify(ctx *app.ModifyUserContext) error {
 	// login user
 	reqUser := user.FromContext(ctx)
 
-	// target user requested modify group by login_user
-	target_user, err := UserDB.Get(ctx, ctx.ID)
+	// target user requested modify authority by login_user
+	_, err := UserDB.Get(ctx, ctx.ID)
 	if err == gorm.ErrRecordNotFound {
 		return ctx.NotFound()
 	}
 
-	// only 'Register' or 'Admin' user can do
-	if reqUser.Group != Register && reqUser.Group != Admin {
+	// only Register user can do
+	if reqUser.IsRegister == false {
 		return ctx.Forbidden()
 	}
-
-	// 'Register' user can only upgrade 'Normal' user's group to 'Register'
-	if reqUser.Group == Register {
-		if target_user.Group != Normal || ctx.Payload.Group != Register {
-			return ctx.Forbidden()
-		}
-	}
-	// and 'Admin' can do anything
 
 	err = UserDB.UpdateFromModifyUserPayload(ctx, ctx.Payload, ctx.ID)
 	if err != nil {
@@ -77,10 +69,10 @@ func (c *UserController) Show(ctx *app.ShowUserContext) error {
 	}
 
 	res := &app.RegisysUser{
-		ID:       reqUser.ID,
-		Group:    reqUser.Group,
-		Name:     reqUser.Name,
-		IsMember: reqUser.IsMember,
+		ID:         reqUser.ID,
+		IsRegister: reqUser.IsRegister,
+		Name:       reqUser.Name,
+		IsMember:   reqUser.IsMember,
 	}
 	return ctx.OK(res)
 }
@@ -95,10 +87,10 @@ func (c *UserController) ShowList(ctx *app.ShowListUserContext) error {
 	res := []*app.RegisysUser{}
 	for _, usr := range users {
 		res = append(res, &app.RegisysUser{
-			ID:       usr.ID,
-			Group:    usr.Group,
-			Name:     usr.Name,
-			IsMember: usr.IsMember,
+			ID:         usr.ID,
+			IsRegister: usr.IsRegister,
+			Name:       usr.Name,
+			IsMember:   usr.IsMember,
 		})
 	}
 	return ctx.OK(res)

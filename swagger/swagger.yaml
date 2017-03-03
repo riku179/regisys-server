@@ -115,17 +115,13 @@ definitions:
     type: object
   ModifyUserPayload:
     example:
-      group: register
+      is_register: true
     properties:
-      group:
-        enum:
-        - admin
-        - register
-        - normal
-        example: register
-        type: string
+      is_register:
+        example: true
+        type: boolean
     required:
-    - group
+    - is_register
     title: ModifyUserPayload
     type: object
   RegisysItems:
@@ -291,15 +287,11 @@ definitions:
   RegisysUser:
     description: Users (default view)
     example:
-      group: register
       id: 1001
       is_member: true
+      is_register: false
       name: Linus Benedict Torvalds
     properties:
-      group:
-        description: Group of user
-        example: register
-        type: string
       id:
         description: Unique user ID
         example: 1001
@@ -309,6 +301,10 @@ definitions:
         description: Is member of MMA
         example: true
         type: boolean
+      is_register:
+        description: Register or not
+        example: false
+        type: boolean
       name:
         description: Username
         example: Linus Benedict Torvalds
@@ -316,7 +312,7 @@ definitions:
     required:
     - id
     - name
-    - group
+    - is_register
     - is_member
     title: 'Mediatype identifier: application/vnd.regisys.user+json; view=default'
     type: object
@@ -324,13 +320,13 @@ definitions:
     description: RegisysUserCollection is the media type for an array of RegisysUser
       (default view)
     example:
-    - group: register
-      id: 1001
+    - id: 1001
       is_member: true
+      is_register: false
       name: Linus Benedict Torvalds
-    - group: register
-      id: 1001
+    - id: 1001
       is_member: true
+      is_register: false
       name: Linus Benedict Torvalds
     items:
       $ref: '#/definitions/RegisysUser'
@@ -648,7 +644,7 @@ paths:
       - user
     put:
       description: |-
-        Modify group of user
+        Modify is_register of user
 
         Required security scopes:
           * `api:access`

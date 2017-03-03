@@ -52,8 +52,8 @@ var sg = StorageGroup("RegisysStorageGroup", func() {
 			Field("name", gorma.String, func() {
 				SQLTag("not null;default:false")
 			})
-			Field("group", gorma.String, func() {
-				SQLTag("not null;default:'normal'")
+			Field("is_register", gorma.Boolean, func() {
+				SQLTag("not null;default:false")
 			})
 			Field("is_member", gorma.Boolean, func() {
 				SQLTag("not null;default:false")
