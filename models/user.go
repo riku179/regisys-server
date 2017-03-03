@@ -22,8 +22,8 @@ import (
 // User Relational Model
 type User struct {
 	ID               int     `gorm:"primary_key"` // Unique user ID
-	Group            string  `sql:"not null;default:'normal'"`
 	IsMember         bool    `sql:"not null;default:false"`
+	IsRegister       bool    `sql:"not null;default:false"`
 	Items            []Items // has many Items
 	Name             string  `sql:"not null;default:false"`
 	Password         string
@@ -183,7 +183,7 @@ func (m *UserDB) UpdateFromAddUserPayload(ctx context.Context, payload *app.AddU
 // only copying the non-nil fields from the source.
 func UserFromModifyUserPayload(payload *app.ModifyUserPayload) *User {
 	user := &User{}
-	user.Group = payload.Group
+	user.IsRegister = payload.IsRegister
 
 	return user
 }
@@ -198,7 +198,7 @@ func (m *UserDB) UpdateFromModifyUserPayload(ctx context.Context, payload *app.M
 		goa.LogError(ctx, "error retrieving User", "error", err.Error())
 		return err
 	}
-	obj.Group = payload.Group
+	obj.IsRegister = payload.IsRegister
 
 	err = m.Db.Save(&obj).Error
 	return err

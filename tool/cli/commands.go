@@ -245,7 +245,7 @@ Payload example:
 Payload example:
 
 {
-   "group": "register"
+   "is_register": true
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}

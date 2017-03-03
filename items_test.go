@@ -11,7 +11,7 @@ import (
 var itemCtrl = NewItemsController(service)
 
 func TestAddItem_NoContent(t *testing.T) {
-	reqUser, userCtx := PrepareUser(Normal)
+	reqUser, userCtx := PrepareUser(false)
 	defer UserDB.Delete(ctx, reqUser.ID)
 
 	t.Log("商品を追加")
@@ -34,7 +34,7 @@ func TestAddItem_NoContent(t *testing.T) {
 }
 
 func TestDeleteItem_NoContent(t *testing.T) {
-	reqUser, userCtx := PrepareUser(Normal)
+	reqUser, userCtx := PrepareUser(false)
 	defer UserDB.Delete(ctx, reqUser.ID)
 
 	testItem := PrepareItems("foo", reqUser.ID)
@@ -49,7 +49,7 @@ func TestDeleteItem_NoContent(t *testing.T) {
 }
 
 func TestDeleteItem_NotFound(t *testing.T) {
-	reqUser, userCtx := PrepareUser(Normal)
+	reqUser, userCtx := PrepareUser(false)
 	defer UserDB.Delete(ctx, reqUser.ID)
 
 	t.Log("存在しない商品を削除")
@@ -57,13 +57,13 @@ func TestDeleteItem_NotFound(t *testing.T) {
 }
 
 func TestDeleteItem_Forbidden(t *testing.T) {
-	normalUser, userCtx := PrepareUser(Normal)
-	adminUser, _ := PrepareUser(Admin)
+	normalUser, userCtx := PrepareUser(false)
+	registerUser, _ := PrepareUser(true)
 	defer UserDB.Delete(ctx, normalUser.ID)
-	defer UserDB.Delete(ctx, adminUser.ID)
+	defer UserDB.Delete(ctx, registerUser.ID)
 
 	t.Log("他人の商品を削除")
-	adminItem := PrepareItems("foo", adminUser.ID)
+	adminItem := PrepareItems("foo", registerUser.ID)
 	defer ItemsDB.Delete(ctx, adminItem.ID)
 
 	test.DeleteItemsForbidden(t, userCtx, service, itemCtrl, adminItem.ID)
@@ -79,7 +79,7 @@ func TestDeleteItem_Forbidden(t *testing.T) {
 }
 
 func TestModifyItem_NoContent(t *testing.T) {
-	reqUser, userCtx := PrepareUser(Normal)
+	reqUser, userCtx := PrepareUser(false)
 	defer UserDB.Delete(ctx, reqUser.ID)
 	testItem := PrepareItems("foo", reqUser.ID)
 	defer ItemsDB.Delete(ctx, testItem.ID)
@@ -115,7 +115,7 @@ func TestModifyItem_NoContent(t *testing.T) {
 }
 
 func TestModifyItem_NotFound(t *testing.T) {
-	reqUser, userCtx := PrepareUser(Normal)
+	reqUser, userCtx := PrepareUser(false)
 	defer UserDB.Delete(ctx, reqUser.ID)
 
 	t.Log("存在しない自分の商品を更新")
@@ -127,12 +127,12 @@ func TestModifyItem_NotFound(t *testing.T) {
 }
 
 func TestModifyItem_Forbidden(t *testing.T) {
-	normalUser, userCtx := PrepareUser(Normal)
-	adminUser, adminCtx := PrepareUser(Admin)
+	normalUser, userCtx := PrepareUser(false)
+	registerUser, registerCtx := PrepareUser(true)
 	defer UserDB.Delete(ctx, normalUser.ID)
-	defer UserDB.Delete(ctx, adminUser.ID)
+	defer UserDB.Delete(ctx, registerUser.ID)
 
-	adminItem := PrepareItems("foo", adminUser.ID)
+	adminItem := PrepareItems("foo", registerUser.ID)
 	defer ItemsDB.Delete(ctx, adminItem.ID)
 
 	t.Log("他人の商品を更新")
@@ -145,18 +145,18 @@ func TestModifyItem_Forbidden(t *testing.T) {
 	defer OrdersDB.Delete(ctx, testOrder.ID)
 
 	t.Log("既に購入処理が存在する自分の商品の価格以外を更新")
-	test.ModifyItemsForbidden(t, adminCtx, service, itemCtrl, adminItem.ID, &app.ModifyItemPayload{
+	test.ModifyItemsForbidden(t, registerCtx, service, itemCtrl, adminItem.ID, &app.ModifyItemPayload{
 		ItemName: &newName,
 	})
 	newQuantitiy := 114514
-	test.ModifyItemsForbidden(t, adminCtx, service, itemCtrl, adminItem.ID, &app.ModifyItemPayload{
+	test.ModifyItemsForbidden(t, registerCtx, service, itemCtrl, adminItem.ID, &app.ModifyItemPayload{
 		Quantity: &newQuantitiy,
 	})
 
 }
 
 func TestShowItem_OK(t *testing.T) {
-	reqUser, userCtx := PrepareUser(Normal)
+	reqUser, userCtx := PrepareUser(false)
 	defer UserDB.Delete(ctx, reqUser.ID)
 
 	testItem := PrepareItems("foo", reqUser.ID)

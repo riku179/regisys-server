@@ -337,18 +337,13 @@ func (ut *ModifyItemPayload) Validate() (err error) {
 
 // modifyUserPayload user type.
 type modifyUserPayload struct {
-	Group *string `form:"group,omitempty" json:"group,omitempty" xml:"group,omitempty"`
+	IsRegister *bool `form:"is_register,omitempty" json:"is_register,omitempty" xml:"is_register,omitempty"`
 }
 
 // Validate validates the modifyUserPayload type instance.
 func (ut *modifyUserPayload) Validate() (err error) {
-	if ut.Group == nil {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "group"))
-	}
-	if ut.Group != nil {
-		if !(*ut.Group == "admin" || *ut.Group == "register" || *ut.Group == "normal") {
-			err = goa.MergeErrors(err, goa.InvalidEnumValueError(`response.group`, *ut.Group, []interface{}{"admin", "register", "normal"}))
-		}
+	if ut.IsRegister == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "is_register"))
 	}
 	return
 }
@@ -356,24 +351,13 @@ func (ut *modifyUserPayload) Validate() (err error) {
 // Publicize creates ModifyUserPayload from modifyUserPayload
 func (ut *modifyUserPayload) Publicize() *ModifyUserPayload {
 	var pub ModifyUserPayload
-	if ut.Group != nil {
-		pub.Group = *ut.Group
+	if ut.IsRegister != nil {
+		pub.IsRegister = *ut.IsRegister
 	}
 	return &pub
 }
 
 // ModifyUserPayload user type.
 type ModifyUserPayload struct {
-	Group string `form:"group" json:"group" xml:"group"`
-}
-
-// Validate validates the ModifyUserPayload type instance.
-func (ut *ModifyUserPayload) Validate() (err error) {
-	if ut.Group == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "group"))
-	}
-	if !(ut.Group == "admin" || ut.Group == "register" || ut.Group == "normal") {
-		err = goa.MergeErrors(err, goa.InvalidEnumValueError(`response.group`, ut.Group, []interface{}{"admin", "register", "normal"}))
-	}
-	return
+	IsRegister bool `form:"is_register" json:"is_register" xml:"is_register"`
 }
