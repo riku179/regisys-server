@@ -69,6 +69,7 @@ var ShowUserMedia = MediaType("application/vnd.regisys.user+json", func() {
 		Attribute("name", String, "Username", func() {
 			Example("Linus Benedict Torvalds")
 		})
+
 		Attribute("is_register", Boolean, "Register or not", func() {
 			Example(false)
 		})
