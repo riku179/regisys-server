@@ -12,11 +12,10 @@ package client
 
 import (
 	"fmt"
+	"golang.org/x/net/context"
 	"net/http"
 	"net/url"
 	"strconv"
-
-	"golang.org/x/net/context"
 )
 
 // SigninJWTPath computes a request path to the signin action of jwt.

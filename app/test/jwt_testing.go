@@ -13,16 +13,15 @@ package test
 import (
 	"bytes"
 	"fmt"
+	"github.com/goadesign/goa"
+	"github.com/goadesign/goa/goatest"
+	"github.com/riku179/regisys-server/app"
+	"golang.org/x/net/context"
 	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-
-	"github.com/goadesign/goa"
-	"github.com/goadesign/goa/goatest"
-	"github.com/riku179/regisys-server/app"
-	"golang.org/x/net/context"
 )
 
 // SigninJWTOK runs the method Signin of the given controller with the given parameters.

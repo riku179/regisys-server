@@ -10,9 +10,7 @@
 
 package app
 
-import (
-	"github.com/goadesign/goa"
-)
+import "github.com/goadesign/goa"
 
 // addItemPayload user type.
 type addItemPayload struct {

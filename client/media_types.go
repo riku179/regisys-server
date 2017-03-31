@@ -11,9 +11,8 @@
 package client
 
 import (
-	"net/http"
-
 	"github.com/goadesign/goa"
+	"net/http"
 )
 
 // An item (default view)

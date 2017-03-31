@@ -11,12 +11,11 @@
 package models
 
 import (
-	"time"
-
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	"github.com/riku179/regisys-server/app"
 	"golang.org/x/net/context"
+	"time"
 )
 
 // Items Relational Model

@@ -11,11 +11,10 @@
 package app
 
 import (
-	"net/http"
-
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/cors"
 	"golang.org/x/net/context"
+	"net/http"
 )
 
 // initService sets up the service encoders, decoders and mux.

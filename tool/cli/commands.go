@@ -13,19 +13,18 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"os"
-	"path"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/goadesign/goa"
 	goaclient "github.com/goadesign/goa/client"
 	uuid "github.com/goadesign/goa/uuid"
 	"github.com/riku179/regisys-server/client"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
+	"log"
+	"os"
+	"path"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type (

@@ -13,11 +13,10 @@ package client
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/net/context"
 	"net/http"
 	"net/url"
 	"strconv"
-
-	"golang.org/x/net/context"
 )
 
 // AddUserPath computes a request path to the add action of user.
